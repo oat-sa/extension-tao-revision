@@ -47,13 +47,13 @@ class Repository implements RepositoryInterface
     
     /**
      * @param string $resourceId
-     * @param string $versionId
+     * @param string $revisionId
      * @return Revision
      */
-    public function getRevision($resourceId, $versionId)
+    public function getRevision($resourceId, $revisionId)
     {
-        if (is_int($versionId)) {
-            return new Revision($versionId);
+        if (is_int($revisionId)) {
+            return new Revision($revisionId);
         } else {
             throw new RevisionNotFound($resourceId, $revisionId);
         } 
@@ -63,10 +63,10 @@ class Repository implements RepositoryInterface
      * 
      * @param string $resourceId
      * @param string $message
-     * @param string $versionId
+     * @param string $revisionId
      * @return Revision
      */
-    public function commit($resourceId, $message, $versionId = null)
+    public function commit($resourceId, $message, $revisionId = null)
     {
         return new Revision(rand(10, 20).(rand(0, 2) == 0 ? '.beta' : ''));
     }

@@ -32,18 +32,18 @@ interface Repository
     /**
      * 
      * @param string $resourceId
-     * @param string $versionId
+     * @param string $revisionId
      * @throws RevisionNotFound
      * @return Revision
      */
-    public function getRevision($resourceId, $versionId);
+    public function getRevision($resourceId, $revisionId);
     
     /**
      * 
      * @param string $resourceId
      * @param string $message
-     * @param string $versionId
+     * @param string $revisionId
      * @return Revision
      */
-    public function commit($resourceId, $message, $versionId = null);
+    public function commit($resourceId, $message, $revisionId = null);
 }

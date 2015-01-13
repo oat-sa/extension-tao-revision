@@ -20,7 +20,7 @@
  */               
 
 return array(
-    'name' => 'taoRevisionevision',
+    'name' => 'taoRevision',
 	'label' => 'Data Revision Control',
 	'description' => '',
     'license' => 'GPL-2.0',

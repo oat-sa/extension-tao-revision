@@ -26,7 +26,7 @@ interface Revision
     /**
      * @return int
      */
-    public function getVersion();
+    public function getIdentifier();
 
     /**
      * @return string
@@ -45,6 +45,7 @@ interface Revision
     
     /**
      * @param string $restoreMessage
+     * @return Revision
      */
     public function restore($restoreMessage);
 }

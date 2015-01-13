@@ -64,24 +64,24 @@ class RepositoryProxy
     /**
      * 
      * @param string $resourceId
-     * @param string $versionId
+     * @param string $revisionId
      * @return Revision
      */
-    public static function getRevision($resourceId, $versionId)
+    public static function getRevision($resourceId, $revisionId)
     {
-        return self::getImplementation()->getRevision($resourceId, $versionId);
+        return self::getImplementation()->getRevision($resourceId, $revisionId);
     }
     
     /**
      * 
      * @param string $resourceId
      * @param string $message
-     * @param string $versionId
+     * @param string $revisionId
      * @return Revision
      */
-    public static function commit($resourceId, $message, $versionId = null)
+    public static function commit($resourceId, $message, $revisionId = null)
     {
-        return self::getImplementation()->commit($resourceId, $message, $versionId);
+        return self::getImplementation()->commit($resourceId, $message, $revisionId);
     }
     
 }
