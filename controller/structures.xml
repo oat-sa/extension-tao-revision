@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE structures SYSTEM "../doc/structures.dtd">
+<structures>
+    <structure id="items" name="Items" level="0" group="main">
+        <sections>
+            <section id="manage_items" name="Manage items" url="">
+				<actions>
+					<action id="item-revision" name="Revisions" url="/taoRevision/History/index" context="instance" group="content">
+					    <icon id="icon-repository"/>
+					</action>
+				</actions>
+			</section>
+		</sections>
+	</structure>
+</structures>
