@@ -30,6 +30,6 @@ class RevisionNotFound extends \common_Exception
     
     public function getSeverity()
     {
-        return common_Logger::WARNING_LEVEL;
+        return \common_Logger::WARNING_LEVEL;
     }
 }

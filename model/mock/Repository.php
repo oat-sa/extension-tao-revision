@@ -49,6 +49,7 @@ class Repository implements RepositoryInterface
      * @param string $resourceId
      * @param string $revisionId
      * @return Revision
+     * @throws \oat\taoRevision\model\RevisionNotFound
      */
     public function getRevision($resourceId, $revisionId)
     {

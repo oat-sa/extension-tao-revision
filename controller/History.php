@@ -21,6 +21,7 @@
 
 namespace oat\taoRevision\controller;
 
+use oat\taoRevision\model\mock\Revision;
 use oat\taoRevision\model\RepositoryProxy;
 /**
  * Sample controller
@@ -45,9 +46,68 @@ class History extends \tao_actions_CommonModule {
     public function index() {
         $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
         $revisions = RepositoryProxy::getRevisions($resource->getUri());
+
+        $returnRevision = array();
+        foreach($revisions as $revision){
+
+            $user = new \core_kernel_classes_Resource($revision->getAuthorId());
+            if($label = $user->getLabel() === ""){
+                $label = '('.$revision->getAuthorId().')';
+            }
+
+            $returnRevision[] = array(
+                'id'        => $revision->getIdentifier(),
+                'modified'  => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
+                'author'    => $label,
+                'message'   => $revision->getMessage(),
+            );
+        }
         
         $this->setData('resourceLabel', $resource->getLabel());
-        $this->setData('revisions', $revisions);
+        $this->setData('id', $resource->getUri());
+        $this->setData('revisions', $returnRevision);
         $this->setView('History/index.tpl');
+    }
+
+    public function restoreRevision(){
+        $revision = new Revision($this->getRequestParameter('revisionId'));
+
+        $newRevision = $revision->restore('restored');
+        //get the user to display it
+        $user = new \core_kernel_classes_Resource($newRevision->getAuthorId());
+        if($label = $user->getLabel() === ""){
+            $label = '('.$revision->getAuthorId().')';
+        }
+        $this->returnJson(array(
+                'success'   => true,
+                'id'        => $newRevision->getIdentifier(),
+                'modified'  => \tao_helpers_Date::displayeDate($newRevision->getDateCreated()),
+                'author'    => $label,
+                'message'   => $newRevision->getMessage()
+            ));
+    }
+
+    public function commitResource(){
+
+        $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
+        $message = $this->getRequestParameter('message');
+
+        //commit a new revision of the resource
+        $revision = RepositoryProxy::commit($resource->getUri(), $message);
+
+        //get the user to display it
+        $user = new \core_kernel_classes_Resource($revision->getAuthorId());
+        if($label = $user->getLabel() === ""){
+            $label = '('.$revision->getAuthorId().')';
+        }
+
+
+        $this->returnJson(array(
+                'success'   => true,
+                'id'        => $revision->getIdentifier(),
+                'modified'  => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
+                'author'    => $label,
+                'message'   => $revision->getMessage()
+            ));
     }
 }
