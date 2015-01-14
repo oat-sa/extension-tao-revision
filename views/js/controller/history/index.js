@@ -52,8 +52,9 @@ define([
                 $submiter.on('click', function(e){
                     e.preventDefault();
 
+                var $message = $('#message',$form);
+                if($message.val() != ""){
                     $submiter.addClass('disabled');
-
                     $.post($form.attr('action'), $form.serialize())
                         .done(function(res){
                             if(res && res.success){
@@ -67,7 +68,12 @@ define([
                         })
                         .complete(function(){
                             $submiter.removeClass('disabled');
+                            $message.val('');
                         });
+                }
+                else{
+                    feedback().error(__("Please give a message to your commit"));
+                }
                 });
 
 
