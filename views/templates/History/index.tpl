@@ -8,7 +8,7 @@
         <div class="grid-row">
             <div class="col-10">
                 <?= __('Message')?> :
-                <input type="text" name="message">
+                <input type="text" name="message" id="message">
             </div>
             <div class="col-2  txt-rgt">
                 <button type="submit" class="btn-info small"><?= __('Commit')?></button>
