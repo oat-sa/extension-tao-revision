@@ -18,19 +18,27 @@
  * 
  */
 
-namespace oat\taoRevision\model\mock;
+namespace oat\taoRevision\model\rds;
 
 use oat\taoRevision\model\RevisionNotFound;
 use oat\taoRevision\model\Repository as RepositoryInterface;
 use oat\taoRevision\model\Revision as RevisionInterface;
+use oat\oatbox\Configurable;
 
 /**
  * A mock implementation for development
  * 
  * @author bout
  */
-class Repository implements RepositoryInterface
+class Repository extends Configurable implements RepositoryInterface
 {
+    private $storage;
+    
+    public function __construct($options = array()) {
+        parent::__construct($options);
+        $this->storage = new Storage($this->getOption('persistence'));
+    }
+    
     /**
      * 
      * @param string $resourceId
@@ -38,27 +46,17 @@ class Repository implements RepositoryInterface
      */
     public function getRevisions($resourceId)
     {
-        $count = substr($resourceId, strlen($resourceId)-1);
-        $revisions = array();
-        for ($i = 0; $i < $count; $i++) {
-            $revisions[] = new Revision($i.(rand(0, 2) == 0 ? '.alpha' : ''));
-        }
-        return $revisions;
+        return $this->storage->getAllRevisions($resourceId);
     }
     
     /**
      * @param string $resourceId
      * @param string $revisionId
      * @return Revision
-     * @throws \oat\taoRevision\model\RevisionNotFound
      */
     public function getRevision($resourceId, $revisionId)
     {
-        if (is_int($revisionId)) {
-            return new Revision($revisionId);
-        } else {
-            throw new RevisionNotFound($resourceId, $revisionId);
-        } 
+        return $this->storage->getRevision($resourceId, $versionId);
     }
     
     /**
@@ -68,16 +66,27 @@ class Repository implements RepositoryInterface
      * @param string $revisionId
      * @return Revision
      */
-    public function commit($resourceId, $message, $revisionId)
+    public function commit($resourceId, $message, $version)
     {
-        return new Revision(rand(10, 20).(rand(0, 2) == 0 ? '.beta' : ''));
+        $user = \common_session_SessionManager::getSession()->getUser();
+        $userId = is_null($user) ? null : $user->getIdentifier();
+        $created = time();
+        
+        // save data
+        $data = array();
+        
+        $revision = $this->storage->addRevision($resourceId, $version, $created, $userId, $message, $data);
+        return $revision;
     }
     
-    /**
-     * (non-PHPdoc)
-     * @see \oat\taoRevision\model\Repository::restore()
-     */
     public function restore(RevisionInterface $revision, $newVersion, $message) {
-        return new Revision($revision->getVersion().'.rev');
+        $resourceId = $revision->getResourceId();
+        $data = $this->storage->getData($revision);
+        
+        // restore data
+        
+        $user = \common_session_SessionManager::getSession()->getUser();
+        $userId = is_null($user) ? null : $user->getIdentifier();
+        return $this->commit($resourceId, $message, $newVersion);
     }
 }

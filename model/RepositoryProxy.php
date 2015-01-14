@@ -21,12 +21,15 @@
 namespace oat\taoRevision\model;
 
 use oat\taoRevision\model\mock\Repository as MockRepository;
+use oat\taoRevision\model\rds\Repository as RdsRepository;
 
 /**
  * A proxy for the repository implementation
  */
 class RepositoryProxy
 {
+    const CONFIG_ID = 'repository'; 
+    
     /**
      * @var Repository
      */
@@ -37,7 +40,8 @@ class RepositoryProxy
      */
     protected static function getImplementation() {
         if (is_null(self::$implementation)) {
-            self::$implementation = new MockRepository();
+            $ext = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoRevision');
+            self::$implementation = $ext->getConfig(self::CONFIG_ID);
         }
         return self::$implementation;
     }
@@ -46,9 +50,10 @@ class RepositoryProxy
      * 
      * @param Repository $repository
      */
-    protected function setImplementation(Repository $repository)
+    public function setImplementation(Repository $repository)
     {
-        //@todo
+        $ext = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoRevision');
+        $ext->setConfig(self::CONFIG_ID, $repository);
     }
     
     /**

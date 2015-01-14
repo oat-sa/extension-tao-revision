@@ -19,7 +19,7 @@
  * 
  */
 
-namespace oat\taoRevision\model\mock;
+namespace oat\taoRevision\model\rds;
 
 use oat\taoRevision\model\Revision as RevisionInterface;
 
@@ -32,8 +32,28 @@ class Revision implements RevisionInterface
 {
     private $id;
     
-    public function __construct($id) {
+    private $resourceId;
+    
+    private $version;
+    
+    private $created;
+    
+    private $author;
+    
+    private $message;
+    
+    public function __construct($id, $resourceId, $version, $created, $author, $message) {
         $this->id = $id;
+        $this->resourceId = $resourceId;
+        $this->version = $version;
+        $this->created = $created;
+        $this->author = $author;
+        $this->message = $message;
+    }
+    
+    public function getResourceId()
+    {
+        return $this->resourceId;
     }
     
     /**
@@ -41,7 +61,7 @@ class Revision implements RevisionInterface
      */
     public function getVersion()
     {
-        return $this->id;
+        return $this->version;
     }
 
     /**
@@ -49,7 +69,7 @@ class Revision implements RevisionInterface
      */
     public function getMessage()
     {
-        return 'Message of '.$this->getVersion();
+        return $this->message;
     }
     
     /**
@@ -57,7 +77,7 @@ class Revision implements RevisionInterface
      */
     public function getDateCreated()
     {
-        return time();
+        return $this->created;
     }
     
     /**
@@ -65,17 +85,6 @@ class Revision implements RevisionInterface
      */
     public function getAuthorId()
     {
-        // assuming we always have a user
-        return \common_session_SessionManager::getSession()->getUser()->getIdentifier();
-    }
-    
-    /**
-     * @param string $restoreMessage
-     * @return Revision
-     * @deprecated
-     */
-    public function restore($restoreMessage)
-    {
-        return new Revision($this->getVersion().'.rev');
+        return $this->author;
     }
 }

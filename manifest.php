@@ -34,7 +34,11 @@ return array(
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoRevisionManager', array('ext'=>'taoRevision')),
     ),
-    'uninstall' => array(
+    'install' => array(
+        'php' => array(
+            dirname(__FILE__).'/scripts/install/createTables.php',
+            dirname(__FILE__).'/scripts/install/setImplementation.php'
+        )
     ),
     'autoload' => array (
         'psr-4' => array(

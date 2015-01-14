@@ -46,4 +46,13 @@ interface Repository
      * @return Revision
      */
     public function commit($resourceId, $message, $revisionId);
+    
+    /**
+     * Restore a previous version
+     * 
+     * @param Revision $revision
+     * @param string $newVersion
+     * @param string $message
+     */
+    public function restore(Revision $revision, $newVersion, $message);
 }
