@@ -79,7 +79,7 @@ class RepositoryProxy
      * @param string $revisionId
      * @return Revision
      */
-    public static function commit($resourceId, $message, $revisionId = null)
+    public static function commit($resourceId, $message, $revisionId)
     {
         return self::getImplementation()->commit($resourceId, $message, $revisionId);
     }

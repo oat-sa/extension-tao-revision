@@ -26,7 +26,7 @@ interface Revision
     /**
      * @return int
      */
-    public function getIdentifier();
+    public function getVersion();
 
     /**
      * @return string

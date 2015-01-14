@@ -67,7 +67,7 @@ class Repository implements RepositoryInterface
      * @param string $revisionId
      * @return Revision
      */
-    public function commit($resourceId, $message, $revisionId = null)
+    public function commit($resourceId, $message, $revisionId)
     {
         return new Revision(rand(10, 20).(rand(0, 2) == 0 ? '.beta' : ''));
     }

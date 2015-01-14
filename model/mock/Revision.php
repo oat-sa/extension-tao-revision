@@ -39,7 +39,7 @@ class Revision implements RevisionInterface
     /**
      * @return int
      */
-    public function getIdentifier()
+    public function getVersion()
     {
         return $this->id;
     }
@@ -49,7 +49,7 @@ class Revision implements RevisionInterface
      */
     public function getMessage()
     {
-        return 'Message of '.$this->getIdentifier();
+        return 'Message of '.$this->getVersion();
     }
     
     /**
@@ -75,6 +75,6 @@ class Revision implements RevisionInterface
      */
     public function restore($restoreMessage)
     {
-        return new Revision($this->getIdentifier().'.rev');
+        return new Revision($this->getVersion().'.rev');
     }
 }

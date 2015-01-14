@@ -45,5 +45,5 @@ interface Repository
      * @param string $revisionId
      * @return Revision
      */
-    public function commit($resourceId, $message, $revisionId = null);
+    public function commit($resourceId, $message, $revisionId);
 }

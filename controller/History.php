@@ -57,7 +57,7 @@ class History extends \tao_actions_CommonModule {
             }
 
             $returnRevision[] = array(
-                'id'        => $revision->getIdentifier(),
+                'id'        => $revision->getVersion(),
                 'modified'  => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
                 'author'    => $label,
                 'message'   => $revision->getMessage(),
@@ -83,7 +83,7 @@ class History extends \tao_actions_CommonModule {
 
         $this->returnJson(array(
                 'success'   => true,
-                'id'        => $newRevision->getIdentifier(),
+                'id'        => $newRevision->getVersion(),
                 'modified'  => \tao_helpers_Date::displayeDate($newRevision->getDateCreated()),
                 'author'    => $label,
                 'message'   => $newRevision->getMessage()
@@ -96,7 +96,7 @@ class History extends \tao_actions_CommonModule {
         $message = $this->getRequestParameter('message');
 
         //commit a new revision of the resource
-        $revision = RepositoryProxy::commit($resource->getUri(), $message);
+        $revision = RepositoryProxy::commit($resource->getUri(), $message, $this->getNextVersion($resource->getUri()));
 
         //get the user to display it
         $user = new \core_kernel_classes_Resource($revision->getAuthorId());
@@ -108,10 +108,21 @@ class History extends \tao_actions_CommonModule {
 
         $this->returnJson(array(
                 'success'   => true,
-                'id'        => $revision->getIdentifier(),
+                'id'        => $revision->getVersion(),
                 'modified'  => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
                 'author'    => $label,
                 'message'   => $revision->getMessage()
             ));
+    }
+    
+    protected function getNextVersion($resourceId) {
+        $candidate = 0;
+        foreach (RepositoryProxy::getRevisions($resourceId) as $revision) {
+            $version = $revision->getVersion();
+            if (is_numeric($version) && $version > $candidate) {
+                $candidate = $version;
+            }
+        }
+        return $candidate + 1;
     }
 }
