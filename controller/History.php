@@ -51,7 +51,8 @@ class History extends \tao_actions_CommonModule {
         foreach($revisions as $revision){
 
             $user = new \core_kernel_classes_Resource($revision->getAuthorId());
-            if($label = $user->getLabel() === ""){
+            $label = $user->getLabel();
+            if($label === ""){
                 $label = '('.$revision->getAuthorId().')';
             }
 
@@ -75,9 +76,11 @@ class History extends \tao_actions_CommonModule {
         $newRevision = $revision->restore('restored');
         //get the user to display it
         $user = new \core_kernel_classes_Resource($newRevision->getAuthorId());
-        if($label = $user->getLabel() === ""){
+        $label = $user->getLabel();
+        if($label === ""){
             $label = '('.$revision->getAuthorId().')';
         }
+
         $this->returnJson(array(
                 'success'   => true,
                 'id'        => $newRevision->getIdentifier(),
@@ -97,7 +100,8 @@ class History extends \tao_actions_CommonModule {
 
         //get the user to display it
         $user = new \core_kernel_classes_Resource($revision->getAuthorId());
-        if($label = $user->getLabel() === ""){
+        $label = $user->getLabel();
+        if($label === ""){
             $label = '('.$revision->getAuthorId().')';
         }
 

@@ -7,8 +7,8 @@
         <input type="hidden" name="id" id="resource_id" value="<?= get_data('id')?>">
         <div class="grid-row">
             <div class="col-10">
-                    <?= __('Message')?> :
-                    <input type="text" name="message">
+                <?= __('Message')?> :
+                <input type="text" name="message">
             </div>
             <div class="col-2  txt-rgt">
                 <button type="submit" class="btn-info small"><?= __('Commit')?></button>
@@ -24,12 +24,12 @@
                         <div class="col-8"><?= $revision['message']?></div>
                     </div>
                     <div class="secondary">
-                        <div class="col-6"><?= $revision['modifier']?></div>
-                        <div class="col-6"><?=__('by')<?= $revision['author']?></div>
+                        <div class="col-6"><?= $revision['modified']?></div>
+                        <div class="col-6"><?=__('by')?> <?= $revision['author']?></div>
                     </div>
                 </td>
-                <td>
-                    <button type="button" class="small restore_revision tooltip btn-link numeric" data-revision="<?=$revision->getIdentifier()?>">
+                <td class="numeric">
+                    <button type="button" class="small restore_revision tooltip btn-link" data-revision="<?=$revision['id']?>">
                         <span class="icon-restore"></span><?= __('Restore')?>
                     </button>
                 </td>

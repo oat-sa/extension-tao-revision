@@ -6,11 +6,11 @@
         </div>
         <div class="secondary">
             <div class="col-6">{{modified}}</div>
-            <div class="col-6">{{__ "by"}}{{author}}</div>
+            <div class="col-6">{{__ "by"}} {{author}}</div>
         </div>
     </td>
-    <td>
-        <button type="button" class="small restore_revision tooltip btn-link numeric" data-revision="{{id}}">
+    <td class="numeric">
+        <button type="button" class="small restore_revision tooltip btn-link" data-revision="{{id}}">
             <span class="icon-restore"></span>{{__ "Restore"}}
         </button>
     </td>
