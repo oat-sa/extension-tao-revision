@@ -22,9 +22,16 @@ define([
                 revision = $this.data('revision');
             var id = $('#resource_id').val();
 
+            var message = prompt("Please enter a message", "");
+
             if( typeof revision !== "undefined" &&
-                revision !== ""){
-                $.post(helpers._url('restoreRevision', 'History', 'taoRevision'), {id : id, revisionId : revision})
+                typeof message !== "undefined" &&
+                message != null &&
+                revision !== "" &&
+                message !== ""){
+                $.post(
+                    helpers._url('restoreRevision', 'History', 'taoRevision'),
+                    {id : id, revisionId : revision, message : message})
                     .done(function(res){
                         if(res && res.success){
                             feedback().success(__("Resource restored"));
