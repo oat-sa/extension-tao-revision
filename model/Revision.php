@@ -21,31 +21,75 @@
 
 namespace oat\taoRevision\model;
 
-interface Revision
+/**
+ * A revision of a resource
+ * 
+ * @author Joel Bout <joel@taotesting.com>
+ *
+ */
+class Revision
 {
-    /**
-     * @return int
-     */
-    public function getVersion();
+    private $resourceId;
+
+    private $version;
+
+    private $created;
+
+    private $author;
+
+    private $message;
+
+    public function __construct($resourceId, $version, $created, $author, $message) {
+        $this->resourceId = $resourceId;
+        $this->version = $version;
+        $this->created = $created;
+        $this->author = $author;
+        $this->message = $message;
+    }
 
     /**
+     * Returns the revisioned resource identifier
      * @return string
      */
-    public function getResourceId();
+    public function getResourceId()
+    {
+        return $this->resourceId;
+    }
 
     /**
+     * Returns the version of the revision
      * @return string
      */
-    public function getMessage();
-    
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
     /**
+     * Returns the message associated with the revision
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * Returns the creation date as epoch timestamp
      * @return int
      */
-    public function getDateCreated();
-    
+    public function getDateCreated()
+    {
+        return $this->created;
+    }
+
     /**
+     * Returns the identifier of the user that created
+     * the revision
      * @return string
      */
-    public function getAuthorId();
-    
+    public function getAuthorId()
+    {
+        return $this->author;
+    }
 }

@@ -60,7 +60,7 @@ class Storage
             )
         );
         
-        $revision = new Revision($this->persistence->lastInsertId(), $resourceId, $version, $created, $author, $message);
+        $revision = new RdsRevision($this->persistence->lastInsertId(), $resourceId, $version, $created, $author, $message);
 
         $success = $this->saveData($revision, $data);
         
@@ -84,7 +84,7 @@ class Storage
             return null;
         }
         $variable = $variables->fetch();
-        return new Revision($variable[self::REVISION_ID], $variable[self::REVISION_RESOURCE], $variable[self::REVISION_VERSION],
+        return new RdsRevision($variable[self::REVISION_ID], $variable[self::REVISION_RESOURCE], $variable[self::REVISION_VERSION],
                 $variable[self::REVISION_CREATED], $variable[self::REVISION_USER], $variable[self::REVISION_MESSAGE]);
         
     }
@@ -96,13 +96,13 @@ class Storage
         
         $revisions = array();
         foreach ($variables as $variable) {
-            $revisions[] = new Revision($variable[self::REVISION_ID], $variable[self::REVISION_RESOURCE], $variable[self::REVISION_VERSION],
+            $revisions[] = new RdsRevision($variable[self::REVISION_ID], $variable[self::REVISION_RESOURCE], $variable[self::REVISION_VERSION],
                 $variable[self::REVISION_CREATED], $variable[self::REVISION_USER], $variable[self::REVISION_MESSAGE]);
         }
         return $revisions;
     }
     
-    public function getData(Revision $revision) {
+    public function getData(RdsRevision $revision) {
         
         // retrieve data
         $query = 'SELECT * FROM '.self::DATA_TABLE_NAME.' WHERE '.self::DATA_REVISION.' = ?';
@@ -127,7 +127,7 @@ class Storage
      * @param array $data
      * @return boolean
      */
-    protected function saveData(Revision $revision, $data) {
+    protected function saveData(RdsRevision $revision, $data) {
         $columns = array(self::DATA_REVISION, self::DATA_SUBJECT, self::DATA_PREDICATE, self::DATA_OBJECT, self::DATA_LANGUAGE);
         
         $multipleInsertQueryHelper = $this->persistence->getPlatForm()->getMultipleInsertsSqlQueryHelper();

@@ -22,11 +22,12 @@ namespace oat\taoRevision\model\rds;
 
 use oat\taoRevision\model\RevisionNotFound;
 use oat\taoRevision\model\Repository as RepositoryInterface;
-use oat\taoRevision\model\Revision as RevisionInterface;
+use oat\taoRevision\model\Revision;
 use oat\oatbox\Configurable;
 
 /**
- * A mock implementation for development
+ * A simple repository implementation that stores the information
+ * in a dedicated rds table
  * 
  * @author bout
  */
@@ -34,15 +35,17 @@ class Repository extends Configurable implements RepositoryInterface
 {
     private $storage;
     
+    /**
+     * @see \oat\oatbox\Configurable::__construct()
+     */
     public function __construct($options = array()) {
         parent::__construct($options);
         $this->storage = new Storage($this->getOption('persistence'));
     }
     
     /**
-     * 
-     * @param string $resourceId
-     * @return array return an array of Revision objects
+     * (non-PHPdoc)
+     * @see \oat\taoRevision\model\Repository::getRevisions()
      */
     public function getRevisions($resourceId)
     {
@@ -50,9 +53,8 @@ class Repository extends Configurable implements RepositoryInterface
     }
     
     /**
-     * @param string $resourceId
-     * @param string $revisionId
-     * @return Revision
+     * (non-PHPdoc)
+     * @see \oat\taoRevision\model\Repository::getRevision()
      */
     public function getRevision($resourceId, $version)
     {
@@ -60,11 +62,8 @@ class Repository extends Configurable implements RepositoryInterface
     }
     
     /**
-     * 
-     * @param string $resourceId
-     * @param string $message
-     * @param string $revisionId
-     * @return Revision
+     * (non-PHPdoc)
+     * @see \oat\taoRevision\model\Repository::commit()
      */
     public function commit($resourceId, $message, $version)
     {
@@ -80,7 +79,11 @@ class Repository extends Configurable implements RepositoryInterface
         return $revision;
     }
     
-    public function restore(RevisionInterface $revision, $newVersion, $message) {
+    /**
+     * (non-PHPdoc)
+     * @see \oat\taoRevision\model\Repository::restore()
+     */
+    public function restore(Revision $revision, $newVersion, $message) {
         $resourceId = $revision->getResourceId();
         $data = $this->storage->getData($revision);
         
