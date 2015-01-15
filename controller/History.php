@@ -21,7 +21,6 @@
 
 namespace oat\taoRevision\controller;
 
-use oat\taoRevision\model\mock\Revision;
 use oat\taoRevision\model\RepositoryProxy;
 /**
  * Sample controller
@@ -71,9 +70,9 @@ class History extends \tao_actions_CommonModule {
     }
 
     public function restoreRevision(){
-        $revision = new Revision($this->getRequestParameter('revisionId'));
+        $revision = RepositoryProxy::getRevision($this->getRequestParameter('id'),$this->getRequestParameter('revisionId'));
+        $newRevision = RepositoryProxy::restore($revision, $this->getNextVersion($revision->getVersion()), $revision->getMessage());
 
-        $newRevision = $revision->restore('restored');
         //get the user to display it
         $user = new \core_kernel_classes_Resource($newRevision->getAuthorId());
         $label = $user->getLabel();

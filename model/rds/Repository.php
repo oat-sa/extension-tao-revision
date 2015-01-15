@@ -56,7 +56,7 @@ class Repository extends Configurable implements RepositoryInterface
      */
     public function getRevision($resourceId, $revisionId)
     {
-        return $this->storage->getRevision($resourceId, $versionId);
+        return $this->storage->getRevision($resourceId, $revisionId);
     }
     
     /**
@@ -80,7 +80,7 @@ class Repository extends Configurable implements RepositoryInterface
     }
     
     public function restore(RevisionInterface $revision, $newVersion, $message) {
-        $resourceId = $revision->getResourceId();
+        $resourceId = $revision->getVersion();
         $data = $this->storage->getData($revision);
         
         // restore data

@@ -20,10 +20,11 @@ define([
             //Get the revision id
             var $this = $(element),
                 revision = $this.data('revision');
+            var id = $('#resource_id').val();
 
             if( typeof revision !== "undefined" &&
                 revision !== ""){
-                $.post(helpers._url('restoreRevision', 'History', 'taoRevision'), {revisionId : revision})
+                $.post(helpers._url('restoreRevision', 'History', 'taoRevision'), {id : id, revisionId : revision})
                     .done(function(res){
                         if(res && res.success){
                             feedback().success(__("Resource restored"));
