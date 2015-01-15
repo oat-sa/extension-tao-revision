@@ -20,7 +20,6 @@
 
 namespace oat\taoRevision\model;
 
-use oat\taoRevision\model\mock\Repository as MockRepository;
 use oat\taoRevision\model\rds\Repository as RdsRepository;
 
 /**
