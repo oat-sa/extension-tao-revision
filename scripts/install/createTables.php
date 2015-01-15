@@ -42,6 +42,7 @@ try {
     $dataTable = $schema->createtable(Storage::DATA_TABLE_NAME);
     $dataTable->addOption('engine', 'MyISAM');
     $dataTable->addColumn(Storage::DATA_REVISION, "integer", array("notnull" => true));
+    $dataTable->addColumn(Storage::DATA_SUBJECT, "string", array("notnull" => true, "length" => 255));
     $dataTable->addColumn(Storage::DATA_PREDICATE, "string", array("length" => 255));
     // not compatible with oracle
     $dataTable->addColumn(Storage::DATA_OBJECT, "text", array("default" => null,"notnull" => false));

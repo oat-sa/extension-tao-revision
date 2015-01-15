@@ -34,10 +34,14 @@ class Storage
     const DATA_TABLE_NAME = 'revision_data';
     
     const DATA_REVISION = 'revision';
+    const DATA_SUBJECT = 'subject';
     const DATA_PREDICATE = 'predicate';
     const DATA_OBJECT = 'object';
     const DATA_LANGUAGE = 'language';
     
+    /**
+     * @var \common_persistence_SqlPersistence
+     */
     private $persistence;
     
     public function __construct($persistenceId) {
@@ -55,11 +59,12 @@ class Storage
                 self::REVISION_CREATED => $created
             )
         );
-        $variableId = $this->persistence->lastInsertId();
         
-        // insert data
+        $revision = new Revision($this->persistence->lastInsertId(), $resourceId, $version, $created, $author, $message);
+
+        $success = $this->saveData($revision, $data);
         
-        return new Revision($variableId, $resourceId, $version, $created, $author, $message);
+        return $revision;
     }
     
     /**
@@ -99,7 +104,44 @@ class Storage
     public function getData(Revision $revision) {
         
         // retrieve data
+        $query = 'SELECT * FROM '.self::DATA_TABLE_NAME.' WHERE '.self::DATA_REVISION.' = ?';
+        $result = $dbWrapper->query($query, array($revision->getId()));
         
-        return array();
+        $triples = array();
+        while ($statement = $result->fetch()) {
+            $triple->subject = $statement[self::DATA_SUBJECT];
+            $triple->predicate = $statement[self::DATA_PREDICATE];
+            $triple->object = $statement[self::DATA_OBJECT];
+            $triple->lg = $statement[self::DATA_LANGUAGE];
+            $triples[] = $triple;
+        }
+        
+        return $triples();
+    }
+    
+    /**
+     * 
+     * @param Revision $revision
+     * @param array $data
+     * @return boolean
+     */
+    protected function saveData(Revision $revision, $data) {
+        $columns = array(self::DATA_REVISION, self::DATA_SUBJECT, self::DATA_PREDICATE, self::DATA_OBJECT, self::DATA_LANGUAGE);
+        
+        $multipleInsertQueryHelper = $this->persistence->getPlatForm()->getMultipleInsertsSqlQueryHelper();
+        $query = $multipleInsertQueryHelper->getFirstStaticPart(self::DATA_TABLE_NAME, $columns);
+        foreach ($data as $triple) {
+            $query .= $multipleInsertQueryHelper->getValuePart(self::DATA_TABLE_NAME, $columns, array(
+                self::DATA_REVISION  => $this->persistence->quote($revision->getId()),
+                self::DATA_SUBJECT   => $this->persistence->quote($triple->subject),
+                self::DATA_PREDICATE => $this->persistence->quote($triple->predicate),
+                self::DATA_OBJECT    => $this->persistence->quote($triple->object),
+                self::DATA_LANGUAGE  => $this->persistence->quote($triple->lg)
+            ));
+        }
+        
+        $query = substr($query, 0, strlen($query) -1);
+        $query .= $multipleInsertQueryHelper->getEndStaticPart();
+        $success = $this->persistence->exec($query);
     }
 }

@@ -51,6 +51,10 @@ class Revision implements RevisionInterface
         $this->message = $message;
     }
     
+    public function getId() {
+        return $this->id;
+    }
+    
     public function getResourceId()
     {
         return $this->resourceId;

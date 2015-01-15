@@ -74,6 +74,8 @@ class Repository extends Configurable implements RepositoryInterface
         
         // save data
         $data = array();
+        $resource = new \core_kernel_classes_Resource($resourceId);
+        $data = $resource->getRdfTriples();
         
         $revision = $this->storage->addRevision($resourceId, $version, $created, $userId, $message, $data);
         return $revision;
@@ -83,10 +85,17 @@ class Repository extends Configurable implements RepositoryInterface
         $resourceId = $revision->getResourceId();
         $data = $this->storage->getData($revision);
         
-        // restore data
-        
-        $user = \common_session_SessionManager::getSession()->getUser();
-        $userId = is_null($user) ? null : $user->getIdentifier();
+        $resource = new \core_kernel_classes_Resource($revision->getResourceId());
+        $resource->delete();
+        foreach ($data as $triple) {
+            if ($triple->predicate == RDF_TYPE) {
+                $resource->setType(new \core_kernel_classes_Class($triple->object));
+            } elseif (empty($triple->lg)) {
+                $resource->setPropertyValue(new \core_kernel_classes_Property($triple->predicate), $triple->object);
+            } else {
+                $resource->setPropertyValueByLg(new \core_kernel_classes_Property($triple->predicate), $triple->object, $triple->lg);
+            }
+        }
         return $this->commit($resourceId, $message, $newVersion);
     }
 }
