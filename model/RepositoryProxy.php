@@ -88,5 +88,16 @@ class RepositoryProxy
     {
         return self::getImplementation()->commit($resourceId, $message, $revisionId);
     }
+
+    /**
+     * @param Revision $revision
+     * @param $message
+     * @param $revisionId
+     * @return mixed
+     */
+    public static function restore(Revision $revision, $revisionId, $message)
+    {
+        return self::getImplementation()->restore($revision, $revisionId, $message);
+    }
     
 }

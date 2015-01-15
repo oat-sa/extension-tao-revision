@@ -54,9 +54,9 @@ class Repository extends Configurable implements RepositoryInterface
      * @param string $revisionId
      * @return Revision
      */
-    public function getRevision($resourceId, $revisionId)
+    public function getRevision($resourceId, $version)
     {
-        return $this->storage->getRevision($resourceId, $versionId);
+        return $this->storage->getRevision($resourceId, $version);
     }
     
     /**
@@ -73,7 +73,6 @@ class Repository extends Configurable implements RepositoryInterface
         $created = time();
         
         // save data
-        $data = array();
         $resource = new \core_kernel_classes_Resource($resourceId);
         $data = $resource->getRdfTriples();
         

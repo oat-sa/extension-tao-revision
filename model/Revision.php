@@ -31,6 +31,11 @@ interface Revision
     /**
      * @return string
      */
+    public function getResourceId();
+
+    /**
+     * @return string
+     */
     public function getMessage();
     
     /**

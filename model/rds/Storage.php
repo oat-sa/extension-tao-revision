@@ -69,8 +69,8 @@ class Storage
     
     /**
      * 
-     * @param unknown $resourceId
-     * @param unknown $version
+     * @param string $resourceId
+     * @param string $version
      * @return NULL|\oat\taoRevision\model\rds\Revision
      */
     public function getRevision($resourceId, $version) {
@@ -78,11 +78,12 @@ class Storage
         .' WHERE (' . self::REVISION_RESOURCE . ' = ? AND ' . self::REVISION_VERSION. ' = ?)';
         $params = array($resourceId, $version);
         
-        $variables = $this->persistence->query($sql, $params);
-        if (count($variables) != 1) {
+        $variables = $this->persistence->query($sql,$params);
+
+        if ($variables->rowCount() != 1) {
             return null;
         }
-        $variable = reset($variables);
+        $variable = $variables->fetch();
         return new Revision($variable[self::REVISION_ID], $variable[self::REVISION_RESOURCE], $variable[self::REVISION_VERSION],
                 $variable[self::REVISION_CREATED], $variable[self::REVISION_USER], $variable[self::REVISION_MESSAGE]);
         

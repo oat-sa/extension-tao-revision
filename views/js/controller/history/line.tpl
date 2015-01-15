@@ -9,9 +9,9 @@
             <div class="col-6">{{__ "by"}} {{author}}</div>
         </div>
     </td>
-    <td class="numeric">
+    <td class="button">
         <button type="button" class="small restore_revision tooltip btn-link" data-revision="{{id}}">
-            <span class="icon-restore"></span>{{__ "Restore"}}
+            <span class="icon-repository-add"></span>{{__ "Restore"}}
         </button>
     </td>
 </tr>

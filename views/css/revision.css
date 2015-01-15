@@ -6,12 +6,11 @@ table.revision { width: 100%; border: 6px solid #f9f8f7; margin-bottom: 10px; }
 table.revision td, table.revision th { font-weight: normal; padding: 3px 5px; border: 1px solid #ddd; border-left: none; border-right: none; }
 table.revision th { text-align: left; vertical-align: middle; background: #f9f8f7; }
 table.revision td { background: transparent; text-align: left; padding: 2px; }
-table.revision td.numeric { text-align: right; }
-table.revision td label { display: block; margin: 0; }
+table.revision td.button { text-align: right; }
 table.revision td.secondary { font-weight: 300; }
 table.revision tr:nth-child(even) { background: #b4c7cf; }
 table.revision tr:nth-child(odd) { background: #f4f7f8; }
-table.revision [data-edit], table.revision [data-edit] * { border: none; padding: 6px; cursor: pointer; }
-table.revision tbody [data-edit] { width: 30px; }
+
+.commit input { max-width: none; width: 75%; }
 
 /*# sourceMappingURL=revision.css.map */
