@@ -21,12 +21,8 @@ table.revision {
     background: transparent;
     text-align: left;
     padding: 2px;
-    &.numeric {
+    &.button {
       text-align: right;
-    }
-    label {
-      display: block;
-      margin: 0
     }
     &.secondary{
       font-weight: 300;
@@ -36,12 +32,11 @@ table.revision {
     &:nth-child(even){background: lighten($darkBlueGrey,5);}
     &:nth-child(odd){background: lighten($lightBlueGrey,5)}
   }
-  [data-edit], [data-edit] * {
-    border: none;
-    padding: 6px;
-    cursor: pointer
-  }
-  tbody [data-edit] {
-    width: 30px
+}
+
+.commit{
+  input{
+    max-width: none;
+    width: 75%;
   }
 }

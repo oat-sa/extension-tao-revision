@@ -5,7 +5,7 @@
 
     <form action="<?=_url('commitResource')?>" method="POST" class="grid-container">
         <input type="hidden" name="id" id="resource_id" value="<?= get_data('id')?>">
-        <div class="grid-row">
+        <div class="grid-row commit">
             <div class="col-10">
                 <?= __('Message')?> :
                 <input type="text" name="message" id="message">
@@ -28,7 +28,7 @@
                         <div class="col-6"><?=__('by')?> <?= $revision['author']?></div>
                     </div>
                 </td>
-                <td class="numeric">
+                <td class="button">
                     <button type="button" class="small restore_revision tooltip btn-link" data-revision="<?=$revision['id']?>">
                         <span class="icon-restore"></span><?= __('Restore')?>
                     </button>
