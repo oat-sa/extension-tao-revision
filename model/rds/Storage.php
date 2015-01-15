@@ -106,10 +106,11 @@ class Storage
         
         // retrieve data
         $query = 'SELECT * FROM '.self::DATA_TABLE_NAME.' WHERE '.self::DATA_REVISION.' = ?';
-        $result = $dbWrapper->query($query, array($revision->getId()));
+        $result = $this->persistence->query($query, array($revision->getId()));
         
         $triples = array();
         while ($statement = $result->fetch()) {
+            $triple = new \core_kernel_classes_Triple();
             $triple->subject = $statement[self::DATA_SUBJECT];
             $triple->predicate = $statement[self::DATA_PREDICATE];
             $triple->object = $statement[self::DATA_OBJECT];
@@ -117,7 +118,7 @@ class Storage
             $triples[] = $triple;
         }
         
-        return $triples();
+        return $triples;
     }
     
     /**
