@@ -71,7 +71,8 @@ class History extends \tao_actions_CommonModule {
 
     public function restoreRevision(){
         $revision = RepositoryProxy::getRevision($this->getRequestParameter('id'),$this->getRequestParameter('revisionId'));
-        $newRevision = RepositoryProxy::restore($revision, $this->getNextVersion($revision->getVersion()), $revision->getMessage());
+
+        $newRevision = RepositoryProxy::restore($revision, $this->getNextVersion($revision->getResourceId()), $revision->getMessage());
 
         //get the user to display it
         $user = new \core_kernel_classes_Resource($newRevision->getAuthorId());

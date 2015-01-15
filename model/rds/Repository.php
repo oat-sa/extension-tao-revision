@@ -80,11 +80,10 @@ class Repository extends Configurable implements RepositoryInterface
     }
     
     public function restore(RevisionInterface $revision, $newVersion, $message) {
-        $resourceId = $revision->getVersion();
+        $resourceId = $revision->getResourceId();
         $data = $this->storage->getData($revision);
         
         // restore data
-        
         $user = \common_session_SessionManager::getSession()->getUser();
         $userId = is_null($user) ? null : $user->getIdentifier();
         return $this->commit($resourceId, $message, $newVersion);
