@@ -7,7 +7,7 @@
         <input type="hidden" name="id" id="resource_id" value="<?= get_data('id')?>">
         <div class="grid-row commit">
             <div class="col-10">
-                <?= __('Message')?> :
+                <?= __('Message')?>
                 <input type="text" name="message" id="message">
             </div>
             <div class="col-2  txt-rgt">
@@ -20,12 +20,12 @@
             <tr>
                 <td>
                     <div>
-                        <div class="col-2"><?= $revision['id']?></div>
-                        <div class="col-8"><?= $revision['message']?></div>
+                        <div class="first"><?= $revision['id']?></div>
+                        <div class=""><?= $revision['message']?></div>
                     </div>
                     <div class="secondary">
-                        <div class="col-6"><?= $revision['modified']?></div>
-                        <div class="col-6"><?=__('by')?> <?= $revision['author']?></div>
+                        <div class="first"><?= $revision['modified']?></div>
+                        <div><?=__('by')?> <?= $revision['author']?></div>
                     </div>
                 </td>
                 <td class="button">
