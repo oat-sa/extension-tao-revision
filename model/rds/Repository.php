@@ -24,6 +24,7 @@ use oat\taoRevision\model\RevisionNotFound;
 use oat\taoRevision\model\Repository as RepositoryInterface;
 use oat\taoRevision\model\Revision;
 use oat\oatbox\Configurable;
+use core_kernel_classes_Property;
 
 /**
  * A simple repository implementation that stores the information
@@ -75,6 +76,14 @@ class Repository extends Configurable implements RepositoryInterface
         $resource = new \core_kernel_classes_Resource($resourceId);
         $data = $resource->getRdfTriples();
         
+        //clone files
+        foreach ($data as $triple) {
+            if ($triple->predicate == 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemContent') {
+                // manually copy item content
+                $triple->object = $this->cloneItemContent($triple->object);
+            }
+        }
+        
         $revision = $this->storage->addRevision($resourceId, $version, $created, $userId, $message, $data);
         return $revision;
     }
@@ -92,12 +101,29 @@ class Repository extends Configurable implements RepositoryInterface
         foreach ($data as $triple) {
             if ($triple->predicate == RDF_TYPE) {
                 $resource->setType(new \core_kernel_classes_Class($triple->object));
-            } elseif (empty($triple->lg)) {
-                $resource->setPropertyValue(new \core_kernel_classes_Property($triple->predicate), $triple->object);
             } else {
-                $resource->setPropertyValueByLg(new \core_kernel_classes_Property($triple->predicate), $triple->object, $triple->lg);
+                if ($triple->predicate == 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemContent') {
+                    $triple->object = $this->cloneItemContent($triple->object);
+                }
+                if (empty($triple->lg)) {
+                    $resource->setPropertyValue(new \core_kernel_classes_Property($triple->predicate), $triple->object);
+                } else {
+                    $resource->setPropertyValueByLg(new \core_kernel_classes_Property($triple->predicate), $triple->object, $triple->lg);
+                }
+    
             }
         }
         return $this->commit($resourceId, $message, $newVersion);
+    }
+    
+    public function cloneItemContent($itemContentUri) {
+        $fileNameProp = new core_kernel_classes_Property(PROPERTY_FILE_FILENAME);
+        $file = new \core_kernel_versioning_File($itemContentUri);
+        $sourceDir = dirname($file->getAbsolutePath());
+
+        $newFile = $file->getRepository()->spawnFile($sourceDir);
+        $newFile->editPropertyValues($fileNameProp, $file->getPropertyValues($fileNameProp));
+        
+        return $newFile->getUri();
     }
 }
