@@ -1,12 +1,12 @@
 <tr>
     <td>
         <div>
-            <div class="col-2">{{id}}</div>
-            <div class="col-8">{{message}}</div>
+            <div class="first">{{id}}</div>
+            <div class="">{{message}}</div>
         </div>
         <div class="secondary">
-            <div class="col-6">{{modified}}</div>
-            <div class="col-6">{{__ "by"}} {{author}}</div>
+            <div class="first">{{modified}}</div>
+            <div class="">{{__ "by"}} {{author}}</div>
         </div>
     </td>
     <td class="button">
