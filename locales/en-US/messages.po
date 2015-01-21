@@ -1,0 +1,26 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 3.0-beta2\n"
+"PO-Revision-Date: 2015-01-13T11:21:49\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: en-US\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#, tao-public
+msgid "Data Revsision Control"
+msgstr ""
+
+msgid "Hello World"
+msgstr ""
+
+#, tao-public
+msgid "Template"
+msgstr ""
+
