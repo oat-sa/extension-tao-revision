@@ -46,10 +46,11 @@ class RepositoryProxy
     }
     
     /**
+     * Configure the implementation to use
      * 
      * @param Repository $repository
      */
-    public function setImplementation(Repository $repository)
+    public static function setImplementation(Repository $repository)
     {
         $ext = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoRevision');
         $ext->setConfig(self::CONFIG_ID, $repository);
