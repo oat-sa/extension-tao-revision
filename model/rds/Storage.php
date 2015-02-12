@@ -20,6 +20,11 @@
 
 namespace oat\taoRevision\model\rds;
 
+/**
+ * Storage class for the revision data
+ * 
+ * @author Joel Bout <joel@taotesting.com>
+ */
 class Storage
 {
     const REVISION_TABLE_NAME = 'revision';
@@ -104,6 +109,7 @@ class Storage
     
     public function getData(RdsRevision $revision) {
         
+        $localModel = \common_ext_NamespaceManager::singleton()->getLocalNamespace();
         // retrieve data
         $query = 'SELECT * FROM '.self::DATA_TABLE_NAME.' WHERE '.self::DATA_REVISION.' = ?';
         $result = $this->persistence->query($query, array($revision->getId()));
@@ -111,6 +117,7 @@ class Storage
         $triples = array();
         while ($statement = $result->fetch()) {
             $triple = new \core_kernel_classes_Triple();
+            $triple->modelid = $localModel->getModelId();
             $triple->subject = $statement[self::DATA_SUBJECT];
             $triple->predicate = $statement[self::DATA_PREDICATE];
             $triple->object = $statement[self::DATA_OBJECT];
