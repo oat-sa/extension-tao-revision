@@ -22,8 +22,13 @@
 namespace oat\taoRevision\controller;
 
 use oat\taoRevision\model\RepositoryProxy;
+use oat\tao\helpers\UserHelper;
+use oat\tao\model\lock\LockManager;
+use oat\taoWorkspace\model\lockStrategy\LockSystem as WorkspaceLock;
+use oat\tao\model\lock\ResourceLockedException;
+
 /**
- * Sample controller
+ * Revision history management controller
  *
  * @author Open Assessment Technologies SA
  * @package taoRevision
@@ -94,25 +99,34 @@ class History extends \tao_actions_CommonModule {
 
         $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
         $message = $this->getRequestParameter('message');
+        
+        $lockManager = LockManager::getImplementation();
+        if ($lockManager->isLocked($resource)) {
+            $userId = \common_session_SessionManager::getSession()->getUser()->getIdentifier();
+            if ($lockManager instanceof WorkspaceLock) {
+                $lockManager->apply($resource, $userId, false);
+            }
+            $locked = true;
+        }
 
         //commit a new revision of the resource
         $revision = RepositoryProxy::commit($resource->getUri(), $message, $this->getNextVersion($resource->getUri()));
-
-        //get the user to display it
-        $user = new \core_kernel_classes_Resource($revision->getAuthorId());
-        $label = $user->getLabel();
-        if($label === ""){
-            $label = '('.$revision->getAuthorId().')';
+        
+        if ($locked) {
+            $ownerId = \common_session_SessionManager::getSession()->getUser()->getIdentifier();
+            $lockManager->releaseLock($resource, $ownerId);
         }
 
+        //get the user to display it
+        $htmlUser = UserHelper::renderHtmlUser($revision->getAuthorId());
 
         $this->returnJson(array(
-                'success'   => true,
-                'id'        => $revision->getVersion(),
-                'modified'  => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
-                'author'    => $label,
-                'message'   => $revision->getMessage()
-            ));
+            'success'   => true,
+            'id'        => $revision->getVersion(),
+            'modified'  => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
+            'author'    => $htmlUser,
+            'message'   => $revision->getMessage()
+        ));
     }
     
     protected function getNextVersion($resourceId) {
