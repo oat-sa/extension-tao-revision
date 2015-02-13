@@ -27,6 +27,7 @@ use oat\oatbox\Configurable;
 use core_kernel_classes_Property;
 use oat\taoRevision\helper\CloneHelper;
 use oat\generis\model\data\ModelManager;
+use oat\taoRevision\helper\DeleteHelper;
 
 /**
  * A simple repository implementation that stores the information
@@ -91,7 +92,7 @@ class Repository extends Configurable implements RepositoryInterface
         $data = $this->storage->getData($revision);
         
         $resource = new \core_kernel_classes_Resource($revision->getResourceId());
-        $this->deepDelete($resource);
+        DeleteHelper::deepDelete($resource);
         
         foreach (CloneHelper::deepCloneTriples($data) as $triple) {
             ModelManager::getModel()->getRdfInterface()->add($triple);
@@ -99,22 +100,5 @@ class Repository extends Configurable implements RepositoryInterface
         
         return $this->commit($resourceId, $message, $newVersion);
     }
-    
-    protected function deepDelete(\core_kernel_classes_Resource $resource) {
-        foreach ($resource->getRdfTriples() as $triple) {
-            if ($triple->predicate == 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemContent') {
-                $file = new \core_kernel_versioning_File($triple->object);
-                $sourceDir = dirname($file->getAbsolutePath());
-                $file->delete();
-                \tao_helpers_File::delTree($sourceDir);
-            } else {
-                $range = (new \core_kernel_classes_Property($triple->predicate))->getRange();
-                if (!is_null($range) && $range->getUri() == CLASS_GENERIS_FILE) {
-                    $file = new \core_kernel_versioning_File($triple->object);
-                    $file->delete();
-                }
-            }
-        }
-        $resource->delete();
-    }    
+
 }
