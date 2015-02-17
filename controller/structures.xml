@@ -5,7 +5,7 @@
         <sections>
             <section id="manage_items" name="Manage items" url="">
 				<actions>
-					<action id="item-revision" name="Revisions" url="/taoRevision/History/index" context="instance" group="content">
+					<action id="item-revision" name="History" url="/taoRevision/History/index" context="instance" group="content">
 					    <icon id="icon-repository"/>
 					</action>
 				</actions>
