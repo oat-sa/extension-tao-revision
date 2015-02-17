@@ -32,7 +32,7 @@ class CloneHelper
             if ($triple->predicate == 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemContent') {
                 // manually copy item content
                 $triple->object = self::cloneItemContent($triple->object);
-            } elseif (self::isFile($triple)) {
+            } elseif (self::isFileReference($triple)) {
                 $triple->object = self::cloneFile($triple->object);
             }
             $clones[] = $triple;
@@ -40,7 +40,7 @@ class CloneHelper
         return $clones;
     }
     
-    static protected function isFile(\core_kernel_classes_Triple $triple) {
+    static public function isFileReference(\core_kernel_classes_Triple $triple) {
         $range = (new \core_kernel_classes_Property($triple->predicate))->getRange();
         $rangeUri = is_null($range) ? '' : $range->getUri(); 
         switch ($rangeUri) {
