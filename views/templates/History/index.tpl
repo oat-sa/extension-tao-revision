@@ -1,7 +1,7 @@
 <?php use oat\tao\helpers\Template;?>
 <link rel="stylesheet" href="<?= Template::css('revision.css') ?>" />
 <div class="revision-container flex-container-full">
-    <h1><?= __('Revisions of %s',get_data('resourceLabel')) ?></h1>
+    <h1><?= __('History of %s',get_data('resourceLabel')) ?></h1>
 
     <form action="<?=_url('commitResource')?>" method="POST" class="grid-container">
         <input type="hidden" name="id" id="resource_id" value="<?= get_data('id')?>">
