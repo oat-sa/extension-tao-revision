@@ -32,15 +32,30 @@ class CloneHelper
             if ($triple->predicate == 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemContent') {
                 // manually copy item content
                 $triple->object = self::cloneItemContent($triple->object);
-            } else {
-                $range = (new \core_kernel_classes_Property($triple->predicate))->getRange();
-                if (!is_null($range) && $range->getUri() == CLASS_GENERIS_FILE) {
-                    $triple->object = self::cloneFile($triple->object);
-                }
+            } elseif (self::isFile($triple)) {
+                $triple->object = self::cloneFile($triple->object);
             }
             $clones[] = $triple;
         }
         return $clones;
+    }
+    
+    static protected function isFile(\core_kernel_classes_Triple $triple) {
+        $range = (new \core_kernel_classes_Property($triple->predicate))->getRange();
+        $rangeUri = is_null($range) ? '' : $range->getUri(); 
+        switch ($rangeUri) {
+        	case CLASS_GENERIS_FILE :
+        	    return true;
+        	case RDFS_RESOURCE :
+        	    $object = new \core_kernel_classes_Resource($triple->object);
+        	    return $object->hasType(new \core_kernel_classes_Class(CLASS_GENERIS_FILE));
+        	default :
+        	    return false;
+        }
+        if (!is_null($range) && $range->getUri() == CLASS_GENERIS_FILE) {
+            $triple->object = self::cloneFile($triple->object);
+        }
+        
     }
     
     static protected function cloneItemContent($itemContentUri) {
