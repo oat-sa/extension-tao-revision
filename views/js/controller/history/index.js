@@ -22,7 +22,7 @@ define([
                 revision = $this.data('revision');
             var id = $('#resource_id').val();
 
-            var message = prompt("Please enter a message", "");
+            var message = prompt("Please enter a message", __("Restored version %s", revision));
 
             if( typeof revision !== "undefined" &&
                 typeof message !== "undefined" &&
