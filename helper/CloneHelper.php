@@ -52,10 +52,6 @@ class CloneHelper
         	default :
         	    return false;
         }
-        if (!is_null($range) && $range->getUri() == CLASS_GENERIS_FILE) {
-            $triple->object = self::cloneFile($triple->object);
-        }
-        
     }
     
     static protected function cloneItemContent($itemContentUri) {
