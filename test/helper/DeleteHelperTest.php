@@ -29,7 +29,7 @@ class DeleteHelperTest extends \PHPUnit_Framework_TestCase {
         //try to get the resource
         $resourceTest = new \core_kernel_classes_Resource($repository->getUri());
         $fileTest = new \core_kernel_classes_Resource($file->getUri());
-\common_Logger::w($dirname);
+        
         $this->assertFileNotExists($dirname.'/test.xml');
         $this->assertCount(0, $resourceTest->getRdfTriples());
         $this->assertCount(0, $fileTest->getRdfTriples());
