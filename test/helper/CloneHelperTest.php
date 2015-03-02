@@ -13,7 +13,7 @@ class CloneHelperTest extends \PHPUnit_Framework_TestCase {
 
     public function testDeepCloneTriplesSimple(){
 
-        $object = new \core_kernel_classes_Class(TAO_OBJECT_CLASS);
+        $object = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAO.rdf#TAOObject');
         $subClass = $object->createSubClass("My sub Class test");
 
         //see if clone works
@@ -50,11 +50,13 @@ class CloneHelperTest extends \PHPUnit_Framework_TestCase {
         $this->assertCount(1,$return);
         $returnedFile = new \core_kernel_versioning_File($return[0]->object);
         $this->assertEquals($returnedFile->getPropertyValues($fileNameProp), $file->getPropertyValues($fileNameProp));
+        $this->assertNotEquals($file->getAbsolutePath(), $returnedFile->getAbsolutePath());
         $files = scandir(dirname($returnedFile->getAbsolutePath()));
         $this->assertContains('test.xml',$files);
         $this->assertContains('style.css',$files);
 
         $file->delete(true);
+        $returnedFile->delete(true);
         $repository->delete(true);
 
     }
@@ -68,23 +70,24 @@ class CloneHelperTest extends \PHPUnit_Framework_TestCase {
         //see if clone item content works
 
         /** @var \core_kernel_versioning_File $file */
-        $file = $repository->createFile("test.xml", "test");
-
-
-        mkdir($repository->getPath().'test');
-        copy(__DIR__.'/sample/test.xml', $repository->getPath().'test/test.xml');
-        copy(__DIR__.'/sample/style.css', $repository->getPath().'test/style.css');
+        $file = $repository->spawnFile(__DIR__.'/sample/test.xml', "test");
 
         //see if clone file works
         $rdfsTriple = new \core_kernel_classes_Triple();
         $rdfsTriple->predicate = "http://www.w3.org/1999/02/22-rdf-syntax-ns#value";
         $rdfsTriple->object = $file->getUri();
         $return = CloneHelper::deepCloneTriples(array($rdfsTriple));
-        $this->assertNotEquals($rdfsTriple->object, $return[0]->object);
-        $this->assertEquals($rdfsTriple->predicate, $return[0]->predicate);
         $this->assertCount(1,$return);
+        $this->assertEquals($rdfsTriple->predicate, $return[0]->predicate);
+        $this->assertNotEquals($rdfsTriple->object, $return[0]->object);
+        
+        $fileCopy = new \core_kernel_file_File($return[0]->object);
+        $this->assertFileExists($fileCopy->getAbsolutePath());
+        $this->assertEquals($file->getLabel(), $fileCopy->getLabel());
+        $this->assertNotEquals($file->getAbsolutePath(), $fileCopy->getAbsolutePath());
 
         $file->delete(true);
+        $fileCopy->delete(true);
         $repository->delete(true);
     }
 
@@ -98,21 +101,28 @@ class CloneHelperTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertEquals($isRefProvider, $isRef);
     }
-
-    public function fileProvider(){
-        $fileTriple = new \core_kernel_classes_Triple();
-        $fileTriple->predicate = "http://www.tao.lu/Ontologies/TAOItem.rdf#ItemContent";
-
+    
+    public function testIsFileReferenceResourceRange(){
+    
         $classFile = new \core_kernel_classes_Class("http://www.tao.lu/Ontologies/generis.rdf#File");
         $file = $classFile->createInstance("test");
 
         $rdfsTriple = new \core_kernel_classes_Triple();
         $rdfsTriple->predicate = "http://www.w3.org/1999/02/22-rdf-syntax-ns#value";
         $rdfsTriple->object = $file->getUri();
+        
+        $this->assertTrue(CloneHelper::isFileReference($rdfsTriple));
+        $file->delete();
+    }
+    
+
+    public function fileProvider(){
+        $fileTriple = new \core_kernel_classes_Triple();
+        $fileTriple->predicate = "http://www.tao.lu/Ontologies/TAOItem.rdf#ItemContent";
 
         $rdfsTripleFalse = new \core_kernel_classes_Triple();
         $rdfsTripleFalse->predicate = "http://www.w3.org/1999/02/22-rdf-syntax-ns#value";
-        $rdfsTripleFalse->object = $classFile->getUri();
+        $rdfsTripleFalse->object = "http://www.tao.lu/Ontologies/generis.rdf#File";
 
         $falseTriple = new \core_kernel_classes_Triple();
         $falseTriple->predicate = 'otherPredicate';
@@ -120,7 +130,6 @@ class CloneHelperTest extends \PHPUnit_Framework_TestCase {
 
         return array(
             array(true, $fileTriple),
-            array(true, $rdfsTriple),
             array(false, $rdfsTripleFalse),
             array(false, $falseTriple)
         );
