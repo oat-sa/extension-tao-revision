@@ -40,7 +40,7 @@ class History extends \tao_actions_CommonModule {
     }
 
     /**
-     * 
+     * @requiresRight id WRITE
      */
     public function index() {
         $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
@@ -69,6 +69,9 @@ class History extends \tao_actions_CommonModule {
         $this->setView('History/index.tpl');
     }
 
+    /**
+     * @requiresRight id WRITE
+     */
     public function restoreRevision(){
         $revision = RepositoryProxy::getRevision($this->getRequestParameter('id'),$this->getRequestParameter('revisionId'));
 
@@ -90,6 +93,9 @@ class History extends \tao_actions_CommonModule {
             ));
     }
 
+    /**
+     * @requiresRight id WRITE
+     */
     public function commitResource(){
 
         $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
