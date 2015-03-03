@@ -37,22 +37,15 @@ class RevisionService
         
         $version = is_null($version) ? self::getNextVersion($resource->getUri()) : $version;
         $lockManager = LockManager::getImplementation();
-        $locked = false;
         if ($lockManager->isLocked($resource)) {
             $userId = common_session_SessionManager::getSession()->getUser()->getIdentifier();
             if ($lockManager instanceof ApplicableLock) {
-                $lockManager->apply($resource, $userId, false);
+                $lockManager->apply($resource, $userId, true);
             }
-            $locked = true;
         }
         
         //commit a new revision of the resource
         $revision = RepositoryProxy::commit($resource->getUri(), $message, $version);
-        
-        if ($locked) {
-            $ownerId = common_session_SessionManager::getSession()->getUser()->getIdentifier();
-            $lockManager->releaseLock($resource, $ownerId);
-        }
         
         return $revision;
     }

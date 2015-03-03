@@ -23,9 +23,6 @@ namespace oat\taoRevision\controller;
 
 use oat\taoRevision\model\RepositoryProxy;
 use oat\tao\helpers\UserHelper;
-use oat\tao\model\lock\LockManager;
-use oat\taoWorkspace\model\lockStrategy\LockSystem as WorkspaceLock;
-use oat\tao\model\lock\ResourceLockedException;
 use oat\taoRevision\model\RevisionService;
 
 /**
