@@ -51,8 +51,7 @@ interface Repository
      * Restore a previous version
      * 
      * @param Revision $revision
-     * @param string $newVersion
-     * @param string $message
+     * @return boolean success
      */
-    public function restore(Revision $revision, $newVersion, $message);
+    public function restore(Revision $revision);
 }
