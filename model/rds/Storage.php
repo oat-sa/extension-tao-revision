@@ -68,7 +68,6 @@ class Storage
         $revision = new RdsRevision($this->persistence->lastInsertId(), $resourceId, $version, $created, $author, $message);
 
         $success = $this->saveData($revision, $data);
-        
         return $revision;
     }
     
@@ -152,5 +151,7 @@ class Storage
         $query = substr($query, 0, strlen($query) -1);
         $query .= $multipleInsertQueryHelper->getEndStaticPart();
         $success = $this->persistence->exec($query);
+
+        return $success;
     }
 }

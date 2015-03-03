@@ -49,13 +49,10 @@ class DeleteHelper
                 $file->delete();
                 \tao_helpers_File::delTree($sourceDir);
             }
-        } else {
-            $range = (new \core_kernel_classes_Property($triple->predicate))->getRange();
-            if (!is_null($range) && $range->getUri() == CLASS_GENERIS_FILE) {
-                $file = new \core_kernel_versioning_File($triple->object);
-                if ($file->exists()) {
-                    $file->delete();
-                }
+        } elseif (CloneHelper::isFileReference($triple)) {
+            $file = new \core_kernel_versioning_File($triple->object);
+            if ($file->exists()) {
+                $file->delete();
             }
         }
     }    

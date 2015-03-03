@@ -37,14 +37,13 @@ use oat\taoRevision\helper\DeleteHelper;
  */
 class Repository extends Configurable implements RepositoryInterface
 {
-    private $storage;
-    
-    /**
-     * @see \oat\oatbox\Configurable::__construct()
-     */
-    public function __construct($options = array()) {
-        parent::__construct($options);
-        $this->storage = new Storage($this->getOption('persistence'));
+    private $storage = null;
+
+    public function getStorage(){
+        if(is_null($this->storage)){
+            $this->storage = new Storage($this->getOption('persistence'));
+        }
+        return $this->storage;
     }
     
     /**
@@ -53,7 +52,7 @@ class Repository extends Configurable implements RepositoryInterface
      */
     public function getRevisions($resourceId)
     {
-        return $this->storage->getAllRevisions($resourceId);
+        return $this->getStorage()->getAllRevisions($resourceId);
     }
     
     /**
@@ -62,7 +61,7 @@ class Repository extends Configurable implements RepositoryInterface
      */
     public function getRevision($resourceId, $version)
     {
-        return $this->storage->getRevision($resourceId, $version);
+        return $this->getStorage()->getRevision($resourceId, $version);
     }
     
     /**
@@ -79,7 +78,7 @@ class Repository extends Configurable implements RepositoryInterface
         $resource = new \core_kernel_classes_Resource($resourceId);
         $data = CloneHelper::deepCloneTriples($resource->getRdfTriples());
         
-        $revision = $this->storage->addRevision($resourceId, $version, $created, $userId, $message, $data);
+        $revision = $this->getStorage()->addRevision($resourceId, $version, $created, $userId, $message, $data);
         return $revision;
     }
     
@@ -89,7 +88,7 @@ class Repository extends Configurable implements RepositoryInterface
      */
     public function restore(Revision $revision, $newVersion, $message) {
         $resourceId = $revision->getResourceId();
-        $data = $this->storage->getData($revision);
+        $data = $this->getStorage()->getData($revision);
         
         $resource = new \core_kernel_classes_Resource($revision->getResourceId());
         DeleteHelper::deepDelete($resource);
