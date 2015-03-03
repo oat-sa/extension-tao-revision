@@ -95,9 +95,9 @@ class RepositoryProxy
      * @param $revisionId
      * @return mixed
      */
-    public static function restore(Revision $revision, $revisionId, $message)
+    public static function restore(Revision $revision)
     {
-        return self::getImplementation()->restore($revision, $revisionId, $message);
+        return self::getImplementation()->restore($revision);
     }
     
 }
