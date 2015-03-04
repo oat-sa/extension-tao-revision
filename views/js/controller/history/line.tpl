@@ -4,7 +4,7 @@
     <td class="user">{{author}}</td>
     <td class="message">{{message}}</td>
     <td class="actions">
-        <button class="btn-info small" data-revision="{{id}}">
+        <button class="btn-info small restore_revision" data-revision="{{id}}">
             <span class="icon-undo"></span>
             {{__ "Restore"}}
         </button>
