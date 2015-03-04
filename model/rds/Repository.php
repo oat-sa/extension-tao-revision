@@ -86,7 +86,7 @@ class Repository extends Configurable implements RepositoryInterface
      * (non-PHPdoc)
      * @see \oat\taoRevision\model\Repository::restore()
      */
-    public function restore(Revision $revision, $newVersion, $message) {
+    public function restore(Revision $revision) {
         $resourceId = $revision->getResourceId();
         $data = $this->getStorage()->getData($revision);
         
@@ -96,8 +96,7 @@ class Repository extends Configurable implements RepositoryInterface
         foreach (CloneHelper::deepCloneTriples($data) as $triple) {
             ModelManager::getModel()->getRdfInterface()->add($triple);
         }
-        
-        return $this->commit($resourceId, $message, $newVersion);
+        return true;
     }
 
 }

@@ -20,6 +20,7 @@
 
 namespace oat\taoRevision\model\rds;
 
+use oat\taoRevision\model\RevisionNotFound;
 /**
  * Storage class for the revision data
  * 
@@ -85,7 +86,7 @@ class Storage
         $variables = $this->persistence->query($sql,$params);
 
         if ($variables->rowCount() != 1) {
-            return null;
+            throw new RevisionNotFound($resourceId, $version);
         }
         $variable = $variables->fetch();
         return new RdsRevision($variable[self::REVISION_ID], $variable[self::REVISION_RESOURCE], $variable[self::REVISION_VERSION],

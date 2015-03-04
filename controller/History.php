@@ -22,8 +22,11 @@
 namespace oat\taoRevision\controller;
 
 use oat\taoRevision\model\RepositoryProxy;
+use oat\tao\helpers\UserHelper;
+use oat\taoRevision\model\RevisionService;
+
 /**
- * Sample controller
+ * Revision history management controller
  *
  * @author Open Assessment Technologies SA
  * @package taoRevision
@@ -49,16 +52,10 @@ class History extends \tao_actions_CommonModule {
         $returnRevision = array();
         foreach($revisions as $revision){
 
-            $user = new \core_kernel_classes_Resource($revision->getAuthorId());
-            $label = $user->getLabel();
-            if($label === ""){
-                $label = '('.$revision->getAuthorId().')';
-            }
-
             $returnRevision[] = array(
                 'id'        => $revision->getVersion(),
                 'modified'  => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
-                'author'    => $label,
+                'author'    => UserHelper::renderHtmlUser($revision->getAuthorId()),
                 'message'   => $revision->getMessage(),
             );
         }
@@ -73,22 +70,17 @@ class History extends \tao_actions_CommonModule {
      * @requiresRight id WRITE
      */
     public function restoreRevision(){
-        $revision = RepositoryProxy::getRevision($this->getRequestParameter('id'),$this->getRequestParameter('revisionId'));
-
-        $newRevision = RepositoryProxy::restore($revision, $this->getNextVersion($revision->getResourceId()), $this->getRequestParameter('message'));
-
-        //get the user to display it
-        $user = new \core_kernel_classes_Resource($newRevision->getAuthorId());
-        $label = $user->getLabel();
-        if($label === ""){
-            $label = '('.$revision->getAuthorId().')';
-        }
+        $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
+        $oldVersion = $this->getRequestParameter('revisionId');
+        $message = $this->getRequestParameter('message');
+        
+        $newRevision = RevisionService::restore($resource, $oldVersion, $message);
 
         $this->returnJson(array(
                 'success'   => true,
                 'id'        => $newRevision->getVersion(),
                 'modified'  => \tao_helpers_Date::displayeDate($newRevision->getDateCreated()),
-                'author'    => $label,
+                'author'    => UserHelper::renderHtmlUser($newRevision->getAuthorId()),
                 'message'   => $newRevision->getMessage()
             ));
     }
@@ -100,35 +92,15 @@ class History extends \tao_actions_CommonModule {
 
         $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
         $message = $this->getRequestParameter('message');
-
-        //commit a new revision of the resource
-        $revision = RepositoryProxy::commit($resource->getUri(), $message, $this->getNextVersion($resource->getUri()));
-
-        //get the user to display it
-        $user = new \core_kernel_classes_Resource($revision->getAuthorId());
-        $label = $user->getLabel();
-        if($label === ""){
-            $label = '('.$revision->getAuthorId().')';
-        }
-
-
+        
+        $revision = RevisionService::commit($resource, $message);
+        
         $this->returnJson(array(
-                'success'   => true,
-                'id'        => $revision->getVersion(),
-                'modified'  => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
-                'author'    => $label,
-                'message'   => $revision->getMessage()
-            ));
-    }
-    
-    protected function getNextVersion($resourceId) {
-        $candidate = 0;
-        foreach (RepositoryProxy::getRevisions($resourceId) as $revision) {
-            $version = $revision->getVersion();
-            if (is_numeric($version) && $version > $candidate) {
-                $candidate = $version;
-            }
-        }
-        return $candidate + 1;
+            'success'   => true,
+            'id'        => $revision->getVersion(),
+            'modified'  => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
+            'author'    => UserHelper::renderHtmlUser($revision->getAuthorId()),
+            'message'   => $revision->getMessage()
+        ));
     }
 }
