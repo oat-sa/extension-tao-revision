@@ -1,18 +1,47 @@
-                                  /* /  \ |    | --:'''':--
-THIS CODE IS GENERATED          :*_* : _:"":\___
-AUTOMAGICALLY    * *      ____.' :::     '._ *=====<<=)           \    :
-DO NOT EDIT!     * *      '-'-'\_      /'._.' \====:_ "" .'     \ :       : /   :    \ :   .      '. :  : :      : :__:-:__.;--' <*_/   <*/
-table.revision { width: 100%; border: 6px solid #f9f8f7; margin-bottom: 10px; }
-table.revision td, table.revision th { font-weight: normal; padding: 3px 5px; border: 1px solid #ddd; border-left: none; border-right: none; }
-table.revision th { text-align: left; vertical-align: middle; background: #f9f8f7; }
-table.revision td { background: transparent; text-align: left; padding: 2px; }
-table.revision td > div { margin-left: 10px; margin-top: 5px; }
-table.revision td.button { text-align: right; }
-table.revision td > .secondary { font-size: 80%; margin-top: 0px; }
-table.revision td .first { float: left; margin-right: 20%; }
-table.revision tr:nth-child(even) { background: #b4c7cf; }
-table.revision tr:nth-child(odd) { background: #f4f7f8; }
-
-.commit input { margin-left: 5%; max-width: none; width: 75%; }
+                                  /*
+                                 /  \
+                                |    |
+                              --:'''':--
+THIS CODE IS GENERATED          :*_* :
+                                _:"":\___
+AUTOMAGICALLY    * *      ____.' :::     '._
+                * *=====<<=)           \    :
+DO NOT EDIT!     * *      '-'-'\_      /'._.'
+                                  \====:_ ""
+                                 .'     \
+                                :       :
+                               /   :    \
+                              :   .      '.
+                              :  : :      :
+                              :__:-:__.;--'
+                             <*_/   <*/
+.revision-container .msg-edit-area {
+  border: 1px #ddd solid;
+  background: #f2f0ee;
+  padding: 30px 30px 20px 30px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  -webkit-border-radius: 2px; }
+.revision-container table.revision-table td {
+  vertical-align: top;
+  padding: 5px; }
+  .revision-container table.revision-table td.numeric, .revision-container table.revision-table td.date, .revision-container table.revision-table td.user {
+    font-size: 12px;
+    font-size: 1.2rem;
+    white-space: nowrap; }
+  .revision-container table.revision-table td.numeric {
+    width: 60px; }
+  .revision-container table.revision-table td.date {
+    width: 140px; }
+  .revision-container table.revision-table td.user {
+    width: 120px; }
+  .revision-container table.revision-table td.message {
+    text-align: justify; }
+  .revision-container table.revision-table td.actions {
+    width: 120px; }
+.revision-container #message {
+  max-width: none;
+  width: 100%; }
 
 /*# sourceMappingURL=revision.css.map */
