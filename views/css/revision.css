@@ -1,18 +1,2 @@
-                                  /* /  \ |    | --:'''':--
-THIS CODE IS GENERATED          :*_* : _:"":\___
-AUTOMAGICALLY    * *      ____.' :::     '._ *=====<<=)           \    :
-DO NOT EDIT!     * *      '-'-'\_      /'._.' \====:_ "" .'     \ :       : /   :    \ :   .      '. :  : :      : :__:-:__.;--' <*_/   <*/
-table.revision { width: 100%; border: 6px solid #f9f8f7; margin-bottom: 10px; }
-table.revision td, table.revision th { font-weight: normal; padding: 3px 5px; border: 1px solid #ddd; border-left: none; border-right: none; }
-table.revision th { text-align: left; vertical-align: middle; background: #f9f8f7; }
-table.revision td { background: transparent; text-align: left; padding: 2px; }
-table.revision td > div { margin-left: 10px; margin-top: 5px; }
-table.revision td.button { text-align: right; }
-table.revision td > .secondary { font-size: 80%; margin-top: 0px; }
-table.revision td .first { float: left; margin-right: 20%; }
-table.revision tr:nth-child(even) { background: #b4c7cf; }
-table.revision tr:nth-child(odd) { background: #f4f7f8; }
-
-.commit input { margin-left: 5%; max-width: none; width: 75%; }
-
+table.revision{width:100%;border:6px solid #f9f8f7;margin-bottom:10px}table.revision td,table.revision th{font-weight:normal;padding:3px 5px;border:1px solid #ddd;border-left:none;border-right:none}table.revision th{text-align:left;vertical-align:middle;background:#f9f8f7}table.revision td{background:transparent;text-align:left;padding:2px}table.revision td>div{margin-left:10px;margin-top:5px}table.revision td.button{text-align:right}table.revision td>.secondary{font-size:80%;margin-top:0px}table.revision td .first{float:left;margin-right:20%}table.revision tr:nth-child(even){background:#b4c7cf}table.revision tr:nth-child(odd){background:#f4f7f8}.commit input{margin-left:5%;max-width:none;width:75%}
 /*# sourceMappingURL=revision.css.map */
