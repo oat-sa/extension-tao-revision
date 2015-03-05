@@ -1,52 +1,49 @@
 @import "inc/bootstrap";
 
-table.revision {
+.revision-container {
 
-  width: 100%;
-  border: 6px solid whiten($uiClickableDefaultBg, .5);
-  margin-bottom: 10px;
-  td, th {
-    font-weight: normal;
-    padding: 3px 5px;
-    border: 1px solid #ddd;
-    border-left: none;
-    border-right: none;
-  }
-  th {
-    text-align: left;
-    vertical-align: middle;
-    background: whiten($uiClickableDefaultBg, .5);
-  }
-  td {
-    background: transparent;
-    text-align: left;
-    padding: 2px;
-    &>div{
-      margin-left: 10px;
-      margin-top: 5px;
+    .msg-edit-area {
+        border: 1px $uiGeneralContentBorder solid;
+        background: $canvas;
+        padding: 30px 30px 20px 30px;
+        margin-bottom: 10px;
+        @include simple-border();
     }
-    &.button {
-      text-align: right;
+
+    table {
+        &.revision-table {
+            td {
+                vertical-align: top;
+                padding: 5px;
+                &.numeric, &.date, &.user {
+                    @include font-size(12);
+                    white-space: nowrap;
+                }
+                &.numeric {
+                    width: 60px;
+                }
+                &.date {
+                    width: 140px;
+                }
+                &.user {
+                    width: 120px;
+                }
+                &.message {
+                    text-align: justify;
+                }
+                &.actions {
+                    width: 120px;
+                }
+            }
+        }
     }
-    &>.secondary{
-      font-size: 80%;
-      margin-top: 0px;
+
+    #message{
+        max-width: none;
+        width: 100%;
     }
-    .first{
-        float: left;
-        margin-right: 20%;
-    }
-  }
-  tr {
-    &:nth-child(even){background: lighten($darkBlueGrey,5);}
-    &:nth-child(odd){background: lighten($lightBlueGrey,5)}
-  }
 }
 
-.commit{
-  input{
-    margin-left: 5%;
-    max-width: none;
-    width: 75%;
-  }
-}
+
+
+

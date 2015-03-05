@@ -46,10 +46,11 @@ class RepositoryProxy
     }
     
     /**
+     * Configure the implementation to use
      * 
      * @param Repository $repository
      */
-    public function setImplementation(Repository $repository)
+    public static function setImplementation(Repository $repository)
     {
         $ext = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoRevision');
         $ext->setConfig(self::CONFIG_ID, $repository);
@@ -94,9 +95,9 @@ class RepositoryProxy
      * @param $revisionId
      * @return mixed
      */
-    public static function restore(Revision $revision, $revisionId, $message)
+    public static function restore(Revision $revision)
     {
-        return self::getImplementation()->restore($revision, $revisionId, $message);
+        return self::getImplementation()->restore($revision);
     }
     
 }

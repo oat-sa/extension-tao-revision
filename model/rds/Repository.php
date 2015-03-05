@@ -25,6 +25,9 @@ use oat\taoRevision\model\Repository as RepositoryInterface;
 use oat\taoRevision\model\Revision;
 use oat\oatbox\Configurable;
 use core_kernel_classes_Property;
+use oat\taoRevision\helper\CloneHelper;
+use oat\generis\model\data\ModelManager;
+use oat\taoRevision\helper\DeleteHelper;
 
 /**
  * A simple repository implementation that stores the information
@@ -34,14 +37,13 @@ use core_kernel_classes_Property;
  */
 class Repository extends Configurable implements RepositoryInterface
 {
-    private $storage;
-    
-    /**
-     * @see \oat\oatbox\Configurable::__construct()
-     */
-    public function __construct($options = array()) {
-        parent::__construct($options);
-        $this->storage = new Storage($this->getOption('persistence'));
+    private $storage = null;
+
+    public function getStorage(){
+        if(is_null($this->storage)){
+            $this->storage = new Storage($this->getOption('persistence'));
+        }
+        return $this->storage;
     }
     
     /**
@@ -50,7 +52,7 @@ class Repository extends Configurable implements RepositoryInterface
      */
     public function getRevisions($resourceId)
     {
-        return $this->storage->getAllRevisions($resourceId);
+        return $this->getStorage()->getAllRevisions($resourceId);
     }
     
     /**
@@ -59,7 +61,7 @@ class Repository extends Configurable implements RepositoryInterface
      */
     public function getRevision($resourceId, $version)
     {
-        return $this->storage->getRevision($resourceId, $version);
+        return $this->getStorage()->getRevision($resourceId, $version);
     }
     
     /**
@@ -74,22 +76,9 @@ class Repository extends Configurable implements RepositoryInterface
         
         // save data
         $resource = new \core_kernel_classes_Resource($resourceId);
-        $data = $resource->getRdfTriples();
+        $data = CloneHelper::deepCloneTriples($resource->getRdfTriples());
         
-        //clone files
-        foreach ($data as $triple) {
-            if ($triple->predicate == 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemContent') {
-                // manually copy item content
-                $triple->object = $this->cloneItemContent($triple->object);
-            } else {
-                $range = (new \core_kernel_classes_Property($triple->predicate))->getRange();
-                if (!is_null($range) && $range->getUri() == CLASS_GENERIS_FILE) {
-                    $triple->object = $this->cloneFile($triple->object);
-                }
-            }
-        }
-        
-        $revision = $this->storage->addRevision($resourceId, $version, $created, $userId, $message, $data);
+        $revision = $this->getStorage()->addRevision($resourceId, $version, $created, $userId, $message, $data);
         return $revision;
     }
     
@@ -97,68 +86,17 @@ class Repository extends Configurable implements RepositoryInterface
      * (non-PHPdoc)
      * @see \oat\taoRevision\model\Repository::restore()
      */
-    public function restore(Revision $revision, $newVersion, $message) {
+    public function restore(Revision $revision) {
         $resourceId = $revision->getResourceId();
-        $data = $this->storage->getData($revision);
+        $data = $this->getStorage()->getData($revision);
         
         $resource = new \core_kernel_classes_Resource($revision->getResourceId());
-        $this->deepDelete($resource);
-        foreach ($data as $triple) {
-            if ($triple->predicate == RDF_TYPE) {
-                $resource->setType(new \core_kernel_classes_Class($triple->object));
-            } else {
-                if ($triple->predicate == 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemContent') {
-                    $triple->object = $this->cloneItemContent($triple->object);
-                } else {
-                    $range = (new \core_kernel_classes_Property($triple->predicate))->getRange();
-                    if (!is_null($range) && $range->getUri() == CLASS_GENERIS_FILE) {
-                        $triple->object = $this->cloneFile($triple->object);
-                    }
-                }
-                if (empty($triple->lg)) {
-                    $resource->setPropertyValue(new \core_kernel_classes_Property($triple->predicate), $triple->object);
-                } else {
-                    $resource->setPropertyValueByLg(new \core_kernel_classes_Property($triple->predicate), $triple->object, $triple->lg);
-                }
-            }
-        }
-        return $this->commit($resourceId, $message, $newVersion);
-    }
-    
-    protected function deepDelete(\core_kernel_classes_Resource $resource) {
-        foreach ($resource->getRdfTriples() as $triple) {
-            if ($triple->predicate == 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemContent') {
-                $file = new \core_kernel_versioning_File($triple->object);
-                $sourceDir = dirname($file->getAbsolutePath());
-                $file->delete();
-                \tao_helpers_File::delTree($sourceDir);
-            } else {
-                $range = (new \core_kernel_classes_Property($triple->predicate))->getRange();
-                if (!is_null($range) && $range->getUri() == CLASS_GENERIS_FILE) {
-                    $file = new \core_kernel_versioning_File($triple->object);
-                    $file->delete();
-                }
-            }
-        }
-        $resource->delete();
-    }
-    
-    protected function cloneItemContent($itemContentUri) {
-        \common_Logger::i('clone itemcontent '.$itemContentUri);
-        $fileNameProp = new core_kernel_classes_Property(PROPERTY_FILE_FILENAME);
-        $file = new \core_kernel_versioning_File($itemContentUri);
-        $sourceDir = dirname($file->getAbsolutePath());
-
-        $newFile = $file->getRepository()->spawnFile($sourceDir);
-        $newFile->editPropertyValues($fileNameProp, $file->getPropertyValues($fileNameProp));
+        DeleteHelper::deepDelete($resource);
         
-        return $newFile->getUri();
+        foreach (CloneHelper::deepCloneTriples($data) as $triple) {
+            ModelManager::getModel()->getRdfInterface()->add($triple);
+        }
+        return true;
     }
-    
-    protected function cloneFile($fileUri) {
-        \common_Logger::i('clone file '.$fileUri);
-        $file = new \core_kernel_versioning_File($fileUri);
-        $newFile = $file->getRepository()->spawnFile($file->getAbsolutePath(), $file->getLabel());
-        return $newFile->getUri();
-    }
+
 }
