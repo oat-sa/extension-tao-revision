@@ -22,7 +22,7 @@ define([
                 revision = $this.data('revision');
             var id = $('#resource_id').val();
 
-            var message = prompt("Please enter a message", "");
+            var message = prompt("Please enter a message", __("Restored version %s", revision));
 
             if( typeof revision !== "undefined" &&
                 typeof message !== "undefined" &&
@@ -36,6 +36,7 @@ define([
                         if(res && res.success){
                             feedback().success(__("Resource restored"));
                             $(body).append(lineTpl(res));
+                            $('.tree').trigger('refresh.taotree'); 
                         } else {
                             feedback().error(__("Something went wrong..."));
                         }
