@@ -38,7 +38,7 @@
                     <td class="user"><?= $revision['author'] ?></td>
                     <td class="message"><?= $revision['message'] ?></td>
                     <td class="actions">
-                        <button class="btn-info small restore_revision" data-revision="<?= $revision['id'] ?>">
+                        <button class="btn-info small restore_revision" data-revision="<?= $revision['id'] ?>" type="button">
                             <span class="icon-undo"></span>
                             <?= __('Restore')?>
                         </button>
