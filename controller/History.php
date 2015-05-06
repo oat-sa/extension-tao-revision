@@ -56,11 +56,11 @@ class History extends \tao_actions_CommonModule {
                 'id'        => $revision->getVersion(),
                 'modified'  => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
                 'author'    => UserHelper::renderHtmlUser($revision->getAuthorId()),
-                'message'   => $revision->getMessage(),
+                'message'   => _dh($revision->getMessage()),
             );
         }
         
-        $this->setData('resourceLabel', $resource->getLabel());
+        $this->setData('resourceLabel', _dh($resource->getLabel()));
         $this->setData('id', $resource->getUri());
         $this->setData('revisions', $returnRevision);
         $this->setView('History/index.tpl');
@@ -91,7 +91,8 @@ class History extends \tao_actions_CommonModule {
     public function commitResource(){
 
         $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
-        $message = $this->getRequestParameter('message');
+        // prevent escaping on input
+        $message = isset($_POST['message']) ? $_POST['message'] : '';
         
         $revision = RevisionService::commit($resource, $message);
         

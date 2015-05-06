@@ -24,7 +24,7 @@ return array(
 	'label' => 'Data Revision Control',
 	'description' => '',
     'license' => 'GPL-2.0',
-    'version' => '1.0',
+    'version' => '1.0.1',
 	'author' => 'Open Assessment Technologies SA',
 	'requires' => array(
 	   'tao' => '>=2.7.4',
@@ -34,6 +34,8 @@ return array(
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoRevisionManager',
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoRevisionManager', array('ext'=>'taoRevision')),
+        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', array('controller'=>'oat\\taoRevision\\controller\\History')),
+        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#TestAuthor', array('controller'=>'oat\\taoRevision\\controller\\History')),
     ),
     'install' => array(
         'php' => array(
@@ -41,6 +43,7 @@ return array(
             dirname(__FILE__).'/scripts/install/setImplementation.php'
         )
     ),
+    'update' => 'oat\\taoRevision\\scripts\\update\\Updater',
     'autoload' => array (
         'psr-4' => array(
             'oat\\taoRevision\\' => dirname(__FILE__).DIRECTORY_SEPARATOR

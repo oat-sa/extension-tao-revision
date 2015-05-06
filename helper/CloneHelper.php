@@ -41,7 +41,8 @@ class CloneHelper
     }
     
     static public function isFileReference(\core_kernel_classes_Triple $triple) {
-        $range = (new \core_kernel_classes_Property($triple->predicate))->getRange();
+        $prop = new \core_kernel_classes_Property($triple->predicate);
+        $range = $prop->getRange();
         $rangeUri = is_null($range) ? '' : $range->getUri(); 
         switch ($rangeUri) {
         	case CLASS_GENERIS_FILE :
