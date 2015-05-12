@@ -97,11 +97,12 @@ class History extends \tao_actions_CommonModule {
         $revision = RevisionService::commit($resource, $message);
         
         $this->returnJson(array(
-            'success'   => true,
-            'id'        => $revision->getVersion(),
-            'modified'  => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
-            'author'    => UserHelper::renderHtmlUser($revision->getAuthorId()),
-            'message'   => $revision->getMessage()
+            'success'       => true,
+            'id'            => $revision->getVersion(),
+            'modified'      => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
+            'author'        => UserHelper::renderHtmlUser($revision->getAuthorId()),
+            'message'       => $revision->getMessage(),
+            'commitMessage' => __('%s has been committed', $resource->getLabel())
         ));
     }
 }
