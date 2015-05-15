@@ -29,7 +29,8 @@ return array(
 	'requires' => array(
 	   'tao' => '>=2.7.4',
 	   'taoItems' => '*',
-	   'taoTests' => '*'
+	   'taoTests' => '*',
+	   'taoMediaManager' => '*'
     ),
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoRevisionManager',
     'acl' => array(

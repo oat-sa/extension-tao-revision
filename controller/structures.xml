@@ -23,4 +23,15 @@
             </section>
         </sections>
     </structure>
+    <structure id='taoMediaManager' name="Media" level="7" group="main">
+        <sections>
+            <section id="media_manager" name="Manage Media" url="/taoMediaManager/MediaManager/index">
+                <actions>
+					<action id="test-revision" name="History" url="/taoRevision/History/index" context="instance" group="content">
+					    <icon id="icon-repository"/>
+					</action>
+				</actions>
+            </section>
+        </sections>
+    </structure>
 </structures>
