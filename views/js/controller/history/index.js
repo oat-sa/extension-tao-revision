@@ -62,12 +62,12 @@ define([
                     e.preventDefault();
 
                 var $message = $('#message',$form);
-                if($message.val() != ""){
+                if($message.val() !== ""){
                     $submiter.addClass('disabled');
                     $.post($form.attr('action'), $form.serialize())
                         .done(function(res){
                             if(res && res.success){
-                                feedback().success(__("Resource committed"));
+                                feedback().success(res.commitMessage);
                                 $(body).append(lineTpl(res));
 
 
