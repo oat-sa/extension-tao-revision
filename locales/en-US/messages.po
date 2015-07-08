@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO v3.1-dev\n"
-"PO-Revision-Date: 2015-06-08T14:58:44\n"
+"Project-Id-Version: TAO v3.1.0-sprint02\n"
+"PO-Revision-Date: 2015-07-08T19:34:33\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: en-US\n"
@@ -13,6 +13,9 @@ msgstr ""
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
 
+msgid "%s has been committed"
+msgstr ""
+
 msgid "Actions"
 msgstr ""
 
@@ -23,7 +26,7 @@ msgstr ""
 msgid "History"
 msgstr ""
 
-msgid "History of %s', get_data('resourceLabel"
+msgid "History of %s"
 msgstr ""
 
 msgid "Id"
@@ -55,16 +58,13 @@ msgstr ""
 msgid "Please give a message to your commit"
 msgstr ""
 
-msgid "Resource committed"
-msgstr ""
-
 msgid "Resource restored"
 msgstr ""
 
 msgid "Restore"
 msgstr ""
 
-msgid "Restored version %s\",revision));\"undefined\"!=typeof revision&&\"undefined\"!=typeof message&&null!=message&&\"\"!==revision&&\"\"!==message&&$.post(helpers._url(\"restoreRevision\",\"History\",\"taoRevision"
+msgid "Restored version %s"
 msgstr ""
 
 msgid "Something went wrong..."
