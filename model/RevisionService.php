@@ -35,10 +35,13 @@ class RevisionService
      */
     static public function commit(core_kernel_classes_Resource $resource, $message, $version = null) {
         
+        $userId = common_session_SessionManager::getSession()->getUser()->getIdentifier();
+        if (is_null($userId)) {
+            throw new \common_exception_Error('Anonymous User cannot commit resources');
+        }
         $version = is_null($version) ? self::getNextVersion($resource->getUri()) : $version;
         $lockManager = LockManager::getImplementation();
         if ($lockManager->isLocked($resource)) {
-            $userId = common_session_SessionManager::getSession()->getUser()->getIdentifier();
             if ($lockManager instanceof ApplicableLock) {
                 $lockManager->apply($resource, $userId, true);
             }
