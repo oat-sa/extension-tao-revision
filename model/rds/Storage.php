@@ -66,77 +66,21 @@ class Storage
             )
         );
         
-        $revision = new RdsRevision($this->persistence->lastInsertId(), $resourceId, $version, $created, $author, $message);
+        $revision = new RdsRevision($this->persistence->lastInsertId(self::REVISION_TABLE_NAME), $resourceId, $version, $created, $author, $message);
 
         $success = $this->saveData($revision, $data);
         return $revision;
     }
     
     /**
-     * 
-     * @param string $resourceId
-     * @param string $version
-     * @return NULL|\oat\taoRevision\model\rds\Revision
-     */
-    public function getRevision($resourceId, $version) {
-        $sql = 'SELECT * FROM ' . self::REVISION_TABLE_NAME
-        .' WHERE (' . self::REVISION_RESOURCE . ' = ? AND ' . self::REVISION_VERSION. ' = ?)';
-        $params = array($resourceId, $version);
-        
-        $variables = $this->persistence->query($sql,$params);
-
-        if ($variables->rowCount() != 1) {
-            throw new RevisionNotFound($resourceId, $version);
-        }
-        $variable = $variables->fetch();
-        return new RdsRevision($variable[self::REVISION_ID], $variable[self::REVISION_RESOURCE], $variable[self::REVISION_VERSION],
-                $variable[self::REVISION_CREATED], $variable[self::REVISION_USER], $variable[self::REVISION_MESSAGE]);
-        
-    }
-    
-    public function getAllRevisions($resourceId) {
-        $sql = 'SELECT * FROM ' . self::REVISION_TABLE_NAME.' WHERE ' . self::REVISION_RESOURCE . ' = ?';
-        $params = array($resourceId);
-        $variables = $this->persistence->query($sql, $params);
-        
-        $revisions = array();
-        foreach ($variables as $variable) {
-            $revisions[] = new RdsRevision($variable[self::REVISION_ID], $variable[self::REVISION_RESOURCE], $variable[self::REVISION_VERSION],
-                $variable[self::REVISION_CREATED], $variable[self::REVISION_USER], $variable[self::REVISION_MESSAGE]);
-        }
-        return $revisions;
-    }
-    
-    public function getData(RdsRevision $revision) {
-        
-        $localModel = \common_ext_NamespaceManager::singleton()->getLocalNamespace();
-        // retrieve data
-        $query = 'SELECT * FROM '.self::DATA_TABLE_NAME.' WHERE '.self::DATA_REVISION.' = ?';
-        $result = $this->persistence->query($query, array($revision->getId()));
-        
-        $triples = array();
-        while ($statement = $result->fetch()) {
-            $triple = new \core_kernel_classes_Triple();
-            $triple->modelid = $localModel->getModelId();
-            $triple->subject = $statement[self::DATA_SUBJECT];
-            $triple->predicate = $statement[self::DATA_PREDICATE];
-            $triple->object = $statement[self::DATA_OBJECT];
-            $triple->lg = $statement[self::DATA_LANGUAGE];
-            $triples[] = $triple;
-        }
-        
-        return $triples;
-    }
-    
-    /**
-     * 
+     *
      * @param Revision $revision
      * @param array $data
      * @return boolean
      */
     protected function saveData(RdsRevision $revision, $data) {
         $columns = array(self::DATA_REVISION, self::DATA_SUBJECT, self::DATA_PREDICATE, self::DATA_OBJECT, self::DATA_LANGUAGE);
-        
+
         $multipleInsertQueryHelper = $this->persistence->getPlatForm()->getMultipleInsertsSqlQueryHelper();
         $query = $multipleInsertQueryHelper->getFirstStaticPart(self::DATA_TABLE_NAME, $columns);
         foreach ($data as $triple) {
@@ -148,11 +92,67 @@ class Storage
                 self::DATA_LANGUAGE  => $this->persistence->quote($triple->lg)
             ));
         }
-        
+
         $query = substr($query, 0, strlen($query) -1);
         $query .= $multipleInsertQueryHelper->getEndStaticPart();
         $success = $this->persistence->exec($query);
 
         return $success;
+    }
+    
+    /**
+     *
+     * @param string $resourceId
+     * @param string $version
+     * @return NULL|\oat\taoRevision\model\rds\Revision
+     */
+    public function getRevision($resourceId, $version) {
+        $sql = 'SELECT * FROM ' . self::REVISION_TABLE_NAME
+        .' WHERE (' . self::REVISION_RESOURCE . ' = ? AND ' . self::REVISION_VERSION. ' = ?)';
+        $params = array($resourceId, $version);
+
+        $variables = $this->persistence->query($sql,$params);
+
+        if ($variables->rowCount() != 1) {
+            throw new RevisionNotFound($resourceId, $version);
+        }
+        $variable = $variables->fetch();
+        return new RdsRevision($variable[self::REVISION_ID], $variable[self::REVISION_RESOURCE], $variable[self::REVISION_VERSION],
+                $variable[self::REVISION_CREATED], $variable[self::REVISION_USER], $variable[self::REVISION_MESSAGE]);
+
+    }
+    
+    public function getAllRevisions($resourceId) {
+        $sql = 'SELECT * FROM ' . self::REVISION_TABLE_NAME.' WHERE ' . self::REVISION_RESOURCE . ' = ?';
+        $params = array($resourceId);
+        $variables = $this->persistence->query($sql, $params);
+
+        $revisions = array();
+        foreach ($variables as $variable) {
+            $revisions[] = new RdsRevision($variable[self::REVISION_ID], $variable[self::REVISION_RESOURCE], $variable[self::REVISION_VERSION],
+                $variable[self::REVISION_CREATED], $variable[self::REVISION_USER], $variable[self::REVISION_MESSAGE]);
+        }
+        return $revisions;
+    }
+    
+    public function getData(RdsRevision $revision) {
+
+        $localModel = \common_ext_NamespaceManager::singleton()->getLocalNamespace();
+        // retrieve data
+        $query = 'SELECT * FROM '.self::DATA_TABLE_NAME.' WHERE '.self::DATA_REVISION.' = ?';
+        $result = $this->persistence->query($query, array($revision->getId()));
+
+        $triples = array();
+        while ($statement = $result->fetch()) {
+            $triple = new \core_kernel_classes_Triple();
+            $triple->modelid = $localModel->getModelId();
+            $triple->subject = $statement[self::DATA_SUBJECT];
+            $triple->predicate = $statement[self::DATA_PREDICATE];
+            $triple->object = $statement[self::DATA_OBJECT];
+            $triple->lg = $statement[self::DATA_LANGUAGE];
+            $triples[] = $triple;
+        }
+
+        return $triples;
     }
 }
