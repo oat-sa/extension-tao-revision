@@ -66,7 +66,7 @@ class Storage
             )
         );
         
-        $revision = new RdsRevision($this->persistence->lastInsertId(), $resourceId, $version, $created, $author, $message);
+        $revision = new RdsRevision($this->persistence->lastInsertId(self::REVISION_TABLE_NAME), $resourceId, $version, $created, $author, $message);
 
         $success = $this->saveData($revision, $data);
         return $revision;
