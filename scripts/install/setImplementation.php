@@ -19,7 +19,6 @@
  *
  */
 
-use oat\taoRevision\model\rds\Storage;
 use oat\taoRevision\model\RepositoryProxy;
 use oat\taoRevision\model\rds\Repository;
 

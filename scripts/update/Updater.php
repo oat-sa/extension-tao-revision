@@ -46,8 +46,8 @@ class Updater extends \common_ext_ExtensionUpdater {
                 array('controller'=>'oat\\taoRevision\\controller\\History')));
             $currentVersion = '1.0.1';
         }
-        if ($currentVersion == '1.0.1') {
-            $currentVersion = '1.0.2';
+        if ($currentVersion == '1.0.1' || $currentVersion == '1.0.2') {
+            $currentVersion = '1.0.3';
         }
         return $currentVersion;
     }
