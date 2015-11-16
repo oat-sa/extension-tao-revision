@@ -21,6 +21,7 @@
 namespace oat\taoRevision\helper;
 
 use core_kernel_classes_Property;
+use helpers_File;
 
 class CloneHelper
 {
@@ -66,11 +67,17 @@ class CloneHelper
     
         return $newFile->getUri();
     }
-    
-    static protected function cloneFile($fileUri) {
-        \common_Logger::i('clone file '.$fileUri);
+
+    static protected function cloneFile($fileUri)
+    {
+        \common_Logger::i('clone file ' . $fileUri);
+
         $file = new \core_kernel_versioning_File($fileUri);
-        $newFile = $file->getRepository()->spawnFile($file->getAbsolutePath(), $file->getLabel());
+
+        $newFile = $file->getRepository()->spawnFile($file->getAbsolutePath(), $file->getLabel(), function($originalName) {
+            return md5($originalName);
+        });
+
         return $newFile->getUri();
     }
 }
