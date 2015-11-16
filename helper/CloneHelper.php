@@ -21,7 +21,6 @@
 namespace oat\taoRevision\helper;
 
 use core_kernel_classes_Property;
-use helpers_File;
 
 class CloneHelper
 {
