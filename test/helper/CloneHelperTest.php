@@ -26,8 +26,8 @@ use oat\taoRevision\helper\CloneHelper;
 
 class CloneHelperTest extends \PHPUnit_Framework_TestCase {
 
-    public function testDeepCloneTriplesSimple(){
-
+    public function testDeepCloneTriplesSimple()
+    {
         $object = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAO.rdf#TAOObject');
         $subClass = $object->createSubClass("My sub Class test");
 
@@ -38,8 +38,8 @@ class CloneHelperTest extends \PHPUnit_Framework_TestCase {
         $subClass->delete(true);
     }
 
-    public function testDeepCloneTriplesItemContent(){
-
+    public function testDeepCloneTriplesItemContent()
+    {
         // create a file / put it in item content property
         /** @var \core_kernel_versioning_Repository $repository */
         $repository = \tao_models_classes_FileSourceService::singleton()->addLocalSource("repository test", \tao_helpers_File::createTempDir());
@@ -48,7 +48,6 @@ class CloneHelperTest extends \PHPUnit_Framework_TestCase {
 
         /** @var \core_kernel_versioning_File $file */
         $file = $repository->createFile("test.xml", "test");
-
 
         mkdir($repository->getPath().'test');
         copy(__DIR__.'/sample/test.xml', $repository->getPath().'test/test.xml');
@@ -73,19 +72,19 @@ class CloneHelperTest extends \PHPUnit_Framework_TestCase {
         $file->delete(true);
         $returnedFile->delete(true);
         $repository->delete(true);
-
     }
 
-    public function testDeepCloneTriplesFile(){
-
-
+    public function testDeepCloneTriplesFile()
+    {
         /** @var \core_kernel_versioning_Repository $repository */
         $repository = \tao_models_classes_FileSourceService::singleton()->addLocalSource("repository test", \tao_helpers_File::createTempDir());
 
         //see if clone item content works
 
         /** @var \core_kernel_versioning_File $file */
-        $file = $repository->spawnFile(__DIR__.'/sample/test.xml', "test");
+        $file = $repository->spawnFile(__DIR__ . '/sample/test.xml', "test", function ($originalName) {
+            return md5($originalName);
+        });
 
         //see if clone file works
         $rdfsTriple = new \core_kernel_classes_Triple();
@@ -105,7 +104,6 @@ class CloneHelperTest extends \PHPUnit_Framework_TestCase {
         $fileCopy->delete(true);
         $repository->delete(true);
     }
-
 
     /**
      * @dataProvider fileProvider
@@ -129,7 +127,6 @@ class CloneHelperTest extends \PHPUnit_Framework_TestCase {
         $this->assertTrue(CloneHelper::isFileReference($rdfsTriple));
         $file->delete();
     }
-    
 
     public function fileProvider(){
         $fileTriple = new \core_kernel_classes_Triple();
@@ -142,13 +139,10 @@ class CloneHelperTest extends \PHPUnit_Framework_TestCase {
         $falseTriple = new \core_kernel_classes_Triple();
         $falseTriple->predicate = 'otherPredicate';
 
-
         return array(
             array(true, $fileTriple),
             array(false, $rdfsTripleFalse),
             array(false, $falseTriple)
         );
     }
-
 }
- 
