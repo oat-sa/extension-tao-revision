@@ -52,9 +52,9 @@ class Updater extends \common_ext_ExtensionUpdater
         if ($this->isVersion('1.0.1') || 
             $this->isVersion('1.0.2') || 
             $this->isVersion('1.0.3') ){
-            
+
             $this->setVersion('1.0.4');
         }
-        return $currentVersion;
+        return null;
     }
 }
