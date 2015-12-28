@@ -27,14 +27,16 @@ use oat\tao\model\accessControl\func\AclProxy;
  * 
  * @author Joel Bout <joel@taotesting.com>
  */
-class Updater extends \common_ext_ExtensionUpdater {
+class Updater extends \common_ext_ExtensionUpdater
+{
     
     /**
      * 
      * @param string $currentVersion
      * @return string $versionUpdatedTo
      */
-    public function update($initialVersion) {
+    public function update($initialVersion)
+    {
         
         $currentVersion = $initialVersion;
         
@@ -46,9 +48,13 @@ class Updater extends \common_ext_ExtensionUpdater {
                 array('controller'=>'oat\\taoRevision\\controller\\History')));
             $currentVersion = '1.0.1';
         }
-        if ($currentVersion == '1.0.1' || $currentVersion == '1.0.2') {
-            $currentVersion = '1.0.3';
+
+        if ($this->isVersion('1.0.1') || 
+            $this->isVersion('1.0.2') || 
+            $this->isVersion('1.0.3') ){
+
+            $this->setVersion('1.0.4');
         }
-        return $currentVersion;
+        return null;
     }
 }

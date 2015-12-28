@@ -79,6 +79,7 @@ class Repository extends Configurable implements RepositoryInterface
         $data = CloneHelper::deepCloneTriples($resource->getRdfTriples());
         
         $revision = $this->getStorage()->addRevision($resourceId, $version, $created, $userId, $message, $data);
+
         return $revision;
     }
     
@@ -96,7 +97,7 @@ class Repository extends Configurable implements RepositoryInterface
         foreach (CloneHelper::deepCloneTriples($data) as $triple) {
             ModelManager::getModel()->getRdfInterface()->add($triple);
         }
+
         return true;
     }
-
 }

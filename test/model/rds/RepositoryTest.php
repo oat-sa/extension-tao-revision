@@ -29,8 +29,8 @@ function time()
 }
 
 
-class RepositoryTest extends \PHPUnit_Framework_TestCase {
-
+class RepositoryTest extends \PHPUnit_Framework_TestCase
+{
     public static $now;
 
     /** @var Repository */
@@ -41,7 +41,6 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
 
     public function setUp(){
         $this->options['persistence'] = 123;
-
 
         // storage mock
         $this->storage = $this->getMockBuilder('oat\taoRevision\model\rds\Storage')
@@ -141,7 +140,8 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
 
     }
 
-    public function testRestore(){
+    public function testRestore()
+    {
         $repo = $this->getMockBuilder('oat\taoRevision\model\rds\Repository')
             ->setMethods(array('commit', 'getStorage'))
             ->setConstructorArgs(array($this->options))
@@ -149,33 +149,23 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
 
         $resourceId = "MyId";
         $version = "version";
-        $newVersion = "new version";
         self::$now = time();
         $author = "author";
         $message = "my message";
-        $newMessage = "my new message";
-        $revision = new RdsRevision(111,$resourceId, $version, self::$now, $author, $message);
-        $newRevision = new RdsRevision(222, $resourceId, $newVersion, self::$now, $author, $newMessage);
+        $revision = new RdsRevision(111, $resourceId, $version, self::$now, $author, $message);
         $data = array();
 
         $repo->expects($this->once())
             ->method('getStorage')
             ->willReturn($this->storage);
 
-        $repo->expects($this->once())
-            ->method('commit')
-            ->with($resourceId, $newMessage, $newVersion)
-            ->willReturn($newRevision);
-
         $this->storage->expects($this->once())
             ->method('getData')
             ->with($revision)
             ->willReturn($data);
 
-        $return = $repo->restore($revision, $newVersion, $newMessage);
-        $this->assertEquals($newRevision, $return);
+        $return = $repo->restore($revision);
+
+        $this->assertEquals(true, $return);
     }
-
-
 }
- 
