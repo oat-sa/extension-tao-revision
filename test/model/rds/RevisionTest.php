@@ -21,37 +21,43 @@
 
 namespace oat\taoRevision\test\model\rds;
 
+use oat\taoRevision\model\Revision;
+class RevisionTest extends \PHPUnit_Framework_TestCase {
 
-use oat\taoRevision\model\rds\RdsRevision;
-
-class RdsRevisionTest extends \PHPUnit_Framework_TestCase {
-
-    private $rdsRevision = null;
-    private $id = null;
+    /**
+     * @var Revision
+     */
+    private $revision = null;
+    
+    private $time;
 
     public function setUp(){
-        $this->id = 'myFunId';
+        $this->time = time();
+        
         $resourceId = 123;
         $version = 456;
-        $created = time();
+        $created = $this->time;
         $author = "Great author";
         $message = "My message is really cool";
-        $this->rdsRevision = new RdsRevision($this->id, $resourceId, $version, $created, $author, $message);
+        $this->revision = new Revision($resourceId, $version, $created, $author, $message);
     }
 
     public function tearDown(){
-        $this->id = null;
-        $this->rdsRevision = null;
+        $this->revision = null;
     }
 
     public function testConstruct(){
-        $this->assertInstanceOf("oat\\taoRevision\\model\\Revision",$this->rdsRevision, "RdsRevision should extends Revision");
+        $this->assertInstanceOf("oat\\taoRevision\\model\\Revision",$this->revision, "RdsRevision should extends Revision");
 
     }
 
-    public function testGetId(){
+    public function testGetters(){
 
-        $this->assertEquals($this->id, $this->rdsRevision->getId(), "The collected id is wrong");
+        $this->assertEquals(123, $this->revision->getResourceId());
+        $this->assertEquals(456, $this->revision->getVersion());
+        $this->assertEquals($this->time, $this->revision->getDateCreated());
+        $this->assertEquals("Great author", $this->revision->getAuthorId());
+        $this->assertEquals("My message is really cool", $this->revision->getMessage());
 
     }
 

@@ -23,11 +23,11 @@ namespace oat\taoRevision\model\rds;
 use oat\taoRevision\model\RevisionNotFound;
 use oat\taoRevision\model\Repository as RepositoryInterface;
 use oat\taoRevision\model\Revision;
-use oat\oatbox\Configurable;
 use core_kernel_classes_Property;
 use oat\taoRevision\helper\CloneHelper;
 use oat\generis\model\data\ModelManager;
 use oat\taoRevision\helper\DeleteHelper;
+use oat\oatbox\service\ConfigurableService;
 
 /**
  * A simple repository implementation that stores the information
@@ -35,13 +35,14 @@ use oat\taoRevision\helper\DeleteHelper;
  * 
  * @author bout
  */
-class Repository extends Configurable implements RepositoryInterface
+class Repository extends ConfigurableService implements RepositoryInterface
 {
     private $storage = null;
 
     public function getStorage(){
         if(is_null($this->storage)){
-            $this->storage = new Storage($this->getOption('persistence'));
+            $this->storage = new Storage(array('persistence' => $this->getOption('persistence')));
+            $this->storage->setServiceLocator($this->getServiceLocator());
         }
         return $this->storage;
     }

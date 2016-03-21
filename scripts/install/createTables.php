@@ -31,17 +31,17 @@ try {
     $revisionTable = $schema->createtable(Storage::REVISION_TABLE_NAME);
     $revisionTable->addOption('engine', 'MyISAM');
     
-    $revisionTable->addColumn(Storage::REVISION_ID, "integer",array("notnull" => true,"autoincrement" => true));
     $revisionTable->addColumn(Storage::REVISION_RESOURCE, "string", array("notnull" => false, "length" => 255));
     $revisionTable->addColumn(Storage::REVISION_VERSION, "string", array("notnull" => false, "length" => 50));
     $revisionTable->addColumn(Storage::REVISION_USER, "string", array("notnull" => true, "length" => 255));
     $revisionTable->addColumn(Storage::REVISION_CREATED, "string", array("notnull" => true));
     $revisionTable->addColumn(Storage::REVISION_MESSAGE, "string", array("notnull" => true, "length" => 4000));
-    $revisionTable->setPrimaryKey(array(Storage::REVISION_ID));
+    $revisionTable->setPrimaryKey(array(Storage::REVISION_RESOURCE, Storage::REVISION_VERSION));
     
     $dataTable = $schema->createtable(Storage::DATA_TABLE_NAME);
     $dataTable->addOption('engine', 'MyISAM');
-    $dataTable->addColumn(Storage::DATA_REVISION, "integer", array("notnull" => true));
+    $dataTable->addColumn(Storage::DATA_RESOURCE, "string", array("notnull" => false, "length" => 255));
+    $dataTable->addColumn(Storage::DATA_VERSION, "string", array("notnull" => false, "length" => 50));
     $dataTable->addColumn(Storage::DATA_SUBJECT, "string", array("notnull" => true, "length" => 255));
     $dataTable->addColumn(Storage::DATA_PREDICATE, "string", array("length" => 255));
     // not compatible with oracle
@@ -50,8 +50,8 @@ try {
     
     $dataTable->addForeignKeyConstraint(
         $revisionTable,
-        array(Storage::DATA_REVISION),
-        array(Storage::REVISION_ID)
+        array(Storage::REVISION_RESOURCE, Storage::REVISION_VERSION),
+        array(Storage::REVISION_RESOURCE, Storage::REVISION_VERSION)
     );
 
 } catch(SchemaException $e) {
