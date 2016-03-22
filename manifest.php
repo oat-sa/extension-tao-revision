@@ -18,6 +18,7 @@
  *               
  * 
  */               
+use oat\taoRevision\scripts\install\CreateTables;
 
 return array(
     'name' => 'taoRevision',
@@ -40,7 +41,7 @@ return array(
     ),
     'install' => array(
         'php' => array(
-            dirname(__FILE__).'/scripts/install/createTables.php',
+            CreateTables::class,
             dirname(__FILE__).'/scripts/install/setImplementation.php'
         )
     ),

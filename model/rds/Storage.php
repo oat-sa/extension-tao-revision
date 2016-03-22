@@ -74,7 +74,9 @@ class Storage extends ConfigurableService
         
         $revision = new Revision($resourceId, $version, $created, $author, $message);
 
-        $success = $this->saveData($revision, $data);
+        if (!empty($data)) {
+            $this->saveData($revision, $data);
+        }
         return $revision;
     }
     
@@ -82,7 +84,8 @@ class Storage extends ConfigurableService
      * 
      * @param string $resourceId
      * @param string $version
-     * @return NULL|\oat\taoRevision\model\rds\Revision
+     * @return Revision
+     * @throws RevisionNotFound
      */
     public function getRevision($resourceId, $version) {
         $sql = 'SELECT * FROM ' . self::REVISION_TABLE_NAME
