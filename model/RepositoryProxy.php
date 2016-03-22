@@ -20,7 +20,7 @@
 
 namespace oat\taoRevision\model;
 
-use oat\taoRevision\model\rds\Repository as RdsRepository;
+use oat\oatbox\service\ServiceManager;
 
 /**
  * A proxy for the repository implementation
@@ -39,8 +39,7 @@ class RepositoryProxy
      */
     protected static function getImplementation() {
         if (is_null(self::$implementation)) {
-            $ext = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoRevision');
-            self::$implementation = $ext->getConfig(self::CONFIG_ID);
+            self::$implementation = ServiceManager::getServiceManager()->get(Repository::SERVICE_ID);
         }
         return self::$implementation;
     }

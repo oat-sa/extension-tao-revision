@@ -40,7 +40,7 @@ return array(
     ),
     'install' => array(
         'php' => array(
-            dirname(__FILE__).'/scripts/install/createTables.php',
+            oat\taoRevision\scripts\install\CreateTables::class,
             dirname(__FILE__).'/scripts/install/setImplementation.php'
         )
     ),

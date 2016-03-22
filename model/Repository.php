@@ -22,6 +22,8 @@ namespace oat\taoRevision\model;
 
 interface Repository
 {
+    const SERVICE_ID = 'taoRevision/repository';
+    
     /**
      * 
      * @param string $resourceId

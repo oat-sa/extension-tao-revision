@@ -21,9 +21,9 @@
 
 namespace oat\taoRevision\controller;
 
-use oat\taoRevision\model\RepositoryProxy;
 use oat\tao\helpers\UserHelper;
 use oat\taoRevision\model\RevisionService;
+use oat\taoRevision\model\Repository;
 
 /**
  * Revision history management controller
@@ -47,7 +47,7 @@ class History extends \tao_actions_CommonModule {
      */
     public function index() {
         $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
-        $revisions = RepositoryProxy::getRevisions($resource->getUri());
+        $revisions = $this->getServiceManager()->get(Repository::SERVICE_ID)->getRevisions($resource->getUri());
 
         $returnRevision = array();
         foreach($revisions as $revision){
