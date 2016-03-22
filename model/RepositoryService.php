@@ -38,6 +38,9 @@ class RepositoryService extends ConfigurableService implements Repository
     
     private $storage = null;
 
+    /**
+     * @return RevisionStorage
+     */
     protected function getStorage()
     {
         if(is_null($this->storage)) {
