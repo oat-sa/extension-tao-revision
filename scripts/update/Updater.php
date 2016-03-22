@@ -22,6 +22,10 @@ namespace oat\taoRevision\scripts\update;
 
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\tao\model\accessControl\func\AclProxy;
+use oat\taoRevision\model\Repository;
+use oat\taoRevision\model\rds\Storage;
+use oat\taoRevision\model\RevisionStorage;
+use oat\taoRevision\model\RepositoryService;
 
 /**
  * 
@@ -48,13 +52,24 @@ class Updater extends \common_ext_ExtensionUpdater
                 array('controller'=>'oat\\taoRevision\\controller\\History')));
             $currentVersion = '1.0.1';
         }
-
-        if ($this->isVersion('1.0.1') || 
-            $this->isVersion('1.0.2') || 
-            $this->isVersion('1.0.3') ){
-
-            $this->setVersion('1.0.4');
+        
+        $this->setVersion($currentVersion);
+        
+        $this->skip('1.0.1', '1.0.4');
+        
+        if ($this->isVersion('1.0.4')) {
+            
+            $impl = $this->getServiceManager()->get(Repository::SERVICE_ID);
+            if ($impl instanceof \oat\taoRevision\model\rds\Repository) {
+                $storage = new Storage($impl->getOptions());
+                $this->getServiceManager()->register('taoRevision/storage', $storage);
+                
+                $service = new RepositoryService(array(
+                    RepositoryService::OPTION_STORAGE => 'taoRevision/storage'
+                ));
+                $this->getServiceManager()->register(Repository::SERVICE_ID, $service);
+            }
+            $this->setVersion('1.1.0');
         }
-        return null;
     }
 }
