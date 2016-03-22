@@ -92,12 +92,12 @@ class Storage extends ConfigurableService
         .' WHERE (' . self::REVISION_RESOURCE . ' = ? AND ' . self::REVISION_VERSION. ' = ?)';
         $params = array($resourceId, $version);
         
-        $variables = $this->getPersistence()->query($sql,$params);
+        $variables = $this->getPersistence()->query($sql,$params)->fetchAll();
 
-        if ($variables->rowCount() != 1) {
+        if (count($variables) != 1) {
             throw new RevisionNotFound($resourceId, $version);
         }
-        $variable = $variables->fetch();
+        $variable = reset($variables);
         return new Revision($variable[self::REVISION_RESOURCE], $variable[self::REVISION_VERSION],
                 $variable[self::REVISION_CREATED], $variable[self::REVISION_USER], $variable[self::REVISION_MESSAGE]);
         
