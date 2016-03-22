@@ -69,7 +69,7 @@ class Updater extends \common_ext_ExtensionUpdater
                 ));
                 $this->getServiceManager()->register(Repository::SERVICE_ID, $service);
             }
-            $this->setVersion('1.1.0');
+            $this->setVersion('2.0.0');
         }
     }
 }

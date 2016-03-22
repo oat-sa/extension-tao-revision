@@ -42,8 +42,6 @@ class RepositoryService extends ConfigurableService implements Repository
     {
         if(is_null($this->storage)) {
             $this->storage = $this->getServiceLocator()->get($this->getOption(self::OPTION_STORAGE));
-            //$this->storage = new Storage(array('persistence' => $this->getOption('persistence')));
-            //$this->storage->setServiceLocator($this->getServiceLocator());
         }
         return $this->storage;
     }
@@ -70,10 +68,11 @@ class RepositoryService extends ConfigurableService implements Repository
      * (non-PHPdoc)
      * @see \oat\taoRevision\model\Repository::commit()
      */
-    public function commit($resourceId, $message, $version)
+    public function commit($resourceId, $message, $version = null)
     {
         $user = \common_session_SessionManager::getSession()->getUser();
         $userId = is_null($user) ? null : $user->getIdentifier();
+        $version = is_null($version) ? $this->getNextVersion($resourceId) : $version;
         $created = time();
         
         // save data
@@ -101,5 +100,22 @@ class RepositoryService extends ConfigurableService implements Repository
         }
 
         return true;
+    }
+    
+    /**
+     * Helper to determin suitable next version nr
+     *
+     * @param string $resourceId
+     * @return number
+     */
+    protected function getNextVersion($resourceId) {
+        $candidate = 0;
+        foreach ($this->getRevisions($resourceId) as $revision) {
+            $version = $revision->getVersion();
+            if (is_numeric($version) && $version > $candidate) {
+                $candidate = $version;
+            }
+        }
+        return $candidate + 1;
     }
 }

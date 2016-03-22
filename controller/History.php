@@ -22,7 +22,6 @@
 namespace oat\taoRevision\controller;
 
 use oat\tao\helpers\UserHelper;
-use oat\taoRevision\model\RevisionService;
 use oat\taoRevision\model\Repository;
 
 /**
@@ -36,10 +35,10 @@ use oat\taoRevision\model\Repository;
 class History extends \tao_actions_CommonModule {
 
     /**
-     * initialize the services
+     * @return Repository
      */
-    public function __construct(){
-        parent::__construct();
+    protected function getRevisionService() {
+        return $this->getServiceManager()->get(Repository::SERVICE_ID);
     }
 
     /**
@@ -47,7 +46,7 @@ class History extends \tao_actions_CommonModule {
      */
     public function index() {
         $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
-        $revisions = $this->getServiceManager()->get(Repository::SERVICE_ID)->getRevisions($resource->getUri());
+        $revisions = $this->getRevisionService()->getRevisions($resource->getUri());
 
         $returnRevision = array();
         foreach($revisions as $revision){
@@ -74,15 +73,21 @@ class History extends \tao_actions_CommonModule {
         $oldVersion = $this->getRequestParameter('revisionId');
         $message = $this->getRequestParameter('message');
         
-        $newRevision = RevisionService::restore($resource, $oldVersion, $message);
-
-        $this->returnJson(array(
+        $oldRevision = $this->getRevisionService()->getRevision($resource->getUri(), $oldVersion);
+        
+        $success = $this->getRevisionService()->restore($oldRevision);
+        if ($success) {
+            $newRevision = $this->getRevisionService()->commit($resource->getUri(), $message);
+            $this->returnJson(array(
                 'success'   => true,
                 'id'        => $newRevision->getVersion(),
                 'modified'  => \tao_helpers_Date::displayeDate($newRevision->getDateCreated()),
                 'author'    => UserHelper::renderHtmlUser($newRevision->getAuthorId()),
                 'message'   => $newRevision->getMessage()
             ));
+        } else {
+            $this->returnError(__('Unable to restore the selected version'));
+        }
     }
 
     /**
@@ -94,7 +99,7 @@ class History extends \tao_actions_CommonModule {
         // prevent escaping on input
         $message = isset($_POST['message']) ? $_POST['message'] : '';
         
-        $revision = RevisionService::commit($resource, $message);
+        $revision = $this->getRevisionService()->commit($resource->getUri(), $message);
         
         $this->returnJson(array(
             'success'       => true,
