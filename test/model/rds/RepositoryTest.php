@@ -23,6 +23,7 @@ namespace oat\taoRevision\test\model\rds;
 namespace oat\taoRevision\model\rds;
 
 
+use oat\taoRevision\model\Revision;
 function time()
 {
     return RepositoryTest::$now ?: \time();
@@ -87,7 +88,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $created = time();
         $author = "author";
         $message = "my author";
-        $revision = new RdsRevision(111, $resourceId, $version, $created, $author, $message);
+        $revision = new Revision($resourceId, $version, $created, $author, $message);
 
         $this->storage->expects($this->once())
             ->method('getRevision')
@@ -107,7 +108,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         self::$now = time();
         $author = "author";
         $message = "my message";
-        $revision = new RdsRevision(111, $resourceId, $version, self::$now, $author, $message);
+        $revision = new Revision($resourceId, $version, self::$now, $author, $message);
 
 
         $this->storage->expects($this->once())
@@ -152,7 +153,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         self::$now = time();
         $author = "author";
         $message = "my message";
-        $revision = new RdsRevision(111, $resourceId, $version, self::$now, $author, $message);
+        $revision = new Revision($resourceId, $version, self::$now, $author, $message);
         $data = array();
 
         $repo->expects($this->once())
