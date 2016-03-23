@@ -34,11 +34,11 @@ interface Repository
     /**
      * 
      * @param string $resourceId
-     * @param string $revisionId
+     * @param string $version
      * @throws RevisionNotFound
      * @return Revision
      */
-    public function getRevision($resourceId, $revisionId);
+    public function getRevision($resourceId, $version);
     
     /**
      * 
@@ -47,7 +47,7 @@ interface Repository
      * @param string $revisionId
      * @return Revision
      */
-    public function commit($resourceId, $message, $revisionId = null);
+    public function commit($resourceId, $message, $version = null);
     
     /**
      * Restore a previous version
