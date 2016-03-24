@@ -20,84 +20,14 @@
 
 namespace oat\taoRevision\model\rds;
 
-use oat\taoRevision\model\RevisionNotFound;
-use oat\taoRevision\model\Repository as RepositoryInterface;
-use oat\taoRevision\model\Revision;
 use oat\oatbox\Configurable;
-use core_kernel_classes_Property;
-use oat\taoRevision\helper\CloneHelper;
-use oat\generis\model\data\ModelManager;
-use oat\taoRevision\helper\DeleteHelper;
 
 /**
- * A simple repository implementation that stores the information
- * in a dedicated rds table
+ * Placeholder for update script
  * 
  * @author bout
+ * @deprecated
  */
-class Repository extends Configurable implements RepositoryInterface
+class Repository extends Configurable
 {
-    private $storage = null;
-
-    public function getStorage(){
-        if(is_null($this->storage)){
-            $this->storage = new Storage($this->getOption('persistence'));
-        }
-        return $this->storage;
-    }
-    
-    /**
-     * (non-PHPdoc)
-     * @see \oat\taoRevision\model\Repository::getRevisions()
-     */
-    public function getRevisions($resourceId)
-    {
-        return $this->getStorage()->getAllRevisions($resourceId);
-    }
-    
-    /**
-     * (non-PHPdoc)
-     * @see \oat\taoRevision\model\Repository::getRevision()
-     */
-    public function getRevision($resourceId, $version)
-    {
-        return $this->getStorage()->getRevision($resourceId, $version);
-    }
-    
-    /**
-     * (non-PHPdoc)
-     * @see \oat\taoRevision\model\Repository::commit()
-     */
-    public function commit($resourceId, $message, $version)
-    {
-        $user = \common_session_SessionManager::getSession()->getUser();
-        $userId = is_null($user) ? null : $user->getIdentifier();
-        $created = time();
-        
-        // save data
-        $resource = new \core_kernel_classes_Resource($resourceId);
-        $data = CloneHelper::deepCloneTriples($resource->getRdfTriples());
-        
-        $revision = $this->getStorage()->addRevision($resourceId, $version, $created, $userId, $message, $data);
-
-        return $revision;
-    }
-    
-    /**
-     * (non-PHPdoc)
-     * @see \oat\taoRevision\model\Repository::restore()
-     */
-    public function restore(Revision $revision) {
-        $resourceId = $revision->getResourceId();
-        $data = $this->getStorage()->getData($revision);
-        
-        $resource = new \core_kernel_classes_Resource($revision->getResourceId());
-        DeleteHelper::deepDelete($resource);
-        
-        foreach (CloneHelper::deepCloneTriples($data) as $triple) {
-            ModelManager::getModel()->getRdfInterface()->add($triple);
-        }
-
-        return true;
-    }
 }

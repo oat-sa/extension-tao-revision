@@ -20,22 +20,24 @@
 
 namespace oat\taoRevision\model;
 
-interface Repository
+interface RevisionStorage
 {
-    const SERVICE_ID = 'taoRevision/repository';
-    
-    /**
-     * 
-     * @param string $resourceId
-     * @return array return an array of Revision objects
-     */
-    public function getRevisions($resourceId);
-    
     /**
      * 
      * @param string $resourceId
      * @param string $version
-     * @throws RevisionNotFound
+     * @param string $created
+     * @param string $author
+     * @param string $message
+     * @param \core_kernel_classes_Triple[] $data
+     * @return Revision
+     */
+    public function addRevision($resourceId, $version, $created, $author, $message, $data);
+    
+    /**
+     *
+     * @param string $resourceId
+     * @param string $version
      * @return Revision
      */
     public function getRevision($resourceId, $version);
@@ -43,17 +45,14 @@ interface Repository
     /**
      * 
      * @param string $resourceId
-     * @param string $message
-     * @param string $revisionId
-     * @return Revision
+     * @return Revision[]
      */
-    public function commit($resourceId, $message, $version = null);
+    public function getAllRevisions($resourceId);
     
     /**
-     * Restore a previous version
      * 
      * @param Revision $revision
-     * @return boolean success
+     * \core_kernel_classes_Triple[] $data
      */
-    public function restore(Revision $revision);
+    public function getData(Revision $revision);
 }

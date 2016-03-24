@@ -19,9 +19,15 @@
  *
  */
 
-namespace oat\taoRevision\test\model\rds;
-namespace oat\taoRevision\model\rds;
+namespace oat\taoRevision\test\model;
 
+
+use oat\taoRevision\model\Revision;
+use oat\taoRevision\model\RepositoryService;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use oat\taoRevision\model\Repository;
+use Prophecy\Promise\ReturnPromise;
+use oat\taoRevision\model\RevisionStorage;
 
 function time()
 {
@@ -32,52 +38,36 @@ function time()
 class RepositoryTest extends \PHPUnit_Framework_TestCase
 {
     public static $now;
+    
+    private function getRepository($storage)
+    {
+        $smProphecy = $this->prophesize(ServiceLocatorInterface::class);
+        $smProphecy->get('mockStorage')->willReturn($storage);
 
-    /** @var Repository */
-    private $repository = null;
-    private $options = array();
-    /** @var \PHPUnit_Framework_MockObject_MockObject */
-    private $storage = null;
-
-    public function setUp(){
-        $this->options['persistence'] = 123;
-
-        // storage mock
-        $this->storage = $this->getMockBuilder('oat\taoRevision\model\rds\Storage')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->repository = $this->getMockBuilder('oat\taoRevision\model\rds\Repository')
-            ->setMethods(array('getStorage'))
-            ->setConstructorArgs(array($this->options))
-            ->getMock();
-
-        $this->repository->expects($this->any())
-            ->method('getStorage')
-            ->willReturn($this->storage);
+        $repository = new RepositoryService(array(RepositoryService::OPTION_STORAGE => 'mockStorage'));
+        $repository->setServiceLocator($smProphecy->reveal());
+        return $repository;
     }
-
+    
     public function tearDown(){
         self::$now = null;
-        $this->options = array();
-        $this->repository = null;
-        $this->storage = null;
     }
 
 
     public function testGetRevisions(){
 
         $returnValue = array(456, 789);
-        $revisionId = 123;
+        $resourceId = 123;
 
-        $this->storage->expects($this->once())
-            ->method('getAllRevisions')
-            ->with($revisionId)
-            ->willReturn($returnValue);
+        $storageProphecy = $this->prophesize(RevisionStorage::class);
+        $storageProphecy->getAllRevisions($resourceId)->willReturn($returnValue);
+        
+        $repository = $this->getRepository($storageProphecy->reveal());
 
-        $return = $this->repository->getRevisions($revisionId);
-
+        $return = $repository->getRevisions($resourceId);
         $this->assertEquals($returnValue, $return);
+        
+        $storageProphecy->getAllRevisions($resourceId)->shouldHaveBeenCalled();
     }
 
     public function testGetRevision(){
@@ -87,16 +77,16 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $created = time();
         $author = "author";
         $message = "my author";
-        $revision = new RdsRevision(111, $resourceId, $version, $created, $author, $message);
+        $revision = new Revision($resourceId, $version, $created, $author, $message);
 
-        $this->storage->expects($this->once())
-            ->method('getRevision')
-            ->with($resourceId, $version)
-            ->willReturn($revision);
-
-        $return = $this->repository->getRevision($resourceId, $version);
+        $storageProphecy = $this->prophesize(RevisionStorage::class);
+        $storageProphecy->getRevision($resourceId, $version)->willReturn($revision);
+        $repository = $this->getRepository($storageProphecy->reveal());
+        
+        $return = $repository->getRevision($resourceId, $version);
 
         $this->assertEquals($revision, $return);
+        $storageProphecy->getRevision($resourceId, $version)->shouldHaveBeenCalled();
     }
 
 
@@ -107,14 +97,13 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         self::$now = time();
         $author = "author";
         $message = "my message";
-        $revision = new RdsRevision(111, $resourceId, $version, self::$now, $author, $message);
+        $revision = new Revision($resourceId, $version, self::$now, $author, $message);
 
-
-        $this->storage->expects($this->once())
-            ->method('addRevision')
-            ->with($resourceId, $version, self::$now, $author, $message)
-            ->willReturn($revision);
-
+        $storageProphecy = $this->prophesize(RevisionStorage::class);
+        $storageProphecy->addRevision($resourceId, $version, self::$now, $author, $message, array())->willReturn($revision);
+        
+        $repository = $this->getRepository($storageProphecy->reveal());
+        
         //mock user manager to get custom identifier
         $user = $this->getMockBuilder('oat\oatbox\user\User')
             ->disableOriginalConstructor()
@@ -135,36 +124,27 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $ref->setAccessible(true);
         $ref->setValue(null, $session);
 
-        $return = $this->repository->commit($resourceId, $message, $version);
+        $return = $repository->commit($resourceId, $message, $version);
         $this->assertEquals($revision, $return);
 
     }
 
     public function testRestore()
     {
-        $repo = $this->getMockBuilder('oat\taoRevision\model\rds\Repository')
-            ->setMethods(array('commit', 'getStorage'))
-            ->setConstructorArgs(array($this->options))
-            ->getMock();
-
         $resourceId = "MyId";
         $version = "version";
         self::$now = time();
         $author = "author";
         $message = "my message";
-        $revision = new RdsRevision(111, $resourceId, $version, self::$now, $author, $message);
+        $revision = new Revision($resourceId, $version, self::$now, $author, $message);
         $data = array();
+        
+        $storageProphecy = $this->prophesize(RevisionStorage::class);
+        $storageProphecy->getData($revision)->willReturn($data);
+        
+        $repository = $this->getRepository($storageProphecy->reveal());
 
-        $repo->expects($this->once())
-            ->method('getStorage')
-            ->willReturn($this->storage);
-
-        $this->storage->expects($this->once())
-            ->method('getData')
-            ->with($revision)
-            ->willReturn($data);
-
-        $return = $repo->restore($revision);
+        $return = $repository->restore($revision);
 
         $this->assertEquals(true, $return);
     }
