@@ -23,6 +23,7 @@ use core_kernel_classes_Resource;
 use common_session_SessionManager;
 use oat\tao\model\lock\LockManager;
 use oat\taoRevision\model\workspace\ApplicableLock;
+use oat\oatbox\service\ServiceManager;
 
 class RevisionService
 {
@@ -31,70 +32,14 @@ class RevisionService
      * @param core_kernel_classes_Resource $resource
      * @param string $message
      * @param string $version
+     * @deprecated
      * @return \oat\taoRevision\model\Revision
      */
     static public function commit(core_kernel_classes_Resource $resource, $message, $version = null) {
         
-        $userId = common_session_SessionManager::getSession()->getUser()->getIdentifier();
-        if (is_null($userId)) {
-            throw new \common_exception_Error('Anonymous User cannot commit resources');
-        }
-        $version = is_null($version) ? self::getNextVersion($resource->getUri()) : $version;
-        $lockManager = LockManager::getImplementation();
-        if ($lockManager->isLocked($resource)) {
-            if ($lockManager instanceof ApplicableLock) {
-                $lockManager->apply($resource, $userId, true);
-            }
-        }
+        \common_Logger::w('Please register events to cause autocommits');
         
-        //commit a new revision of the resource
-        $revision = RepositoryProxy::commit($resource->getUri(), $message, $version);
-        
-        return $revision;
-    }
-    
-    /**
-     * 
-     * @param core_kernel_classes_Resource $resource
-     * @param string $oldVersion
-     * @param string $message
-     * @param string $newVersion
-     * @return \oat\taoRevision\model\Revision
-     */
-    static public function restore(core_kernel_classes_Resource $resource, $oldVersion, $message, $newVersion = null) {
-        
-        $lockManager = LockManager::getImplementation();
-        if ($lockManager->isLocked($resource)) {
-            $userId = common_session_SessionManager::getSession()->getUser()->getIdentifier();
-            $lockManager->releaseLock($resource, $userId);
-        }
-        
-        $oldRevision = RepositoryProxy::getRevision($resource->getUri(), $oldVersion);
-        $success = RepositoryProxy::restore($oldRevision);
-        
-        if ($success) {
-            $newVersion = is_null($newVersion) ? self::getNextVersion($resource->getUri()) : $newVersion;
-            $newRevision = RevisionService::commit($resource, $message, $newVersion);
-            return $newRevision;
-        } else {
-            throw \common_exception_Error('Unable to restore version '.$oldVersion.' of resource '.$resource->getUri());
-        }
-    }
-    
-    /**
-     * Helper to determin suitable next version nr
-     * 
-     * @param string $resourceId
-     * @return number
-     */
-    static protected function getNextVersion($resourceId) {
-        $candidate = 0;
-        foreach (RepositoryProxy::getRevisions($resourceId) as $revision) {
-            $version = $revision->getVersion();
-            if (is_numeric($version) && $version > $candidate) {
-                $candidate = $version;
-            }
-        }
-        return $candidate + 1;
+        $repositoryService = ServiceManager::getServiceManager()->get(Repository::SERVICE_ID);
+        return $repositoryService->commit($resource->getUri(), $message, $version);
     }
 }
