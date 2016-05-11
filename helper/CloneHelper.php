@@ -74,7 +74,7 @@ class CloneHelper
         $file = new \core_kernel_versioning_File($fileUri);
 
         $newFile = $file->getRepository()->spawnFile($file->getAbsolutePath(), $file->getLabel(), function($originalName) {
-            return md5($originalName);
+            return md5($originalName + microtime());
         });
 
         return $newFile->getUri();
