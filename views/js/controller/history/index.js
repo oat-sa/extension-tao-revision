@@ -5,7 +5,7 @@ define([
     'helpers',
     'ui/feedback',
     'select2',
-    'tooltipster'
+    'ui/tooltip'
     ], function($, __, lineTpl, helpers, feedback){
         'use strict';
 
