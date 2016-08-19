@@ -144,6 +144,10 @@ class Storage extends ConfigurableService implements  RevisionStorage
      * @return boolean
      */
     protected function saveData(RdsRevision $revision, $data) {
+        if(empty($data)) {
+            return false;
+        }
+        
         $columns = array(self::DATA_REVISION, self::DATA_SUBJECT, self::DATA_PREDICATE, self::DATA_OBJECT, self::DATA_LANGUAGE);
         
         $multipleInsertQueryHelper = $this->getPersistence()->getPlatForm()->getMultipleInsertsSqlQueryHelper();
