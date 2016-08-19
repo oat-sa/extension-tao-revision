@@ -21,12 +21,12 @@
 
 return array(
     'name' => 'taoRevision',
-	'label' => 'Data Revision Control',
-	'description' => '',
+    'label' => 'Data Revision Control',
+    'description' => '',
     'license' => 'GPL-2.0',
-    'version' => '2.1.0',
-	'author' => 'Open Assessment Technologies SA',
-	'requires' => array(
+    'version' => '2.1.1',
+    'author' => 'Open Assessment Technologies SA',
+    'requires' => array(
 	   'tao' => '>=3.5.0',
 	   'taoItems' => '*',
 	   'taoTests' => '*',
