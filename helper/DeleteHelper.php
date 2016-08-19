@@ -20,16 +20,22 @@
 
 namespace oat\taoRevision\helper;
 
-use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
+use core_kernel_persistence_smoothsql_SmoothModel;
 use oat\generis\model\data\ModelManager;
 
 class DeleteHelper
 {
-    static public function deepDelete(\core_kernel_classes_Resource $resource) {
-        foreach ($resource->getRdfTriples() as $triple) {
+    static public function deepDelete(\core_kernel_classes_Resource $resource, core_kernel_persistence_smoothsql_SmoothModel $model = null) {
+
+        $triples = $model
+            ? $model->getRdfsInterface()->getResourceImplementation()->getRdfTriples($resource)
+            : $resource->getRdfTriples();
+
+        foreach ($triples as $triple) {
             self::deleteDependencies($triple);
         }
+
         $resource->delete();
     }
         

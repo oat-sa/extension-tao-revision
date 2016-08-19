@@ -24,10 +24,10 @@ return array(
 	'label' => 'Data Revision Control',
 	'description' => '',
     'license' => 'GPL-2.0',
-    'version' => '1.0.4',
+    'version' => '2.1.0',
 	'author' => 'Open Assessment Technologies SA',
 	'requires' => array(
-	   'tao' => '>=2.7.4',
+	   'tao' => '>=3.5.0',
 	   'taoItems' => '*',
 	   'taoTests' => '*',
 	   'taoMediaManager' => '*'
@@ -40,16 +40,10 @@ return array(
     ),
     'install' => array(
         'php' => array(
-            dirname(__FILE__).'/scripts/install/createTables.php',
-            dirname(__FILE__).'/scripts/install/setImplementation.php'
+            oat\taoRevision\scripts\install\SetupRevisions::class
         )
     ),
     'update' => 'oat\\taoRevision\\scripts\\update\\Updater',
-    'autoload' => array (
-        'psr-4' => array(
-            'oat\\taoRevision\\' => dirname(__FILE__).DIRECTORY_SEPARATOR
-        )
-    ),
     'routes' => array(
         '/taoRevision' => 'oat\\taoRevision\\controller'
     ),    

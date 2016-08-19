@@ -18,12 +18,22 @@
  *
  *
  */
+namespace oat\taoRevision\scripts\install;
 
-use oat\taoRevision\model\RepositoryProxy;
-use oat\taoRevision\model\rds\Repository;
+use oat\taoRevision\model\storage\RdsStorage as Storage;
+use oat\taoRevision\model\RepositoryService;
+use oat\taoRevision\model\Repository;
 
-$config = array(
-	'persistence' => 'default'
-);
+class SetupRevisions extends CreateTables {
 
-RepositoryProxy::setImplementation(new Repository($config));
+    public function __invoke($params) {
+        
+        $persistenceId = count($params) > 0 ? reset($params) : 'default';
+        
+        // createTable
+        parent::__invoke(array($persistenceId));
+        
+        $this->registerService('taoRevision/storage', new Storage(array('persistence' => $persistenceId)));
+        $this->registerService(Repository::SERVICE_ID, new RepositoryService(array(RepositoryService::OPTION_STORAGE => 'taoRevision/storage')));
+    }
+}
