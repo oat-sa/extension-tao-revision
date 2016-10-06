@@ -21,6 +21,10 @@
 namespace oat\taoRevision\helper;
 
 use core_kernel_classes_Property;
+use oat\generis\model\fileReference\FileReferenceSerializer;
+use oat\oatbox\service\ServiceManager;
+use oat\oatbox\filesystem\Directory;
+use oat\oatbox\filesystem\FileSystemService;
 
 class CloneHelper
 {
@@ -57,14 +61,16 @@ class CloneHelper
     
     static protected function cloneItemContent($itemContentUri) {
         \common_Logger::i('clone itemcontent '.$itemContentUri);
-        $fileNameProp = new core_kernel_classes_Property(PROPERTY_FILE_FILENAME);
-        $file = new \core_kernel_versioning_File($itemContentUri);
-        $sourceDir = dirname($file->getAbsolutePath());
-    
-        $newFile = $file->getRepository()->spawnFile($sourceDir);
-        $newFile->editPropertyValues($fileNameProp, $file->getPropertyValues($fileNameProp));
-    
-        return $newFile->getUri();
+        $referencer = ServiceManager::getServiceManager()->get(FileReferenceSerializer::SERVICE_ID);
+        $flySystemService = ServiceManager::getServiceManager()->get(FileSystemService::SERVICE_ID);
+        
+        $sourceDir = $referencer->unserializeDirectory($itemContentUri); 
+        $destinationDir = $flySystemService->getDirectory($sourceDir->getFileSystemId())->getDirectory(uniqid());
+        foreach ($sourceDir->getFlyIterator(Directory::ITERATOR_FILE | Directory::ITERATOR_RECURSIVE) as $file) {
+            $destinationDir->getFile($sourceDir->getRelPath($file))->write($file->readStream());
+        }
+            
+        return $referencer->serialize($destinationDir);
     }
 
     static protected function cloneFile($fileUri)
