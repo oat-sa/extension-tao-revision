@@ -13,37 +13,45 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
+ *
+ * Copyright (c) 2016 (original work) Open Assessment Technologies SA;
  * 
  */
 
 namespace oat\taoRevision\helper;
 
-use core_kernel_classes_Property;
 use oat\generis\model\fileReference\FileReferenceSerializer;
+use oat\oatbox\filesystem\File;
 use oat\oatbox\service\ServiceManager;
 use oat\oatbox\filesystem\Directory;
 use oat\oatbox\filesystem\FileSystemService;
 
 class CloneHelper
 {
-    static public function deepCloneTriples($triples) {
+    /**
+     * @param $triples
+     * @param array $propertyFilesystemMap
+     * @return array
+     */
+    static public function deepCloneTriples($triples, array $propertyFilesystemMap = [])
+    {
 
         $clones = array();
         foreach ($triples as $original) {
             $triple = clone $original;
-            if ($triple->predicate == 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemContent') {
-                // manually copy item content
-                $triple->object = self::cloneItemContent($triple->object);
-            } elseif (self::isFileReference($triple)) {
-                $triple->object = self::cloneFile($triple->object);
+            if (self::isFileReference($triple)) {
+                $targetFileSystem = isset($propertyFilesystemMap[$triple->predicate]) ? $propertyFilesystemMap[$triple->predicate] : null;
+                $triple->object = self::cloneFile($triple->object, $targetFileSystem);
             }
             $clones[] = $triple;
         }
         return $clones;
     }
-    
+
+    /**
+     * @param \core_kernel_classes_Triple $triple
+     * @return bool
+     */
     static public function isFileReference(\core_kernel_classes_Triple $triple) {
         $prop = new \core_kernel_classes_Property($triple->predicate);
         $range = $prop->getRange();
@@ -58,31 +66,53 @@ class CloneHelper
         	    return false;
         }
     }
-    
-    static protected function cloneItemContent($itemContentUri) {
-        \common_Logger::i('clone itemcontent '.$itemContentUri);
+
+    /**
+     * @param $fileUri
+     * @param string|null $targetFileSystemId
+     * @return mixed
+     */
+    static protected function cloneFile($fileUri, $targetFileSystemId = null)
+    {
         $referencer = ServiceManager::getServiceManager()->get(FileReferenceSerializer::SERVICE_ID);
         $flySystemService = ServiceManager::getServiceManager()->get(FileSystemService::SERVICE_ID);
-        
-        $sourceDir = $referencer->unserializeDirectory($itemContentUri); 
-        $destinationDir = $flySystemService->getDirectory($sourceDir->getFileSystemId())->getDirectory(uniqid());
-        foreach ($sourceDir->getFlyIterator(Directory::ITERATOR_FILE | Directory::ITERATOR_RECURSIVE) as $file) {
-            $destinationDir->getFile($sourceDir->getRelPath($file))->write($file->readStream());
+
+        $source = $referencer->unserialize($fileUri);
+        $targetFileSystemId = !$targetFileSystemId ? $source->getFileSystemId() : $targetFileSystemId;
+        $destinationPath = $flySystemService->getDirectory($targetFileSystemId)->getDirectory(uniqid());
+
+        if ($source instanceof Directory) {
+            \common_Logger::i('clone directory ' . $fileUri);
+            foreach ($source->getFlyIterator(Directory::ITERATOR_FILE | Directory::ITERATOR_RECURSIVE) as $file) {
+                $destinationPath->getFile($source->getRelPath($file))->write($file->readStream());
+            }
+            $destination = $destinationPath;
+
+        } elseif ($source instanceof File) {
+            \common_Logger::i('clone file ' . $fileUri);
+            $destination = $destinationPath->getFile($source->getBasename());
+            $destination->write($source->readStream());
         }
-            
-        return $referencer->serialize($destinationDir);
+
+        return $referencer->serialize($destination);
     }
 
-    static protected function cloneFile($fileUri)
+
+    /**
+     * Determines origins of stored files
+     * @param $triples
+     * @return array
+     */
+    static public function getPropertyStorageMap($triples)
     {
-        \common_Logger::i('clone file ' . $fileUri);
-
-        $file = new \core_kernel_versioning_File($fileUri);
-
-        $newFile = $file->getRepository()->spawnFile($file->getAbsolutePath(), $file->getLabel(), function($originalName) {
-            return md5($originalName + microtime());
-        });
-
-        return $newFile->getUri();
+        $referencer = ServiceManager::getServiceManager()->get(FileReferenceSerializer::SERVICE_ID);
+        $map = [];
+        foreach ($triples as $triple) {
+            if (self::isFileReference($triple)) {
+                $source = $referencer->unserialize($triple->object);
+                $map[$triple->predicate] = $source->getFileSystemId();
+            }
+        }
+        return $map;
     }
 }

@@ -14,36 +14,36 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2016 (original work) Open Assessment Technologies SA;
  *
  *
  */
 namespace oat\taoRevision\scripts\update;
 
+use oat\oatbox\filesystem\FileSystemService;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\taoRevision\model\Repository;
 use oat\taoRevision\model\rds\Storage;
-use oat\taoRevision\model\RevisionStorage;
 use oat\taoRevision\model\RepositoryService;
 
 /**
- * 
+ *
  * @author Joel Bout <joel@taotesting.com>
  */
 class Updater extends \common_ext_ExtensionUpdater
 {
-    
+
     /**
-     * 
-     * @param string $currentVersion
+     *
+     * @param string $initialVersion
      * @return string $versionUpdatedTo
      */
     public function update($initialVersion)
     {
-        
+
         $currentVersion = $initialVersion;
-        
+
         //migrate from 1.0 to 1.0.1
         if ($currentVersion == '1.0') {
             AclProxy::applyRule(new AccessRule('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor',
@@ -52,18 +52,18 @@ class Updater extends \common_ext_ExtensionUpdater
                 array('controller'=>'oat\\taoRevision\\controller\\History')));
             $currentVersion = '1.0.1';
         }
-        
+
         $this->setVersion($currentVersion);
-        
+
         $this->skip('1.0.1', '1.0.4');
-        
+
         if ($this->isVersion('1.0.4')) {
-            
+
             $impl = $this->getServiceManager()->get(Repository::SERVICE_ID);
             if ($impl instanceof \oat\taoRevision\model\rds\Repository) {
                 $storage = new Storage($impl->getOptions());
                 $this->getServiceManager()->register('taoRevision/storage', $storage);
-                
+
                 $service = new RepositoryService(array(
                     RepositoryService::OPTION_STORAGE => 'taoRevision/storage'
                 ));
@@ -72,8 +72,16 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('2.0.0');
         }
 
-        $this->skip('2.0.0', '2.0.1');
-        
         $this->skip('2.0.1', '2.1.2');
+
+        if ($this->isVersion('2.1.2')) {
+
+            $fsm = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
+            $fsm->createFileSystem('revisions', 'tao/revisions');
+            $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $fsm);
+
+            $this->setVersion('2.2.0');
+        }
+
     }
 }
