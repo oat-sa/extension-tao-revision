@@ -72,7 +72,7 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('2.0.0');
         }
 
-        $this->skip('2.0.1', '2.1.2');
+        $this->skip('2.0.0', '2.1.2');
 
         if ($this->isVersion('2.1.2')) {
 
