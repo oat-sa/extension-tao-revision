@@ -20,6 +20,7 @@
 
 namespace oat\taoRevision\model;
 
+use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\taoRevision\helper\CloneHelper;
 use oat\generis\model\data\ModelManager;
@@ -28,15 +29,21 @@ use oat\oatbox\service\ConfigurableService;
 
 /**
  * A simple repository implementation that stores the information
- * in a dedicated rds table
- * 
+ * in a dedicated rds table and all related files at separate FS
+ *
  * @author bout
  */
 class RepositoryService extends ConfigurableService implements Repository
 {
     const OPTION_STORAGE = 'storage';
-    
-    private $storage = null;
+    const OPTION_FS = 'filesystem';
+
+    private $storage;
+
+    /**
+     * @var FileSystem
+     */
+    private $fileSystem;
 
     /**
      * @return RevisionStorage
@@ -48,7 +55,19 @@ class RepositoryService extends ConfigurableService implements Repository
         }
         return $this->storage;
     }
-    
+
+    /**
+     *
+     * @return FileSystem
+     */
+    protected function getFileSystem()
+    {
+        if (is_null($this->fileSystem)) {
+            $this->fileSystem = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID)->getFileSystem($this->getOption(self::OPTION_FS));
+        }
+        return $this->fileSystem;
+    }
+
     /**
      * (non-PHPdoc)
      * @see \oat\taoRevision\model\Repository::getRevisions()
@@ -57,7 +76,7 @@ class RepositoryService extends ConfigurableService implements Repository
     {
         return $this->getStorage()->getAllRevisions($resourceId);
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see \oat\taoRevision\model\Repository::getRevision()
@@ -66,7 +85,7 @@ class RepositoryService extends ConfigurableService implements Repository
     {
         return $this->getStorage()->getRevision($resourceId, $version);
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see \oat\taoRevision\model\Repository::commit()
@@ -78,22 +97,20 @@ class RepositoryService extends ConfigurableService implements Repository
         $version = is_null($version) ? $this->getNextVersion($resourceId) : $version;
         $created = time();
 
-        $fileSystem = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID)->getFileSystem('revisions');
-
         // save data
         $resource = new \core_kernel_classes_Resource($resourceId);
         $triples = $resource->getRdfTriples();
 
         $filesystemMap = array_fill_keys(array_keys(CloneHelper::getPropertyStorageMap($triples)),
-            $fileSystem->getId());
+            $this->getFileSystem()->getId());
 
         $data = CloneHelper::deepCloneTriples($triples, $filesystemMap);
-        
+
         $revision = $this->getStorage()->addRevision($resourceId, $version, $created, $userId, $message, $data);
 
         return $revision;
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see \oat\taoRevision\model\Repository::restore()
@@ -112,7 +129,7 @@ class RepositoryService extends ConfigurableService implements Repository
 
         return true;
     }
-    
+
     /**
      * Helper to determin suitable next version nr
      *

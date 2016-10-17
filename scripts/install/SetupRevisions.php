@@ -34,12 +34,17 @@ class SetupRevisions extends CreateTables {
         // createTable
         parent::__invoke(array($persistenceId));
 
-        $this->registerService('taoRevision/storage', new Storage(array('persistence' => $persistenceId)));
-        $this->registerService(Repository::SERVICE_ID, new RepositoryService(array(RepositoryService::OPTION_STORAGE => 'taoRevision/storage')));
-
         // create separate file storage
+        $fsName = 'revisions';
         $fsm = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
-        $fsm->createFileSystem('revisions', 'tao/revisions');
+        $fsm->createFileSystem($fsName, 'tao/revisions');
         $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $fsm);
+
+
+        $this->registerService('taoRevision/storage', new Storage(['persistence' => $persistenceId]));
+        $this->registerService(Repository::SERVICE_ID, new RepositoryService([
+            RepositoryService::OPTION_STORAGE => 'taoRevision/storage',
+            RepositoryService::OPTION_FS => $fsName
+        ]));
     }
 }
