@@ -22,9 +22,15 @@
 namespace oat\taoRevision\test\helper;
 
 
+use oat\generis\model\fileReference\FileReferenceSerializer;
+use oat\oatbox\filesystem\Directory;
+use oat\oatbox\filesystem\File;
+use oat\oatbox\service\ServiceManager;
+use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoRevision\helper\CloneHelper;
 
-class CloneHelperTest extends \PHPUnit_Framework_TestCase {
+class CloneHelperTest extends TaoPhpUnitTestRunner
+{
 
     public function testDeepCloneTriplesSimple()
     {
@@ -40,69 +46,70 @@ class CloneHelperTest extends \PHPUnit_Framework_TestCase {
 
     public function testDeepCloneTriplesItemContent()
     {
-        // create a file / put it in item content property
-        /** @var \core_kernel_versioning_Repository $repository */
-        $repository = \tao_models_classes_FileSourceService::singleton()->addLocalSource("repository test", \tao_helpers_File::createTempDir());
 
-        //see if clone item content works
+        $this->assertFileExists(__DIR__ . '/sample/test.xml');
+        $this->assertFileExists(__DIR__ . '/sample/style.css');
 
-        /** @var \core_kernel_versioning_File $file */
-        $file = $repository->createFile("test.xml", "test");
+        $dir = $this->getTempDirectory();
+        $dir->getFile('/test/test.xml')->put(file_get_contents(__DIR__ . '/sample/test.xml'));
+        $dir->getFile('/test/style.css')->put(file_get_contents(__DIR__ . '/sample/style.css'));
 
-        mkdir($repository->getPath().'test');
-        copy(__DIR__.'/sample/test.xml', $repository->getPath().'test/test.xml');
-        copy(__DIR__.'/sample/style.css', $repository->getPath().'test/style.css');
+        /** @var FileReferenceSerializer $serializer */
+        $serializer = ServiceManager::getServiceManager()->get(FileReferenceSerializer::SERVICE_ID);
+        $fileUri = $serializer->serialize($dir);
 
+        //see if clone file works
         $rdfsTriple = new \core_kernel_classes_Triple();
         $rdfsTriple->predicate = "http://www.tao.lu/Ontologies/TAOItem.rdf#ItemContent";
-        $rdfsTriple->object = $file->getUri();
-        $fileNameProp = new \core_kernel_classes_Property(PROPERTY_FILE_FILENAME);
-        $return = CloneHelper::deepCloneTriples(array($rdfsTriple));
+        $rdfsTriple->object = $fileUri;
+        $return = CloneHelper::deepCloneTriples([$rdfsTriple]);
 
-        $this->assertNotEquals($rdfsTriple->object, $return[0]->object);
+        $this->assertCount(1, $return);
         $this->assertEquals($rdfsTriple->predicate, $return[0]->predicate);
-        $this->assertCount(1,$return);
-        $returnedFile = new \core_kernel_versioning_File($return[0]->object);
-        $this->assertEquals($returnedFile->getPropertyValues($fileNameProp), $file->getPropertyValues($fileNameProp));
-        $this->assertNotEquals($file->getAbsolutePath(), $returnedFile->getAbsolutePath());
-        $files = scandir(dirname($returnedFile->getAbsolutePath()));
-        $this->assertContains('test.xml',$files);
-        $this->assertContains('style.css',$files);
+        $this->assertNotEquals($rdfsTriple->object, $return[0]->object);
 
-        $file->delete(true);
-        $returnedFile->delete(true);
-        $repository->delete(true);
+        /** @var Directory $dirCopy */
+        $dirCopy = $serializer->unserialize($return[0]->object);
+
+        $this->assertTrue($dirCopy->exists());
+        $this->assertNotEquals($dir->getPrefix(), $dirCopy->getPrefix());
+        $this->assertEquals(2, count($dirCopy->getDirectory('test')->getFlyIterator()->getArrayCopy()));
+
     }
+
 
     public function testDeepCloneTriplesFile()
     {
-        /** @var \core_kernel_versioning_Repository $repository */
-        $repository = \tao_models_classes_FileSourceService::singleton()->addLocalSource("repository test", \tao_helpers_File::createTempDir());
 
-        //see if clone item content works
+        $this->assertFileExists(__DIR__ . '/sample/test.xml');
 
-        /** @var \core_kernel_versioning_File $file */
-        $file = $repository->spawnFile(__DIR__ . '/sample/test.xml', "test", function ($originalName) {
-            return md5($originalName);
-        });
+        $dir = $this->getTempDirectory();
+        $file = $dir->getFile('/sample/test.xml');
+        $file->put(file_get_contents(__DIR__ . '/sample/test.xml'));
+
+        /** @var FileReferenceSerializer $serializer */
+        $serializer = ServiceManager::getServiceManager()->get(FileReferenceSerializer::SERVICE_ID);
+        $fileUri = $serializer->serialize($file);
 
         //see if clone file works
         $rdfsTriple = new \core_kernel_classes_Triple();
         $rdfsTriple->predicate = "http://www.w3.org/1999/02/22-rdf-syntax-ns#value";
-        $rdfsTriple->object = $file->getUri();
-        $return = CloneHelper::deepCloneTriples(array($rdfsTriple));
-        $this->assertCount(1,$return);
+        $rdfsTriple->object = $fileUri;
+        $return = CloneHelper::deepCloneTriples([$rdfsTriple]);
+
+        $this->assertCount(1, $return);
         $this->assertEquals($rdfsTriple->predicate, $return[0]->predicate);
         $this->assertNotEquals($rdfsTriple->object, $return[0]->object);
-        
-        $fileCopy = new \core_kernel_file_File($return[0]->object);
-        $this->assertFileExists($fileCopy->getAbsolutePath());
-        $this->assertEquals($file->getLabel(), $fileCopy->getLabel());
-        $this->assertNotEquals($file->getAbsolutePath(), $fileCopy->getAbsolutePath());
+
+        /** @var File $fileCopy */
+        $fileCopy = $serializer->unserialize($return[0]->object);
+
+        $this->assertTrue($fileCopy->exists());
+        $this->assertEquals($file->getSize(), $fileCopy->getSize());
+        $this->assertNotEquals($file->getPrefix(), $fileCopy->getPrefix());
 
         $file->delete(true);
         $fileCopy->delete(true);
-        $repository->delete(true);
     }
 
     /**
@@ -114,16 +121,16 @@ class CloneHelperTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertEquals($isRefProvider, $isRef);
     }
-    
+
     public function testIsFileReferenceResourceRange(){
-    
+
         $classFile = new \core_kernel_classes_Class("http://www.tao.lu/Ontologies/generis.rdf#File");
         $file = $classFile->createInstance("test");
 
         $rdfsTriple = new \core_kernel_classes_Triple();
         $rdfsTriple->predicate = "http://www.w3.org/1999/02/22-rdf-syntax-ns#value";
         $rdfsTriple->object = $file->getUri();
-        
+
         $this->assertTrue(CloneHelper::isFileReference($rdfsTriple));
         $file->delete();
     }
@@ -144,5 +151,27 @@ class CloneHelperTest extends \PHPUnit_Framework_TestCase {
             array(false, $rdfsTripleFalse),
             array(false, $falseTriple)
         );
+    }
+
+    public function testGetPropertyMap()
+    {
+        $this->assertFileExists(__DIR__ . '/sample/test.xml');
+
+        $dir = $this->getTempDirectory();
+        $file = $dir->getFile('/sample/test.xml');
+        $file->put(file_get_contents(__DIR__ . '/sample/test.xml'));
+
+        /** @var FileReferenceSerializer $serializer */
+        $serializer = ServiceManager::getServiceManager()->get(FileReferenceSerializer::SERVICE_ID);
+        $fileUri = $serializer->serialize($file);
+
+        //see if clone file works
+        $rdfsTriple = new \core_kernel_classes_Triple();
+        $rdfsTriple->predicate = "http://www.w3.org/1999/02/22-rdf-syntax-ns#value";
+        $rdfsTriple->object = $fileUri;
+
+        $return = CloneHelper::getPropertyStorageMap([$rdfsTriple]);
+        $this->assertEquals($dir->getFileSystemId(), reset($return));
+
     }
 }
