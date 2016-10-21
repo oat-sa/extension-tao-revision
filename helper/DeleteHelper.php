@@ -20,10 +20,11 @@
 
 namespace oat\taoRevision\helper;
 
-use core_kernel_classes_Resource;
 use core_kernel_persistence_smoothsql_SmoothModel;
 use oat\generis\model\data\ModelManager;
 use oat\generis\model\fileReference\FileReferenceSerializer;
+use oat\oatbox\filesystem\Directory;
+use oat\oatbox\filesystem\File;
 use oat\oatbox\service\ServiceManager;
 
 class DeleteHelper
@@ -50,16 +51,15 @@ class DeleteHelper
     }
     
     static protected function deleteDependencies(\core_kernel_classes_Triple $triple) {
-        if ($triple->predicate == 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemContent') {
+        if (CloneHelper::isFileReference($triple)) {
             $referencer = ServiceManager::getServiceManager()->get(FileReferenceSerializer::SERVICE_ID);
-            $sourceDir = $referencer->unserializeDirectory($triple->object);
-            $sourceDir->deleteSelf();
-            $referencer->cleanUp($triple->object);
-        } elseif (CloneHelper::isFileReference($triple)) {
-            $file = new \core_kernel_versioning_File($triple->object);
-            if ($file->exists()) {
-                $file->delete();
+            $source = $referencer->unserialize($triple->object);
+            if ($source instanceof Directory) {
+                $source->deleteSelf();
+            } elseif ($source instanceof File) {
+                $source->delete();
             }
+            $referencer->cleanUp($triple->object);
         }
     }    
 }

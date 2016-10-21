@@ -20,6 +20,7 @@
  */
 namespace oat\taoRevision\scripts\install;
 
+use oat\oatbox\filesystem\FileSystemService;
 use oat\taoRevision\model\storage\RdsStorage as Storage;
 use oat\taoRevision\model\RepositoryService;
 use oat\taoRevision\model\Repository;
@@ -27,13 +28,23 @@ use oat\taoRevision\model\Repository;
 class SetupRevisions extends CreateTables {
 
     public function __invoke($params) {
-        
+
         $persistenceId = count($params) > 0 ? reset($params) : 'default';
-        
+
         // createTable
         parent::__invoke(array($persistenceId));
-        
-        $this->registerService('taoRevision/storage', new Storage(array('persistence' => $persistenceId)));
-        $this->registerService(Repository::SERVICE_ID, new RepositoryService(array(RepositoryService::OPTION_STORAGE => 'taoRevision/storage')));
+
+        // create separate file storage
+        $fsName = 'revisions';
+        $fsm = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
+        $fsm->createFileSystem($fsName, 'tao/revisions');
+        $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $fsm);
+
+
+        $this->registerService('taoRevision/storage', new Storage(['persistence' => $persistenceId]));
+        $this->registerService(Repository::SERVICE_ID, new RepositoryService([
+            RepositoryService::OPTION_STORAGE => 'taoRevision/storage',
+            RepositoryService::OPTION_FS => $fsName
+        ]));
     }
 }

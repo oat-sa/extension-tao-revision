@@ -24,7 +24,7 @@ return array(
     'label' => 'Data Revision Control',
     'description' => '',
     'license' => 'GPL-2.0',
-    'version' => '2.1.2',
+    'version' => '2.2.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => array(
 	   'tao' => '>=7.0.0',

@@ -22,50 +22,61 @@
 namespace oat\taoRevision\test\helper;
 
 
+use oat\generis\model\fileReference\FileReferenceSerializer;
+use oat\oatbox\service\ServiceManager;
+use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoRevision\helper\DeleteHelper;
 
-class DeleteHelperTest extends \PHPUnit_Framework_TestCase {
+class DeleteHelperTest extends TaoPhpUnitTestRunner
+{
 
-    public function testDeepDelete(){
-        //create resources
-        $repository = \tao_models_classes_FileSourceService::singleton()->addLocalSource("Label Test", \tao_helpers_File::createTempDir());
-        /** @var \core_kernel_versioning_File $file */
-        $file = $repository->createFile("test.xml", "sample");
+    public function testDeepDelete()
+    {
+        $this->assertFileExists(__DIR__ . '/sample/test.xml');
 
-        mkdir($repository->getPath().'sample');
-        copy(__DIR__.'/sample/test.xml', $repository->getPath().'sample/test.xml');
-        $dirname = $file->getFileInfo()->getPath();
-        $this->assertFileExists($dirname.'/test.xml');
+        list($file, $resource) = $this->getResource('/sample/test.xml');
+
+        $this->assertTrue($file->exists());
         //delete resource
-        DeleteHelper::deepDelete($file);
-        DeleteHelper::deepDelete($repository);
 
-        //see if all is deleted
-        //try to get the resource
-        $resourceTest = new \core_kernel_classes_Resource($repository->getUri());
-        $fileTest = new \core_kernel_classes_Resource($file->getUri());
-        
-        $this->assertFileNotExists($dirname.'/test.xml');
-        $this->assertCount(0, $resourceTest->getRdfTriples());
-        $this->assertCount(0, $fileTest->getRdfTriples());
+        DeleteHelper::deepDelete($resource);
+
+        $this->assertFalse($file->exists());
 
     }
 
-    public function testDeepDeleteTriples(){
-        //create resources
-        $repository = \tao_models_classes_FileSourceService::singleton()->addLocalSource("Label Test", \tao_helpers_File::createTempDir());
-        $file = $repository->createFile("test.xml", "sample");
+    public function testDeepDeleteTriples()
+    {
+        list($file, $resource) = $this->getResource('/sample/test.xml');
 
         //delete resource
-        DeleteHelper::deepDeleteTriples($file->getRdfTriples());
-        DeleteHelper::deepDeleteTriples($repository->getRdfTriples());
-
+        DeleteHelper::deepDeleteTriples($resource->getRdfTriples());
         //see if all is deleted
-        //try to get the resource
-        $resourceTest = new \core_kernel_classes_Resource($repository->getUri());
-        $fileTest = new \core_kernel_classes_Resource($file->getUri());
-        $this->assertCount(0, $resourceTest->getRdfTriples());
-        $this->assertCount(0, $fileTest->getRdfTriples());
+        $this->assertCount(0, $resource->getRdfTriples());
+        $this->assertFalse($file->exists());
+
+    }
+
+    /**
+     * @return array
+     */
+    protected function getResource($relPath)
+    {
+        $dir = $this->getTempDirectory();
+        $file = $dir->getFile($relPath);
+        $file->put(file_get_contents(__DIR__ . $relPath));
+
+        /** @var FileReferenceSerializer $serializer */
+        $serializer = ServiceManager::getServiceManager()->get(FileReferenceSerializer::SERVICE_ID);
+        $fileUri = $serializer->serialize($file);
+
+        $class = new \core_kernel_classes_Class('fakeClass');
+        $resource = $class->createInstance('fakeInstance');
+        $prop = new \core_kernel_classes_Property('fakeProp');
+        $prop->setRange(new \core_kernel_classes_Class(CLASS_GENERIS_FILE));
+        $resource->editPropertyValues($prop,
+            new \core_kernel_classes_Resource($fileUri));
+        return array($file, $resource);
     }
 }
  
