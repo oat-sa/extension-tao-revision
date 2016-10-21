@@ -80,15 +80,10 @@ class Updater extends \common_ext_ExtensionUpdater
             $fsm->createFileSystem('revisions', 'tao/revisions');
             $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $fsm);
 
+            $repositoryService = $this->getServiceManager()->get(Repository::SERVICE_ID);
+            $repositoryService->setOption(RepositoryService::OPTION_FS, 'revisions');
+            $this->getServiceManager()->register(Repository::SERVICE_ID, $repositoryService);
             $this->setVersion('2.2.0');
-        }
-
-        if ($this->isVersion('2.2.0')) {
-
-            $service = $this->getServiceManager()->get(Repository::SERVICE_ID);
-            $service->setOption(RepositoryService::OPTION_FS, 'revisions');
-            $this->getServiceManager()->register(Repository::SERVICE_ID, $service);
-            $this->setVersion('2.2.1');
         }
 
 
