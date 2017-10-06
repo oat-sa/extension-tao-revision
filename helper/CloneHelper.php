@@ -21,6 +21,8 @@
 namespace oat\taoRevision\helper;
 
 use oat\generis\model\fileReference\FileReferenceSerializer;
+use oat\generis\model\GenerisRdf;
+use oat\generis\model\OntologyRdfs;
 use oat\oatbox\filesystem\File;
 use oat\oatbox\service\ServiceManager;
 use oat\oatbox\filesystem\Directory;
@@ -57,11 +59,11 @@ class CloneHelper
         $range = $prop->getRange();
         $rangeUri = is_null($range) ? '' : $range->getUri(); 
         switch ($rangeUri) {
-        	case CLASS_GENERIS_FILE :
+        	case GenerisRdf::CLASS_GENERIS_FILE :
         	    return true;
-        	case RDFS_RESOURCE :
+        	case OntologyRdfs::RDFS_RESOURCE :
         	    $object = new \core_kernel_classes_Resource($triple->object);
-        	    return $object->hasType(new \core_kernel_classes_Class(CLASS_GENERIS_FILE));
+        	    return $object->hasType(new \core_kernel_classes_Class(GenerisRdf::CLASS_GENERIS_FILE));
         	default :
         	    return false;
         }
