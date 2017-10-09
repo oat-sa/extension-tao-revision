@@ -161,6 +161,6 @@ class Storage extends ConfigurableService implements  RevisionStorage
             ];
         }
         
-        return $this->getPersistence()->exec(self::DATA_TABLE_NAME, $dataToSave);
+        return $this->getPersistence()->insertMultiple(self::DATA_TABLE_NAME, $dataToSave);
     }
 }
