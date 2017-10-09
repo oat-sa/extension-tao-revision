@@ -144,25 +144,19 @@ class RdsStorage extends ConfigurableService
      * @return boolean
      */
     protected function saveData(Revision $revision, $data) {
-        $columns = array(self::DATA_RESOURCE, self::DATA_VERSION, self::DATA_SUBJECT, self::DATA_PREDICATE, self::DATA_OBJECT, self::DATA_LANGUAGE);
+        $dataToSave = [];
         
-        $multipleInsertQueryHelper = $this->getPersistence()->getPlatForm()->getMultipleInsertsSqlQueryHelper();
-        $query = $multipleInsertQueryHelper->getFirstStaticPart(self::DATA_TABLE_NAME, $columns);
         foreach ($data as $triple) {
-            $query .= $multipleInsertQueryHelper->getValuePart(self::DATA_TABLE_NAME, $columns, array(
-                self::DATA_RESOURCE  => $this->getPersistence()->quote($revision->getResourceId()),
-                self::DATA_VERSION   => $this->getPersistence()->quote($revision->getVersion()),
-                self::DATA_SUBJECT   => $this->getPersistence()->quote($triple->subject),
-                self::DATA_PREDICATE => $this->getPersistence()->quote($triple->predicate),
-                self::DATA_OBJECT    => $this->getPersistence()->quote($triple->object),
-                self::DATA_LANGUAGE  => $this->getPersistence()->quote($triple->lg)
-            ));
+            $dataToSave[] = [
+                self::DATA_RESOURCE  => $revision->getResourceId(),
+                self::DATA_VERSION   => $revision->getVersion(),
+                self::DATA_SUBJECT   => $triple->subject,
+                self::DATA_PREDICATE => $triple->predicate,
+                self::DATA_OBJECT    => $triple->object,
+                self::DATA_LANGUAGE  => $triple->lg
+            ];
         }
         
-        $query = substr($query, 0, strlen($query) -1);
-        $query .= $multipleInsertQueryHelper->getEndStaticPart();
-        $success = $this->getPersistence()->exec($query);
-
-        return $success;
+        return $this->getPersistence()->insertMultiple(self::DATA_TABLE_NAME, $dataToSave);
     }
 }
