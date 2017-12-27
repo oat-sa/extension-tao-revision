@@ -23,6 +23,7 @@ namespace oat\taoRevision\test\helper;
 
 
 use oat\generis\model\fileReference\FileReferenceSerializer;
+use oat\generis\model\GenerisRdf;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoRevision\helper\DeleteHelper;
@@ -73,7 +74,7 @@ class DeleteHelperTest extends TaoPhpUnitTestRunner
         $class = new \core_kernel_classes_Class('fakeClass');
         $resource = $class->createInstance('fakeInstance');
         $prop = new \core_kernel_classes_Property('fakeProp');
-        $prop->setRange(new \core_kernel_classes_Class(CLASS_GENERIS_FILE));
+        $prop->setRange(new \core_kernel_classes_Class(GenerisRdf::CLASS_GENERIS_FILE));
         $resource->editPropertyValues($prop,
             new \core_kernel_classes_Resource($fileUri));
         return array($file, $resource);
