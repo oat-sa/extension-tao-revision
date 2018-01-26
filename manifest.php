@@ -23,7 +23,7 @@ return array(
     'name' => 'taoRevision',
     'label' => 'Data Revision Control',
     'description' => '',
-    'license' => 'GPL-2.0-only',
+    'license' => 'GPL-2.0',
     'version' => '4.1.1',
     'author' => 'Open Assessment Technologies SA',
     'requires' => array(
