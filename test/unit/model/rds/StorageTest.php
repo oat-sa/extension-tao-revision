@@ -19,7 +19,7 @@
  *
  */
 
-namespace oat\taoRevision\test\model\rds;
+namespace oat\taoRevision\test\unit\model\rds;
 
 
 use oat\taoRevision\model\storage\RdsStorage;
