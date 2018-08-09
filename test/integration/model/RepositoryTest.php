@@ -19,7 +19,7 @@
  *
  */
 
-namespace oat\taoRevision\test\model;
+namespace oat\taoRevision\test\integration\model;
 
 
 use oat\oatbox\filesystem\Directory;

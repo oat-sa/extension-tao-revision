@@ -19,8 +19,9 @@
  *
  */
 
-namespace oat\taoRevision\test\helper;
+namespace oat\taoRevision\test\integration\helper;
 
+require_once dirname(__FILE__) .'/../../../../tao/includes/raw_start.php';
 
 use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\oatbox\filesystem\Directory;
