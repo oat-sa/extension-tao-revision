@@ -19,7 +19,7 @@
  *
  */
 
-namespace oat\taoRevision\test\helper;
+namespace oat\taoRevision\test\integration\helper;
 
 
 use oat\generis\model\fileReference\FileReferenceSerializer;
