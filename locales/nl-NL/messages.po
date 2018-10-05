@@ -1,0 +1,85 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 3.3.0-sprint86\n"
+"PO-Revision-Date: 2018-09-26T12:04:44\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: nl-NL\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: nl-NL\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "%s has been committed"
+msgstr "%s is doorgevoerd"
+
+msgid "Actions"
+msgstr "Acties"
+
+msgid "Commit"
+msgstr "Doorvoeren"
+
+#, tao-public
+msgid "History"
+msgstr "Geschiedenis"
+
+msgid "History of %s"
+msgstr "Geschiedenis van %s"
+
+msgid "Id"
+msgstr "Id"
+
+#, tao-public
+msgid "Items"
+msgstr "Items"
+
+#, tao-public
+msgid "Manage items"
+msgstr "Beheer items"
+
+#, tao-public
+msgid "Manage Media"
+msgstr "Beheer media"
+
+#, tao-public
+msgid "Manage tests"
+msgstr "Beheer examens"
+
+#, tao-public
+msgid "Media"
+msgstr "Media"
+
+msgid "Message"
+msgstr "Bericht"
+
+msgid "Please give a message to your commit"
+msgstr "Voeg a.u.b. een bericht toe aan uw verwijzing"
+
+msgid "Resource restored"
+msgstr "Hulpbronnen hersteld"
+
+msgid "Restore"
+msgstr "Herstellen"
+
+msgid "Restored version %s"
+msgstr "Herstelde versie %s"
+
+msgid "Something went wrong..."
+msgstr "Er ging iets mis..."
+
+#, tao-public
+msgid "Tests"
+msgstr "Examens"
+
+msgid "Time"
+msgstr "Tijd"
+
+msgid "Unable to restore the selected version"
+msgstr "Niet in staat om de geselecteerde versie te herstellen"
+
+msgid "User"
+msgstr "Gebruiker"
+
