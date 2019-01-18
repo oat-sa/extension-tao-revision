@@ -14,129 +14,124 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
- *
- *
+ * Copyright (c) 2019 (original work) Open Assessment Technologies SA ;
  */
 
-namespace oat\taoRevision\test\unit\model\rds;
+namespace oat\taoRevision\test\integration\model\rds;
 
-
+use common_persistence_Manager;
 use oat\taoRevision\model\storage\RdsStorage;
 use oat\taoRevision\model\Revision;
-use oat\oatbox\service\ServiceManager;
+use PHPUnit_Framework_TestCase;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use oat\taoRevision\scripts\install\CreateTables;
 
-class StorageTest extends \PHPUnit_Framework_TestCase {
+class StorageTest extends PHPUnit_Framework_TestCase
+{
+    private $storage;
 
-
-    private $storage = null;
-
-    public function setUp(){
-      
-        $persistenceManager = new \common_persistence_Manager(array(
-            'persistences' => array(
-                'persistenceMock' => array(
+    public function setUp()
+    {
+        $persistenceManager = new common_persistence_Manager([
+            'persistences' => [
+                'persistenceMock' => [
                     'driver' => 'dbal',
-                    'connection' => array(
+                    'connection' => [
                         'driver' => 'pdo_sqlite',
-                        'memory' => true
-                    )
-                )
-            )
-        ));
-        
+                        'memory' => true,
+                    ],
+                ],
+            ],
+        ]);
+
         $serviceManager = $this->getMockForAbstractClass(ServiceLocatorInterface::class);
         $serviceManager->method('get')
-            ->with(\common_persistence_Manager::SERVICE_KEY)
+            ->with(common_persistence_Manager::SERVICE_KEY)
             ->willReturn($persistenceManager);
 
         $createTables = new CreateTables();
         $createTables->setServiceLocator($serviceManager);
-        $createTables(array('persistenceMock'));
-        
-        $this->storage = new RdsStorage(array('persistence' => 'persistenceMock'));
-        $this->storage->setServiceLocator($serviceManager);
+        $createTables(['persistenceMock']);
 
+        $this->storage = new RdsStorage(['persistence' => 'persistenceMock']);
+        $this->storage->setServiceLocator($serviceManager);
     }
 
-    public function tearDown(){
-
+    public function tearDown()
+    {
         $this->storage = null;
     }
 
-
-    public function testAddGetRevision(){
-        
+    public function testAddGetRevision()
+    {
         // set the revision we are supposed to get
         $resourceId = 123;
         $version = 456;
-        $author = "author";
-        $message = "my message";
+        $author = 'author';
+        $message = 'my message';
         $created = time();
-        $data = array();
 
         $revision = new Revision($resourceId, $version, $created, $author, $message);
 
-        $persist = $this->storage->getServiceLocator()->get(\common_persistence_Manager::SERVICE_KEY)->getPersistenceById('persistenceMock');
+        $persist = $this->storage
+            ->getServiceLocator()
+            ->get(common_persistence_Manager::SERVICE_KEY)
+            ->getPersistenceById('persistenceMock');
+
         $count = $persist->query('select count(*) as count from revision')->fetch()['count'];
-        
+
         $this->assertEquals(0, $count);
-        $returnValue = $this->storage->addRevision($resourceId, $version, $created, $author, $message, array());
+        $returnValue = $this->storage->addRevision($resourceId, $version, $created, $author, $message, []);
         $count = $persist->query('select count(*) as count from revision')->fetch()['count'];
         $this->assertEquals(1, $count);
         $returnValue = $this->storage->getRevision($resourceId, $version);
-        
+
         $this->assertEquals($revision, $returnValue);
-        
-        
+
         return $revision;
     }
 
-    public function testGetAllRevisions() {
-
+    public function testGetAllRevisions()
+    {
         // set revisions we are supposed to get
         $resourceId = 123;
         $version1 = 456;
         $version2 = 789;
-        $author = "author";
-        $message1 = "my message";
-        $message2 = "my new message";
+        $author = 'author';
+        $message1 = 'my message';
+        $message2 = 'my new message';
         $created1 = time();
         $created2 = time();
 
-        $revisions = array(
-            $this->storage->addRevision($resourceId, $version1, $created1, $author, $message1, array()),
-            $this->storage->addRevision($resourceId, $version2, $created2, $author, $message2, array())
-        );
-        
+        $revisions = [
+            $this->storage->addRevision($resourceId, $version1, $created1, $author, $message1, []),
+            $this->storage->addRevision($resourceId, $version2, $created2, $author, $message2, []),
+        ];
+
         $returnValue = $this->storage->getAllRevisions($resourceId);
 
         $this->assertEquals($revisions, $returnValue);
-
     }
 
-
-    public function testGetData() {
-
+    public function testGetData()
+    {
         // set the revision we are supposed to get
         $resourceId = 123;
         $version = 456;
-        $author = "author";
-        $message = "my message";
+        $author = 'author';
+        $message = 'my message';
         $created = time();
         $revision = new Revision($resourceId, $version, $created, $author, $message);
 
-        $subject1 = "my first subject";
-        $predicate1 = "my first predicate";
-        $object1 = "my first object";
-        $lg1 = "en-en";
+        $subject1 = 'my first subject';
+        $predicate1 = 'my first predicate';
+        $object1 = 'my first object';
+        $lg1 = 'en-en';
 
-        $subject2 = "my second subject";
-        $predicate2 = "my second predicate";
-        $object2 = "my second object";
-        $lg2 = "fr-fr";
+        $subject2 = 'my second subject';
+        $predicate2 = 'my second predicate';
+        $object2 = 'my second object';
+        $lg2 = 'fr-fr';
 
         // Initialize the expected values
         $triple1 = new \core_kernel_classes_Triple();
@@ -151,17 +146,12 @@ class StorageTest extends \PHPUnit_Framework_TestCase {
         $triple2->predicate = $predicate2;
         $triple2->object = $object2;
         $triple2->lg = $lg2;
-        $triples = array($triple1, $triple2);
-        
+        $triples = [$triple1, $triple2];
+
         $revision = $this->storage->addRevision($resourceId, $version, $created, $author, $message, $triples);
-        
-        
-        
+
         $data = $this->storage->getData($revision);
 
         $this->assertEquals($triples, $data);
     }
-
-
 }
- 
