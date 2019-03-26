@@ -90,10 +90,12 @@ class RepositoryService extends ConfigurableService implements Repository
      * (non-PHPdoc)
      * @see \oat\taoRevision\model\Repository::commit()
      */
-    public function commit($resourceId, $message, $version = null)
+    public function commit($resourceId, $message, $version = null, $userId = null)
     {
-        $user = \common_session_SessionManager::getSession()->getUser();
-        $userId = is_null($user) ? null : $user->getIdentifier();
+        if (!$userId) {
+            $user = \common_session_SessionManager::getSession()->getUser();
+            $userId = is_null($user) ? null : $user->getIdentifier();
+        }
         $version = is_null($version) ? $this->getNextVersion($resourceId) : $version;
         $created = time();
 
