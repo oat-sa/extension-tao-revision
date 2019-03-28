@@ -24,11 +24,11 @@ return array(
     'label' => 'Data Revision Control',
     'description' => '',
     'license' => 'GPL-2.0',
-    'version' => '5.0.1',
+    'version' => '5.1.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => array(
        'generis'         => '>=5.9.0',
-	   'tao'             => '>=21.0.0',
+	   'tao'             => '>=31.0.0',
 	   'taoItems'        => '*',
 	   'taoTests'        => '*',
 	   'taoMediaManager' => '*'
