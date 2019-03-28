@@ -92,7 +92,7 @@ class RepositoryService extends ConfigurableService implements Repository
      */
     public function commit($resourceId, $message, $version = null, $userId = null)
     {
-        if (!$userId) {
+        if ($userId === null) {
             $user = \common_session_SessionManager::getSession()->getUser();
             $userId = is_null($user) ? null : $user->getIdentifier();
         }
