@@ -50,11 +50,6 @@ class RepositoryTest extends TaoPhpUnitTestRunner
         $fsm = $this->prophesize(FileSystemService::class);
         $smProphecy->get('generis/filesystem')->willReturn($fsm->reveal());
 
-        $reflection = new \ReflectionClass(\tao_helpers_Environment::class);
-        $method = $reflection->getMethod('toBytes');
-        $method->setAccessible(true);
-
-
         $method = new ReflectionMethod(Directory::class, 'getFileSystem');
         $method->setAccessible(true);
         $fsm->getFileSystem('mockFS')->willReturn($method->invoke($fs));
