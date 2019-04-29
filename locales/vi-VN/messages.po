@@ -1,12 +1,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.3.0-sprint96\n"
-"PO-Revision-Date: 2019-04-25T01:04:44\n"
+"PO-Revision-Date: 2019-04-25T01:07:39\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: nl-NL\n"
+"Language: vi-VN\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: nl-NL\n"
+"targetLanguage: vi-VN\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
@@ -14,72 +14,72 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "%s has been committed"
-msgstr "%s is doorgevoerd"
+msgstr ""
 
 msgid "Actions"
-msgstr "Acties"
+msgstr ""
 
 msgid "Commit"
-msgstr "Doorvoeren"
+msgstr ""
 
 #, tao-public
 msgid "History"
-msgstr "Geschiedenis"
+msgstr "Lịch sử"
 
 msgid "History of %s"
-msgstr "Geschiedenis van %s"
+msgstr ""
 
 msgid "Id"
 msgstr "Id"
 
 #, tao-public
 msgid "Items"
-msgstr "Items"
+msgstr ""
 
 #, tao-public
 msgid "Manage items"
-msgstr "Beheer items"
+msgstr "Quản lý Item"
 
 #, tao-public
 msgid "Manage Media"
-msgstr "Beheer media"
+msgstr "Quản lý Media"
 
 #, tao-public
 msgid "Manage tests"
-msgstr "Beheer examens"
+msgstr "Quản lý kiểm tra"
 
 #, tao-public
 msgid "Media"
 msgstr "Media"
 
 msgid "Message"
-msgstr "Bericht"
+msgstr "Thông điệp"
 
 msgid "Please give a message to your commit"
-msgstr "Voeg a.u.b. een bericht toe aan uw verwijzing"
+msgstr "Hãy đưa ra một thông điệp cam kết của bạn"
 
 msgid "Resource restored"
-msgstr "Hulpbronnen hersteld"
+msgstr "Khôi phục tài nguyên"
 
 msgid "Restore"
-msgstr "Herstellen"
+msgstr "Khôi phục"
 
 msgid "Restored version %s"
-msgstr "Herstelde versie %s"
+msgstr ""
 
 msgid "Something went wrong..."
-msgstr "Er ging iets mis..."
+msgstr "Đã xảy ra sự cố ..."
 
 #, tao-public
 msgid "Tests"
-msgstr "Examens"
+msgstr "Bài kiểm tra"
 
 msgid "Time"
-msgstr "Tijd"
+msgstr "Thời gian"
 
 msgid "Unable to restore the selected version"
-msgstr "Niet in staat om de geselecteerde versie te herstellen"
+msgstr "Không thể khôi phục phiên bản đã chọn"
 
 msgid "User"
-msgstr "Gebruiker"
+msgstr "Người dùng"
 

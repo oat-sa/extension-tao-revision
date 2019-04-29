@@ -1,12 +1,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.3.0-sprint96\n"
-"PO-Revision-Date: 2019-04-25T01:04:44\n"
+"PO-Revision-Date: 2019-04-25T01:10:56\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: nl-NL\n"
+"Language: ca-ES-valencia\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: nl-NL\n"
+"targetLanguage: ca-ES-valencia\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
@@ -14,72 +14,72 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "%s has been committed"
-msgstr "%s is doorgevoerd"
+msgstr "%s s'ha pujat"
 
 msgid "Actions"
-msgstr "Acties"
+msgstr "Accions"
 
 msgid "Commit"
-msgstr "Doorvoeren"
+msgstr "Puja"
 
 #, tao-public
 msgid "History"
-msgstr "Geschiedenis"
+msgstr "Historial"
 
 msgid "History of %s"
-msgstr "Geschiedenis van %s"
+msgstr "Historial de %s"
 
 msgid "Id"
-msgstr "Id"
+msgstr "ID"
 
 #, tao-public
 msgid "Items"
-msgstr "Items"
+msgstr "Elements"
 
 #, tao-public
 msgid "Manage items"
-msgstr "Beheer items"
+msgstr "Gestiona els elements"
 
 #, tao-public
 msgid "Manage Media"
-msgstr "Beheer media"
+msgstr "Gestiona els multimèdia"
 
 #, tao-public
 msgid "Manage tests"
-msgstr "Beheer examens"
+msgstr "Gestiona les proves"
 
 #, tao-public
 msgid "Media"
-msgstr "Media"
+msgstr "Multimèdia"
 
 msgid "Message"
-msgstr "Bericht"
+msgstr "Missatge"
 
 msgid "Please give a message to your commit"
-msgstr "Voeg a.u.b. een bericht toe aan uw verwijzing"
+msgstr "Afegiu un missatge al vostre enviament"
 
 msgid "Resource restored"
-msgstr "Hulpbronnen hersteld"
+msgstr "Recurs restaurat"
 
 msgid "Restore"
-msgstr "Herstellen"
+msgstr "Restaura"
 
 msgid "Restored version %s"
-msgstr "Herstelde versie %s"
+msgstr "Versió restaurada %s"
 
 msgid "Something went wrong..."
-msgstr "Er ging iets mis..."
+msgstr "Alguna cosa ha anat malament..."
 
 #, tao-public
 msgid "Tests"
-msgstr "Examens"
+msgstr "Proves"
 
 msgid "Time"
-msgstr "Tijd"
+msgstr "Temps"
 
 msgid "Unable to restore the selected version"
-msgstr "Niet in staat om de geselecteerde versie te herstellen"
+msgstr "No s'ha pogut restaurar la versió seleccionada."
 
 msgid "User"
-msgstr "Gebruiker"
+msgstr "Usuari"
 
