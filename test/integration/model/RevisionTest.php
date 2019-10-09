@@ -22,7 +22,10 @@
 namespace oat\taoRevision\test\integration\model\rds;
 
 use oat\taoRevision\model\Revision;
-class RevisionTest extends \PHPUnit_Framework_TestCase {
+use oat\generis\test\TestCase;
+
+class RevisionTest extends TestCase
+{
 
     /**
      * @var Revision
@@ -62,4 +65,3 @@ class RevisionTest extends \PHPUnit_Framework_TestCase {
     }
 
 }
- 

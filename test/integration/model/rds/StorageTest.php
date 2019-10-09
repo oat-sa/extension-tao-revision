@@ -22,11 +22,11 @@ namespace oat\taoRevision\test\integration\model\rds;
 use common_persistence_Manager;
 use oat\taoRevision\model\storage\RdsStorage;
 use oat\taoRevision\model\Revision;
-use PHPUnit_Framework_TestCase;
+use oat\generis\test\TestCase;;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use oat\taoRevision\scripts\install\CreateTables;
 
-class StorageTest extends PHPUnit_Framework_TestCase
+class StorageTest extends TestCase
 {
     private $storage;
 
