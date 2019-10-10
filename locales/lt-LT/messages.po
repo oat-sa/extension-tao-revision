@@ -1,0 +1,85 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 3.4.0-sprint112\n"
+"PO-Revision-Date: 2019-10-09T09:03:07\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: lt-LT\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: lt-LT\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "%s has been committed"
+msgstr "%s buvo paskirta"
+
+msgid "Actions"
+msgstr "Veiksmai"
+
+msgid "Commit"
+msgstr "Paskirti"
+
+#, tao-public
+msgid "History"
+msgstr "Istorija"
+
+msgid "History of %s"
+msgstr "Istorija %s"
+
+msgid "Id"
+msgstr "Id"
+
+#, tao-public
+msgid "Items"
+msgstr "Elementai"
+
+#, tao-public
+msgid "Manage items"
+msgstr "Tvarkyti elementus"
+
+#, tao-public
+msgid "Manage Media"
+msgstr "Tvarkyti Mediją"
+
+#, tao-public
+msgid "Manage tests"
+msgstr "Tvarkyti testus"
+
+#, tao-public
+msgid "Media"
+msgstr "Medija"
+
+msgid "Message"
+msgstr "Pranešimas"
+
+msgid "Please give a message to your commit"
+msgstr "Aprašykite savo paskyrimą"
+
+msgid "Resource restored"
+msgstr "Resursas atstatytas"
+
+msgid "Restore"
+msgstr "Atstatyti"
+
+msgid "Restored version %s"
+msgstr "Atstatyta versija %s"
+
+msgid "Something went wrong..."
+msgstr "Kažkas blogai nutiko..."
+
+#, tao-public
+msgid "Tests"
+msgstr "Testai"
+
+msgid "Time"
+msgstr "Laikas"
+
+msgid "Unable to restore the selected version"
+msgstr "Nepavyko atstatyti pasirinktos versijos"
+
+msgid "User"
+msgstr "Vartotojas"
+
