@@ -23,8 +23,10 @@ namespace oat\taoRevision\test\unit\model\rds;
 
 
 use oat\taoRevision\model\rds\RdsRevision;
+use oat\generis\test\TestCase;
 
-class RdsRevisionTest extends \PHPUnit_Framework_TestCase {
+class RdsRevisionTest extends TestCase
+{
 
     private $rdsRevision = null;
     private $id = null;
@@ -56,4 +58,3 @@ class RdsRevisionTest extends \PHPUnit_Framework_TestCase {
     }
 
 }
- 
