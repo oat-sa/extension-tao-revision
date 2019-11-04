@@ -20,6 +20,7 @@
 
 namespace oat\taoRevision\model;
 
+use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\taoRevision\helper\CloneHelper;
@@ -35,6 +36,8 @@ use oat\oatbox\service\ConfigurableService;
  */
 class RepositoryService extends ConfigurableService implements Repository
 {
+    use OntologyAwareTrait;
+
     const OPTION_STORAGE = 'storage';
     const OPTION_FS = 'filesystem';
 
@@ -130,6 +133,19 @@ class RepositoryService extends ConfigurableService implements Repository
         }
 
         return true;
+    }
+
+    /**
+     * @param $query
+     * @return \core_kernel_classes_Resource []
+     */
+    public function searchRevisionResources($query) {
+        $data = $this->getStorage()->getRevisionsDataByQuery($query);
+        $resources = [];
+        foreach ($data as $item) {
+            $resources[] = $this->getResource($item->subject);
+        }
+        return $resources;
     }
 
     /**

@@ -20,6 +20,13 @@
 
 namespace oat\taoRevision\model\rds;
 
+use common_exception_InconsistentData;
+use common_ext_Namespace;
+use common_ext_NamespaceManager;
+use common_persistence_SqlPersistence;
+use core_kernel_classes_Triple;
+use Doctrine\DBAL\Query\QueryBuilder;
+use oat\generis\model\kernel\persistence\smoothsql\search\driver\TaoSearchDriver;
 use oat\taoRevision\model\RevisionNotFound;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\ServiceManager;
@@ -50,7 +57,7 @@ class Storage extends ConfigurableService implements  RevisionStorage
     const DATA_LANGUAGE = 'language';
     
     /**
-     * @var \common_persistence_SqlPersistence
+     * @var common_persistence_SqlPersistence
      */
     private $persistence;
     
@@ -60,7 +67,16 @@ class Storage extends ConfigurableService implements  RevisionStorage
         }
         return $this->persistence;
     }
-    
+
+    /**
+     * @param string $resourceId
+     * @param string $version
+     * @param string $created
+     * @param string $author
+     * @param string $message
+     * @param core_kernel_classes_Triple[] $data
+     * @return RdsRevision|Revision
+     */
     public function addRevision($resourceId, $version, $created, $author, $message, $data) {
         $this->getPersistence()->insert(
             self::REVISION_TABLE_NAME,
@@ -78,12 +94,13 @@ class Storage extends ConfigurableService implements  RevisionStorage
         $success = $this->saveData($revision, $data);
         return $revision;
     }
-    
+
     /**
-     * 
+     *
      * @param string $resourceId
      * @param string $version
-     * @return NULL|\oat\taoRevision\model\rds\Revision
+     * @return RdsRevision
+     * @throws RevisionNotFound
      */
     public function getRevision($resourceId, $version) {
         $sql = 'SELECT * FROM ' . self::REVISION_TABLE_NAME
@@ -92,7 +109,7 @@ class Storage extends ConfigurableService implements  RevisionStorage
         
         $variables = $this->getPersistence()->query($sql,$params);
 
-        if ($variables->rowCount() != 1) {
+        if ($variables->rowCount() !== 1) {
             throw new RevisionNotFound($resourceId, $version);
         }
         $variable = $variables->fetch();
@@ -100,7 +117,11 @@ class Storage extends ConfigurableService implements  RevisionStorage
                 $variable[self::REVISION_CREATED], $variable[self::REVISION_USER], $variable[self::REVISION_MESSAGE]);
         
     }
-    
+
+    /**
+     * @param string $resourceId
+     * @return Revision[]
+     */
     public function getAllRevisions($resourceId) {
         $sql = 'SELECT * FROM ' . self::REVISION_TABLE_NAME.' WHERE ' . self::REVISION_RESOURCE . ' = ?';
         $params = array($resourceId);
@@ -116,30 +137,25 @@ class Storage extends ConfigurableService implements  RevisionStorage
     
     public function getData(Revision $revision) {
         if (!$revision instanceof RdsRevision) {
-            throw new \common_exception_InconsistentData('Unexpected Revision class '.get_class($revision).' in '.__CLASS__);
+            throw new common_exception_InconsistentData('Unexpected Revision class '.get_class($revision).' in '.__CLASS__);
         }
-        $localModel = \common_ext_NamespaceManager::singleton()->getLocalNamespace();
+        $localModel = common_ext_NamespaceManager::singleton()->getLocalNamespace();
         // retrieve data
         $query = 'SELECT * FROM '.self::DATA_TABLE_NAME.' WHERE '.self::DATA_REVISION.' = ?';
         $result = $this->getPersistence()->query($query, array($revision->getId()));
         
         $triples = array();
         while ($statement = $result->fetch()) {
-            $triple = new \core_kernel_classes_Triple();
-            $triple->modelid = $localModel->getModelId();
-            $triple->subject = $statement[self::DATA_SUBJECT];
-            $triple->predicate = $statement[self::DATA_PREDICATE];
-            $triple->object = $statement[self::DATA_OBJECT];
-            $triple->lg = $statement[self::DATA_LANGUAGE];
+            $triple = $this->prepareDataObject($statement, $localModel->getModelId());
             $triples[] = $triple;
         }
         
         return $triples;
     }
-    
+
     /**
-     * 
-     * @param Revision $revision
+     *
+     * @param RdsRevision $revision
      * @param array $data
      * @return boolean
      */
@@ -163,4 +179,64 @@ class Storage extends ConfigurableService implements  RevisionStorage
         
         return $this->getPersistence()->insertMultiple(self::DATA_TABLE_NAME, $dataToSave);
     }
+
+    /**
+     * @param $query
+     * @return core_kernel_classes_Triple []
+     */
+    public function getRevisionsDataByQuery($query)
+    {
+        $queryBuilder = $this->getQueryBuilder();
+
+        $queryBuilder->select('*');
+        $queryBuilder->from(self::DATA_TABLE_NAME);
+
+        $operator = (new TaoSearchDriver())->like();
+        $fieldName = self::DATA_OBJECT;
+
+        $condition = "$fieldName $operator '%$query%'";
+        $queryBuilder->where($condition);
+
+        $result = $this->getPersistence()->query($queryBuilder->getSQL());
+        $revisionsData = [];
+
+        while ($statement = $result->fetch()) {
+            $triple = $this->prepareDataObject($statement, $this->getLocalModel()->getModelId());
+            $revisionsData[] = $triple;
+        }
+        return $revisionsData;
+    }
+
+    /**
+     * @param array $statement
+     * @param string $modelId
+     * @return core_kernel_classes_Triple
+     */
+    private function prepareDataObject($statement, $modelId)
+    {
+        $triple = new core_kernel_classes_Triple();
+        $triple->modelid = $modelId;
+        $triple->subject = $statement[self::DATA_SUBJECT];
+        $triple->predicate = $statement[self::DATA_PREDICATE];
+        $triple->object = $statement[self::DATA_OBJECT];
+        $triple->lg = $statement[self::DATA_LANGUAGE];
+        return $triple;
+    }
+
+    /**
+     * @return QueryBuilder
+     */
+    private function getQueryBuilder()
+    {
+        return $this->getPersistence()->getPlatForm()->getQueryBuilder();
+    }
+
+    /**
+     * @return common_ext_Namespace
+     */
+    private function getLocalModel()
+    {
+        return common_ext_NamespaceManager::singleton()->getLocalNamespace();
+    }
+
 }

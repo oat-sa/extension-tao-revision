@@ -20,6 +20,8 @@
 
 namespace oat\taoRevision\model;
 
+use core_kernel_classes_Triple;
+
 interface RevisionStorage
 {
     /**
@@ -29,7 +31,7 @@ interface RevisionStorage
      * @param string $created
      * @param string $author
      * @param string $message
-     * @param \core_kernel_classes_Triple[] $data
+     * @param core_kernel_classes_Triple[] $data
      * @return Revision
      */
     public function addRevision($resourceId, $version, $created, $author, $message, $data);
@@ -52,7 +54,14 @@ interface RevisionStorage
     /**
      * 
      * @param Revision $revision
-     * \core_kernel_classes_Triple[] $data
+     * core_kernel_classes_Triple[] $data
      */
     public function getData(Revision $revision);
+
+
+    /**
+     * @param $query
+     * @return core_kernel_classes_Triple[]
+     */
+    public function getRevisionsDataByQuery($query);
 }
