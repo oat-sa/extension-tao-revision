@@ -38,7 +38,6 @@ use Doctrine\DBAL\Query\QueryBuilder;
 class RdsStorage extends ConfigurableService implements RevisionStorage
 {
     const REVISION_TABLE_NAME = 'revision';
-
     const REVISION_ID = 'id';
     const REVISION_RESOURCE = 'resource';
     const REVISION_VERSION = 'version';
@@ -193,10 +192,8 @@ class RdsStorage extends ConfigurableService implements RevisionStorage
         $queryBuilder->select('*');
         $queryBuilder->from(self::DATA_TABLE_NAME);
 
-        $operator = (new TaoSearchDriver())->like();
         $fieldName = self::DATA_OBJECT;
-
-        $condition = "$fieldName $operator '%$query%'";
+        $condition = "$fieldName {$this->getLike()} '%$query%'";
         $queryBuilder->where($condition);
 
         $result = $this->getPersistence()->query($queryBuilder->getSQL());
@@ -240,5 +237,13 @@ class RdsStorage extends ConfigurableService implements RevisionStorage
     private function getLocalModel()
     {
         return \common_ext_NamespaceManager::singleton()->getLocalNamespace();
+    }
+
+    /**
+     * @return string
+     */
+    protected function getLike()
+    {
+        return (new TaoSearchDriver())->like();
     }
 }
