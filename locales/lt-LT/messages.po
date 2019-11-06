@@ -38,7 +38,7 @@ msgstr "Elementai"
 
 #, tao-public
 msgid "Manage items"
-msgstr "Tvarkyti elementus"
+msgstr "Tvarkyti klausimus"
 
 #, tao-public
 msgid "Manage Media"

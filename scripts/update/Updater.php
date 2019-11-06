@@ -91,5 +91,6 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('2.2.0', '7.0.0');
+      
     }
 }
