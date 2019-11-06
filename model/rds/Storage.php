@@ -27,6 +27,7 @@ use common_persistence_SqlPersistence;
 use core_kernel_classes_Triple;
 use Doctrine\DBAL\Query\QueryBuilder;
 use oat\generis\model\kernel\persistence\smoothsql\search\driver\TaoSearchDriver;
+use oat\generis\model\OntologyRdfs;
 use oat\taoRevision\model\RevisionNotFound;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\ServiceManager;
@@ -181,8 +182,7 @@ class Storage extends ConfigurableService implements  RevisionStorage
     }
 
     /**
-     * @param $query
-     * @return core_kernel_classes_Triple []
+     * @inheritDoc
      */
     public function getRevisionsDataByQuery($query)
     {
@@ -196,6 +196,7 @@ class Storage extends ConfigurableService implements  RevisionStorage
 
         $condition = "$fieldName $operator '%$query%'";
         $queryBuilder->where($condition);
+        $queryBuilder->andWhere(sprintf('%s = \'%s\'', self::DATA_PREDICATE, OntologyRdfs::RDFS_LABEL));
 
         $result = $this->getPersistence()->query($queryBuilder->getSQL());
         $revisionsData = [];
