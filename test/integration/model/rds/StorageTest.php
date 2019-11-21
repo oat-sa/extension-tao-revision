@@ -53,7 +53,7 @@ class StorageTest extends TestCase
         $createTables->setServiceLocator($serviceManager);
         $createTables(['persistenceMock']);
 
-        $this->storage = new RdsStorage(['persistence' => 'persistenceMock']);
+        $this->storage = new TestRdsStorage(['persistence' => 'persistenceMock']);
         $this->storage->setServiceLocator($serviceManager);
     }
 
@@ -121,8 +121,36 @@ class StorageTest extends TestCase
         $author = 'author';
         $message = 'my message';
         $created = time();
-        $revision = new Revision($resourceId, $version, $created, $author, $message);
 
+        $triples = $this->getTriplesMock();
+
+        $revision = $this->storage->addRevision($resourceId, $version, $created, $author, $message, $triples);
+
+        $data = $this->storage->getData($revision);
+
+        $this->assertEquals($triples, $data);
+    }
+
+    public function testGetRevisionsDataByQuery()
+    {
+        // set the revision we are supposed to get
+        $resourceId = 123;
+        $version = 456;
+        $author = 'author';
+        $message = 'my message';
+        $created = time();
+
+        $triples = $this->getTriplesMock();
+
+        $this->storage->addRevision($resourceId, $version, $created, $author, $message, $triples);
+
+        $data = $this->storage->getRevisionsDataByQuery('first');
+
+        $this->assertEquals([$triples[0]], $data);
+    }
+
+    private function getTriplesMock()
+    {
         $subject1 = 'my first subject';
         $predicate1 = 'my first predicate';
         $object1 = 'my first object';
@@ -146,12 +174,15 @@ class StorageTest extends TestCase
         $triple2->predicate = $predicate2;
         $triple2->object = $object2;
         $triple2->lg = $lg2;
-        $triples = [$triple1, $triple2];
+        return [$triple1, $triple2];
 
-        $revision = $this->storage->addRevision($resourceId, $version, $created, $author, $message, $triples);
+    }
+}
 
-        $data = $this->storage->getData($revision);
-
-        $this->assertEquals($triples, $data);
+class TestRdsStorage extends RdsStorage
+{
+    protected function getLike()
+    {
+        return 'LIKE';
     }
 }

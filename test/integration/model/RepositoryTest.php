@@ -163,4 +163,24 @@ class RepositoryTest extends TaoPhpUnitTestRunner
 
         $this->assertEquals(true, $return);
     }
+
+    public function testSearchRevisionResources()
+    {
+        // Initialize the expected values
+        $triple = new \core_kernel_classes_Triple();
+        $triple->modelid = 1;
+        $triple->subject = 'http://mock/Uri';
+        $data = array(
+            $triple
+        );
+
+        $storageProphecy = $this->prophesize(RevisionStorage::class);
+        $storageProphecy->getRevisionsDataByQuery('test')->willReturn($data);
+
+        $repository = $this->getRepository($storageProphecy->reveal());
+
+        $return = $repository->searchRevisionResources('test');
+
+        $this->assertInstanceOf(\core_kernel_classes_Resource::class, $return[0]);
+    }
 }
