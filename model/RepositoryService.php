@@ -136,7 +136,7 @@ class RepositoryService extends ConfigurableService implements Repository
     }
 
     /**
-     * @param $query
+     * @param string $query
      * @return \core_kernel_classes_Resource []
      */
     public function searchRevisionResources($query)
