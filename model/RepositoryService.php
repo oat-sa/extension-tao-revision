@@ -139,7 +139,8 @@ class RepositoryService extends ConfigurableService implements Repository
      * @param $query
      * @return \core_kernel_classes_Resource []
      */
-    public function searchRevisionResources($query) {
+    public function searchRevisionResources($query)
+    {
         $data = $this->getStorage()->getRevisionsDataByQuery($query);
         $resources = [];
         foreach ($data as $item) {
