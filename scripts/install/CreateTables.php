@@ -55,7 +55,7 @@ class CreateTables extends \common_ext_action_InstallAction {
             $dataTable->addColumn(Storage::DATA_OBJECT, "text", array("default" => null,"notnull" => false));
             $dataTable->addColumn(Storage::DATA_LANGUAGE, "string", array("length" => 50));
 
-            $revisionTable->setPrimaryKey(array(Storage::DATA_RESOURCE, Storage::DATA_VERSION, Storage::DATA_OBJECT));
+            $dataTables->setPrimaryKey(array(Storage::DATA_RESOURCE, Storage::DATA_VERSION, Storage::DATA_OBJECT));
         
             $dataTable->addForeignKeyConstraint(
                 $revisionTable,
