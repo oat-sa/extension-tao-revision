@@ -30,6 +30,7 @@ use oat\taoRevision\model\Revision;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoRevision\model\RevisionStorage;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Storage class for the revision data
@@ -48,6 +49,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorage
 
     const DATA_TABLE_NAME = 'revision_data';
 
+    const DATA_REVISION_ID = 'id';
     const DATA_RESOURCE = 'resource';
     const DATA_VERSION = 'version';
     const DATA_SUBJECT = 'subject';
@@ -152,8 +154,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorage
 
         $triples = array();
         while ($statement = $result->fetch()) {
-            $triple = $triple = $this->prepareDataObject($statement, $this->getLocalModel()->getModelId());
-            $triples[] = $triple;
+            $triples[] = $this->prepareDataObject($statement, $this->getLocalModel()->getModelId());
         }
 
         return $triples;
@@ -171,6 +172,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorage
 
         foreach ($data as $triple) {
             $dataToSave[] = [
+                self::DATA_REVISION_ID => Uuid::uuid4(),
                 self::DATA_RESOURCE => $revision->getResourceId(),
                 self::DATA_VERSION => $revision->getVersion(),
                 self::DATA_SUBJECT => $triple->subject,
