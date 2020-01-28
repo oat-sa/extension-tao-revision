@@ -25,6 +25,7 @@ use common_persistence_SqlPersistence;
 use core_kernel_classes_Triple;
 use oat\generis\model\kernel\persistence\smoothsql\search\driver\TaoSearchDriver;
 use oat\generis\model\OntologyRdfs;
+use oat\oatbox\log\LoggerAwareTrait;
 use oat\taoRevision\model\RevisionNotFound;
 use oat\taoRevision\model\Revision;
 use oat\oatbox\service\ConfigurableService;
@@ -38,6 +39,8 @@ use Doctrine\DBAL\Query\QueryBuilder;
  */
 class RdsStorage extends ConfigurableService implements RevisionStorage
 {
+    use LoggerAwareTrait;
+
     const REVISION_TABLE_NAME = 'revision';
     const REVISION_ID = 'id';
     const REVISION_RESOURCE = 'resource';
@@ -109,8 +112,10 @@ class RdsStorage extends ConfigurableService implements RevisionStorage
     {
         $sql = 'SELECT * FROM ' . self::REVISION_TABLE_NAME
             . ' WHERE (' . self::REVISION_RESOURCE . ' = ? AND ' . self::REVISION_VERSION . ' = ?)';
-        $params = array($resourceId, $version);
+        $params = [$resourceId, $version];
 
+        $this->logCritical('slq::' . $sql);
+        $this->logCritical('$params::' . var_export($params, true));
         $variables = $this->getPersistence()->query($sql, $params)->fetchAll();
 
         if (count($variables) !== 1) {
@@ -129,7 +134,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorage
     public function getAllRevisions($resourceId)
     {
         $sql = 'SELECT * FROM ' . self::REVISION_TABLE_NAME . ' WHERE ' . self::REVISION_RESOURCE . ' = ?';
-        $params = array($resourceId);
+        $params = [$resourceId];
         $variables = $this->getPersistence()->query($sql, $params);
 
         $revisions = array();

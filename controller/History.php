@@ -21,8 +21,11 @@
 
 namespace oat\taoRevision\controller;
 
+use core_kernel_classes_Resource as Resource;
 use oat\tao\helpers\UserHelper;
 use oat\taoRevision\model\Repository;
+use tao_actions_CommonModule;
+use tao_helpers_Date as DataHelper;
 
 /**
  * Revision history management controller
@@ -32,31 +35,24 @@ use oat\taoRevision\model\Repository;
  * @license GPL-2.0
  *
  */
-class History extends \tao_actions_CommonModule {
-
-    /**
-     * @return Repository
-     */
-    protected function getRevisionService() {
-        return $this->getServiceManager()->get(Repository::SERVICE_ID);
-    }
+class History extends tao_actions_CommonModule {
 
     /**
      * @requiresRight id WRITE
      */
     public function index() {
-        $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
+        $resource = new Resource($this->getRequestParameter('id'));
         $revisions = $this->getRevisionService()->getRevisions($resource->getUri());
 
-        $returnRevision = array();
+        $returnRevision = [];
         foreach($revisions as $revision){
 
-            $returnRevision[] = array(
+            $returnRevision[] = [
                 'id'        => $revision->getVersion(),
-                'modified'  => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
+                'modified'  => DataHelper::displayeDate($revision->getDateCreated()),
                 'author'    => UserHelper::renderHtmlUser($revision->getAuthorId()),
                 'message'   => _dh($revision->getMessage()),
-            );
+            ];
         }
         
         $this->setData('resourceLabel', _dh($resource->getLabel()));
@@ -69,7 +65,7 @@ class History extends \tao_actions_CommonModule {
      * @requiresRight id WRITE
      */
     public function restoreRevision(){
-        $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
+        $resource = new Resource($this->getRequestParameter('id'));
         $oldVersion = $this->getRequestParameter('revisionId');
         $message = $this->getRequestParameter('message');
         
@@ -81,7 +77,7 @@ class History extends \tao_actions_CommonModule {
             $this->returnJson(array(
                 'success'   => true,
                 'id'        => $newRevision->getVersion(),
-                'modified'  => \tao_helpers_Date::displayeDate($newRevision->getDateCreated()),
+                'modified'  => DataHelper::displayeDate($newRevision->getDateCreated()),
                 'author'    => UserHelper::renderHtmlUser($newRevision->getAuthorId()),
                 'message'   => $newRevision->getMessage()
             ));
@@ -95,7 +91,7 @@ class History extends \tao_actions_CommonModule {
      */
     public function commitResource(){
 
-        $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
+        $resource = new Resource($this->getRequestParameter('id'));
         // prevent escaping on input
         $message = isset($_POST['message']) ? $_POST['message'] : '';
         
@@ -104,10 +100,17 @@ class History extends \tao_actions_CommonModule {
         $this->returnJson(array(
             'success'       => true,
             'id'            => $revision->getVersion(),
-            'modified'      => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
+            'modified'      => DataHelper::displayeDate($revision->getDateCreated()),
             'author'        => UserHelper::renderHtmlUser($revision->getAuthorId()),
             'message'       => $revision->getMessage(),
             'commitMessage' => __('%s has been committed', $resource->getLabel())
         ));
+    }
+
+    /**
+     * @return Repository
+     */
+    protected function getRevisionService() {
+        return $this->getServiceManager()->get(Repository::SERVICE_ID);
     }
 }
