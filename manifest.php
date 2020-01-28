@@ -24,7 +24,7 @@ return array(
     'label' => 'Data Revision Control',
     'description' => '',
     'license' => 'GPL-2.0',
-    'version' => '7.0.0',
+    'version' => '7.1.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => array(
         'generis'        => '>=12.5.0',
@@ -50,12 +50,12 @@ return array(
     ),
 	'constants' => array(
 	    # views directory
-	    "DIR_VIEWS" => dirname(__FILE__).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR,
+        "DIR_VIEWS" => __DIR__ . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR,
 
 		#BASE URL (usually the domain root)
 		'BASE_URL' => ROOT_URL.'taoRevision/',
 	),
     'extra' => array(
-        'structures' => dirname(__FILE__).DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'structures.xml',
+        'structures' => __DIR__ . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'structures.xml',
     )
 );

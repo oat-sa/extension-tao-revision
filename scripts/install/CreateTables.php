@@ -20,33 +20,41 @@
  */
 namespace oat\taoRevision\scripts\install;
 
+use common_persistence_Persistence;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use Doctrine\DBAL\Schema\Schema;
 use oat\taoRevision\model\storage\RdsStorage as Storage;
 
 class CreateTables extends \common_ext_action_InstallAction {
 
     public function __invoke($params) {
-        
+
         $persistenceId = count($params) > 0 ? reset($params) : 'default';
+        /** @var common_persistence_Persistence $persistence */
         $persistence = $this->getServiceLocator()->get(\common_persistence_Manager::SERVICE_KEY)->getPersistenceById($persistenceId);
-        
+
+        /** @var AbstractSchemaManager $schemaManager */
         $schemaManager = $persistence->getDriver()->getSchemaManager();
+
+        /** @var Schema $schema */
         $schema = $schemaManager->createSchema();
         $fromSchema = clone $schema;
-        
+
         try {
-        
+
             $revisionTable = $schema->createtable(Storage::REVISION_TABLE_NAME);
             $revisionTable->addOption('engine', 'MyISAM');
-        
+
             $revisionTable->addColumn(Storage::REVISION_RESOURCE, "string", array("notnull" => false, "length" => 255));
             $revisionTable->addColumn(Storage::REVISION_VERSION, "string", array("notnull" => false, "length" => 50));
             $revisionTable->addColumn(Storage::REVISION_USER, "string", array("notnull" => true, "length" => 255));
             $revisionTable->addColumn(Storage::REVISION_CREATED, "string", array("notnull" => true));
             $revisionTable->addColumn(Storage::REVISION_MESSAGE, "string", array("notnull" => true, "length" => 4000));
             $revisionTable->setPrimaryKey(array(Storage::REVISION_RESOURCE, Storage::REVISION_VERSION));
-        
+
             $dataTable = $schema->createtable(Storage::DATA_TABLE_NAME);
             $dataTable->addOption('engine', 'MyISAM');
+            $dataTable->addColumn(Storage::DATA_REVISION_ID, "string", array("notnull" => false, "length" => 50));
             $dataTable->addColumn(Storage::DATA_RESOURCE, "string", array("notnull" => false, "length" => 255));
             $dataTable->addColumn(Storage::DATA_VERSION, "string", array("notnull" => false, "length" => 50));
             $dataTable->addColumn(Storage::DATA_SUBJECT, "string", array("notnull" => true, "length" => 255));
@@ -54,20 +62,22 @@ class CreateTables extends \common_ext_action_InstallAction {
             // not compatible with oracle
             $dataTable->addColumn(Storage::DATA_OBJECT, "text", array("default" => null,"notnull" => false));
             $dataTable->addColumn(Storage::DATA_LANGUAGE, "string", array("length" => 50));
-        
+
+            $dataTable->setPrimaryKey([Storage::DATA_REVISION_ID]);
+
             $dataTable->addForeignKeyConstraint(
                 $revisionTable,
                 array(Storage::REVISION_RESOURCE, Storage::REVISION_VERSION),
                 array(Storage::REVISION_RESOURCE, Storage::REVISION_VERSION)
             );
-        
+
         } catch(SchemaException $e) {
             \common_Logger::i('Database Schema already up to date.');
         }
-        
+
         $queries = $persistence->getPlatform()->getMigrateSchemaSql($fromSchema, $schema);
         foreach ($queries as $query) {
             $persistence->exec($query);
-        }        
+        }
     }
 }
