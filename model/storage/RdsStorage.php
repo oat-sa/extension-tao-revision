@@ -139,8 +139,8 @@ class RdsStorage extends ConfigurableService implements RevisionStorage
         $params = [$resourceId];
         $variables = $this->getPersistence()->query($sql, $params);
 
-        $revisions = array();
-        foreach ($variables as $variable) {
+        $revisions = [];
+        foreach ($variables->fetchAll() as $variable) {
             $revisions[] = new Revision($variable[self::REVISION_RESOURCE], $variable[self::REVISION_VERSION],
                 $variable[self::REVISION_CREATED], $variable[self::REVISION_USER], $variable[self::REVISION_MESSAGE]);
         }
