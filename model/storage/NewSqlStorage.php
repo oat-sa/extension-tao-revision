@@ -32,11 +32,6 @@ use oat\oatbox\service\ConfigurableService;
 use oat\taoRevision\model\RevisionStorage;
 use Doctrine\DBAL\Query\QueryBuilder;
 
-/**
- * Storage class for the revision data
- *
- * @author Joel Bout <joel@taotesting.com>
- */
 class NewSqlStorage extends AbstractStorage
 {
 

@@ -24,8 +24,8 @@ class AbstractStorage extends ConfigurableService implements RevisionStorage
     const REVISION_CREATED = 'created';
     const REVISION_MESSAGE = 'message';
 
+    //Revision Data
     const DATA_TABLE_NAME = 'revision_data';
-
     const DATA_RESOURCE = 'resource';
     const DATA_VERSION = 'version';
     const DATA_SUBJECT = 'subject';
@@ -90,10 +90,13 @@ class AbstractStorage extends ConfigurableService implements RevisionStorage
         $queryBuilder = $this->getQueryBuilder()
             ->select('*')
             ->from(self::REVISION_TABLE_NAME)
-            ->where([self::REVISION_RESOURCE => $resourceId])
-            ->andWhere([self::REVISION_VERSION => $version]);
+            ->where(
+                sprintf('( `%s` = ? AND `%s` = ? )', self::REVISION_RESOURCE, self::REVISION_VERSION)
+            );
 
-        $variables = $this->getPersistence()->query($queryBuilder->getSQL())->fetchAll();
+        $params = [$resourceId, $version];
+
+        $variables = $this->getPersistence()->query($queryBuilder->getSQL(), $params)->fetchAll();
 
         if (count($variables) !== 1) {
             throw new RevisionNotFound($resourceId, $version);
@@ -118,9 +121,16 @@ class AbstractStorage extends ConfigurableService implements RevisionStorage
         $queryBuilder = $this->getQueryBuilder()
             ->select('*')
             ->from(self::REVISION_TABLE_NAME)
-            ->where([self::REVISION_RESOURCE => $resourceId]);
+            ->where(
+                sprintf(' `%s` = ? ', self::REVISION_RESOURCE)
+            );
 
-        $variables = $this->getPersistence()->query($queryBuilder)->fetchAll();
+        $parameters = [
+            $resourceId
+        ];
+        $variables = $this->getPersistence()
+            ->query($queryBuilder->getSQL(), $parameters)
+            ->fetchAll();
 
         $revisions = [];
         foreach ($variables as $variable) {
@@ -144,14 +154,17 @@ class AbstractStorage extends ConfigurableService implements RevisionStorage
         $queryBuilder = $this->getQueryBuilder()
             ->select('*')
             ->from(self::DATA_TABLE_NAME)
-            ->where([self::DATA_RESOURCE => $revision->getResourceId()])
-            ->andWhere([self::DATA_VERSION => $revision->getVersion()]);
+            ->where(
+                sprintf(' `%s` = ? AND `%s` = ? ', self::DATA_RESOURCE, self::DATA_VERSION)
+            );
 
-        // retrieve data
-        $result = $this->getPersistence()->query($queryBuilder)->fetch();
+        $result = $this->getPersistence()->query(
+            $queryBuilder->getSQL(),
+            [$revision->getResourceId(), $revision->getVersion()]
+        );
 
         $triples = [];
-        while ($statement = $result) {
+        while ($statement = $result->fetch()) {
             $triples[] = $this->prepareDataObject($statement, $this->getLocalModel()->getModelId());
         }
 
@@ -194,7 +207,7 @@ class AbstractStorage extends ConfigurableService implements RevisionStorage
         $fieldName = self::DATA_OBJECT;
         $condition = "$fieldName {$this->getLike()} '%$query%'";
         $queryBuilder->where($condition)
-            ->andWhere(sprintf('%s = \'%s\'', self::DATA_PREDICATE, OntologyRdfs::RDFS_LABEL));
+            ->andWhere(sprintf("%s = '%s'", self::DATA_PREDICATE, OntologyRdfs::RDFS_LABEL));
 
         $result = $this->getPersistence()->query($queryBuilder->getSQL());
         $revisionsData = [];
@@ -211,7 +224,7 @@ class AbstractStorage extends ConfigurableService implements RevisionStorage
      * @param string $modelId
      * @return Triple
      */
-    private function prepareDataObject($statement, $modelId)
+    protected function prepareDataObject($statement, $modelId)
     {
         $triple = new Triple();
         $triple->modelid = $modelId;
