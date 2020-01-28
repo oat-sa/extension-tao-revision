@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +19,7 @@
  *
  *
  */
+
 namespace oat\taoRevision\scripts\install;
 
 use oat\oatbox\filesystem\FileSystemService;
@@ -25,9 +27,11 @@ use oat\taoRevision\model\storage\RdsStorage as Storage;
 use oat\taoRevision\model\RepositoryService;
 use oat\taoRevision\model\Repository;
 
-class SetupRevisions extends CreateTables {
+class SetupRevisions extends CreateTables
+{
 
-    public function __invoke($params) {
+    public function __invoke($params)
+    {
 
         $persistenceId = count($params) > 0 ? reset($params) : 'default';
 
@@ -41,7 +45,6 @@ class SetupRevisions extends CreateTables {
         $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $fsm);
 
 
-        $this->registerService('taoRevision/storage', new Storage(['persistence' => $persistenceId]));
         $this->registerService(Repository::SERVICE_ID, new RepositoryService([
             RepositoryService::OPTION_STORAGE => 'taoRevision/storage',
             RepositoryService::OPTION_FS => $fsName
