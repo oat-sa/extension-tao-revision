@@ -37,6 +37,7 @@ use Doctrine\DBAL\Query\QueryBuilder;
  *
  * @author Joel Bout <joel@taotesting.com>
  */
-class RdsStorage extends AbstractStorage
+class NewSqlStorage extends AbstractStorage
 {
+
 }
