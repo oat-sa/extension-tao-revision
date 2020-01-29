@@ -21,17 +21,8 @@
 
 namespace oat\taoRevision\model\storage;
 
-use common_ext_Namespace;
-use common_persistence_SqlPersistence;
-use core_kernel_classes_Triple;
 use Exception;
-use oat\generis\model\kernel\persistence\smoothsql\search\driver\TaoSearchDriver;
-use oat\generis\model\OntologyRdfs;
-use oat\taoRevision\model\RevisionNotFound;
 use oat\taoRevision\model\Revision;
-use oat\oatbox\service\ConfigurableService;
-use oat\taoRevision\model\RevisionStorage;
-use Doctrine\DBAL\Query\QueryBuilder;
 use Ramsey\Uuid\Uuid;
 
 class NewSqlStorage extends AbstractStorage

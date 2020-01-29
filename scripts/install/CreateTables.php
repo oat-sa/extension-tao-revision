@@ -20,6 +20,7 @@
  */
 namespace oat\taoRevision\scripts\install;
 
+use oat\taoRevision\model\storage\NewSqlStorage;
 use oat\taoRevision\model\storage\RdsStorage as Storage;
 
 class CreateTables extends \common_ext_action_InstallAction {
@@ -47,6 +48,7 @@ class CreateTables extends \common_ext_action_InstallAction {
         
             $dataTable = $schema->createtable(Storage::DATA_TABLE_NAME);
             $dataTable->addOption('engine', 'MyISAM');
+            $dataTable->addColumn(NewSqlStorage::DATA_RESOURCE_ID, "string", array("notnull" => false, "length" => 50));
             $dataTable->addColumn(Storage::DATA_RESOURCE, "string", array("notnull" => false, "length" => 255));
             $dataTable->addColumn(Storage::DATA_VERSION, "string", array("notnull" => false, "length" => 50));
             $dataTable->addColumn(Storage::DATA_SUBJECT, "string", array("notnull" => true, "length" => 255));
@@ -54,7 +56,9 @@ class CreateTables extends \common_ext_action_InstallAction {
             // not compatible with oracle
             $dataTable->addColumn(Storage::DATA_OBJECT, "text", array("default" => null,"notnull" => false));
             $dataTable->addColumn(Storage::DATA_LANGUAGE, "string", array("length" => 50));
-        
+
+            $revisionTable->setPrimaryKey([NewSqlStorage::DATA_RESOURCE_ID]);
+
             $dataTable->addForeignKeyConstraint(
                 $revisionTable,
                 array(Storage::REVISION_RESOURCE, Storage::REVISION_VERSION),
