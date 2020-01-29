@@ -1,28 +1,34 @@
 <?php
-/**  
+
+/**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
- *               
- * 
+ *
+ *
  */
 
 namespace oat\taoRevision\controller;
 
+use common_Exception;
+use common_exception_Error;
+use core_kernel_classes_Resource;
 use oat\tao\helpers\UserHelper;
 use oat\taoRevision\model\Repository;
+use oat\taoRevision\model\RevisionNotFound;
+use tao_helpers_Date;
 
 /**
  * Revision history management controller
@@ -32,31 +38,35 @@ use oat\taoRevision\model\Repository;
  * @license GPL-2.0
  *
  */
-class History extends \tao_actions_CommonModule {
+class History extends \tao_actions_CommonModule
+{
 
     /**
      * @return Repository
      */
-    protected function getRevisionService() {
+    protected function getRevisionService()
+    {
         return $this->getServiceManager()->get(Repository::SERVICE_ID);
     }
 
     /**
      * @requiresRight id WRITE
+     * @throws common_Exception
+     * @throws common_exception_Error
      */
-    public function index() {
-        $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
+    public function index()
+    {
+        $resource = new core_kernel_classes_Resource($this->getRequestParameter('id'));
         $revisions = $this->getRevisionService()->getRevisions($resource->getUri());
 
         $returnRevision = array();
-        foreach($revisions as $revision){
-
-            $returnRevision[] = array(
+        foreach ($revisions as $revision) {
+            $returnRevision[] = [
                 'id'        => $revision->getVersion(),
-                'modified'  => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
+                'modified'  => tao_helpers_Date::displayeDate($revision->getDateCreated()),
                 'author'    => UserHelper::renderHtmlUser($revision->getAuthorId()),
                 'message'   => _dh($revision->getMessage()),
-            );
+            ];
         }
         
         $this->setData('resourceLabel', _dh($resource->getLabel()));
@@ -67,9 +77,13 @@ class History extends \tao_actions_CommonModule {
 
     /**
      * @requiresRight id WRITE
+     * @throws RevisionNotFound
+     * @throws common_Exception
+     * @throws common_exception_Error
      */
-    public function restoreRevision(){
-        $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
+    public function restoreRevision()
+    {
+        $resource = new core_kernel_classes_Resource($this->getRequestParameter('id'));
         $oldVersion = $this->getRequestParameter('revisionId');
         $message = $this->getRequestParameter('message');
         
@@ -81,7 +95,7 @@ class History extends \tao_actions_CommonModule {
             $this->returnJson(array(
                 'success'   => true,
                 'id'        => $newRevision->getVersion(),
-                'modified'  => \tao_helpers_Date::displayeDate($newRevision->getDateCreated()),
+                'modified'  => tao_helpers_Date::displayeDate($newRevision->getDateCreated()),
                 'author'    => UserHelper::renderHtmlUser($newRevision->getAuthorId()),
                 'message'   => $newRevision->getMessage()
             ));
@@ -92,10 +106,13 @@ class History extends \tao_actions_CommonModule {
 
     /**
      * @requiresRight id WRITE
+     * @throws common_Exception
+     * @throws common_exception_Error
      */
-    public function commitResource(){
+    public function commitResource()
+    {
 
-        $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
+        $resource = new core_kernel_classes_Resource($this->getRequestParameter('id'));
         // prevent escaping on input
         $message = isset($_POST['message']) ? $_POST['message'] : '';
         
@@ -104,7 +121,7 @@ class History extends \tao_actions_CommonModule {
         $this->returnJson(array(
             'success'       => true,
             'id'            => $revision->getVersion(),
-            'modified'      => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
+            'modified'      => tao_helpers_Date::displayeDate($revision->getDateCreated()),
             'author'        => UserHelper::renderHtmlUser($revision->getAuthorId()),
             'message'       => $revision->getMessage(),
             'commitMessage' => __('%s has been committed', $resource->getLabel())

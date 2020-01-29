@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,7 +22,6 @@
 
 namespace oat\taoRevision\test\unit\model\rds;
 
-
 use oat\taoRevision\model\rds\RdsRevision;
 use oat\generis\test\TestCase;
 
@@ -31,7 +31,8 @@ class RdsRevisionTest extends TestCase
     private $rdsRevision = null;
     private $id = null;
 
-    public function setUp(){
+    public function setUp()
+    {
         $this->id = 'myFunId';
         $resourceId = 123;
         $version = 456;
@@ -41,20 +42,20 @@ class RdsRevisionTest extends TestCase
         $this->rdsRevision = new RdsRevision($this->id, $resourceId, $version, $created, $author, $message);
     }
 
-    public function tearDown(){
+    public function tearDown()
+    {
         $this->id = null;
         $this->rdsRevision = null;
     }
 
-    public function testConstruct(){
-        $this->assertInstanceOf("oat\\taoRevision\\model\\Revision",$this->rdsRevision, "RdsRevision should extends Revision");
-
+    public function testConstruct()
+    {
+        $this->assertInstanceOf("oat\\taoRevision\\model\\Revision", $this->rdsRevision, "RdsRevision should extends Revision");
     }
 
-    public function testGetId(){
+    public function testGetId()
+    {
 
         $this->assertEquals($this->id, $this->rdsRevision->getId(), "The collected id is wrong");
-
     }
-
 }

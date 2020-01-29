@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,14 +19,17 @@
  *
  *
  */
+
 namespace oat\taoRevision\scripts\install;
 
 use oat\taoRevision\model\storage\NewSqlStorage;
 use oat\taoRevision\model\storage\RdsStorage as Storage;
 
-class CreateTables extends \common_ext_action_InstallAction {
+class CreateTables extends \common_ext_action_InstallAction
+{
 
-    public function __invoke($params) {
+    public function __invoke($params)
+    {
         
         $persistenceId = count($params) > 0 ? reset($params) : 'default';
         $persistence = $this->getServiceLocator()->get(\common_persistence_Manager::SERVICE_KEY)->getPersistenceById($persistenceId);
@@ -35,7 +39,6 @@ class CreateTables extends \common_ext_action_InstallAction {
         $fromSchema = clone $schema;
         
         try {
-        
             $revisionTable = $schema->createtable(Storage::REVISION_TABLE_NAME);
             $revisionTable->addOption('engine', 'MyISAM');
         
@@ -64,14 +67,13 @@ class CreateTables extends \common_ext_action_InstallAction {
                 array(Storage::REVISION_RESOURCE, Storage::REVISION_VERSION),
                 array(Storage::REVISION_RESOURCE, Storage::REVISION_VERSION)
             );
-        
-        } catch(SchemaException $e) {
+        } catch (SchemaException $e) {
             \common_Logger::i('Database Schema already up to date.');
         }
         
         $queries = $persistence->getPlatform()->getMigrateSchemaSql($fromSchema, $schema);
         foreach ($queries as $query) {
             $persistence->exec($query);
-        }        
+        }
     }
 }

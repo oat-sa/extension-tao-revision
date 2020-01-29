@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -28,16 +29,16 @@ return array(
     'author' => 'Open Assessment Technologies SA',
     'requires' => array(
         'generis'        => '>=12.5.0',
-	   'tao'             => '>=31.0.0',
-	   'taoItems'        => '*',
-	   'taoTests'        => '*',
-	   'taoMediaManager' => '*'
+       'tao'             => '>=31.0.0',
+       'taoItems'        => '*',
+       'taoTests'        => '*',
+       'taoMediaManager' => '*'
     ),
-	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoRevisionManager',
+    'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoRevisionManager',
     'acl' => array(
-        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoRevisionManager', array('ext'=>'taoRevision')),
-        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', array('controller'=>'oat\\taoRevision\\controller\\History')),
-        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#TestAuthor', array('controller'=>'oat\\taoRevision\\controller\\History')),
+        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoRevisionManager', array('ext' => 'taoRevision')),
+        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', array('controller' => 'oat\\taoRevision\\controller\\History')),
+        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#TestAuthor', array('controller' => 'oat\\taoRevision\\controller\\History')),
     ),
     'install' => array(
         'php' => array(
@@ -48,14 +49,14 @@ return array(
     'routes' => array(
         '/taoRevision' => 'oat\\taoRevision\\controller'
     ),
-	'constants' => array(
-	    # views directory
-	    "DIR_VIEWS" => dirname(__FILE__).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR,
+    'constants' => array(
+        # views directory
+        "DIR_VIEWS" => dirname(__FILE__) . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR,
 
-		#BASE URL (usually the domain root)
-		'BASE_URL' => ROOT_URL.'taoRevision/',
-	),
+        #BASE URL (usually the domain root)
+        'BASE_URL' => ROOT_URL . 'taoRevision/',
+    ),
     'extra' => array(
-        'structures' => dirname(__FILE__).DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'structures.xml',
+        'structures' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'structures.xml',
     )
 );
