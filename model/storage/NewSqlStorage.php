@@ -25,7 +25,7 @@ use Exception;
 use oat\taoRevision\model\Revision;
 use Ramsey\Uuid\Uuid;
 
-class NewSqlStorage extends AbstractStorage
+class NewSqlStorage extends RdsStorage
 {
 
     const DATA_RESOURCE_ID = 'id';
