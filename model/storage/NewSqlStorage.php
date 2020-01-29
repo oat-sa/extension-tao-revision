@@ -24,6 +24,7 @@ namespace oat\taoRevision\model\storage;
 use common_ext_Namespace;
 use common_persistence_SqlPersistence;
 use core_kernel_classes_Triple;
+use Exception;
 use oat\generis\model\kernel\persistence\smoothsql\search\driver\TaoSearchDriver;
 use oat\generis\model\OntologyRdfs;
 use oat\taoRevision\model\RevisionNotFound;
@@ -31,9 +32,12 @@ use oat\taoRevision\model\Revision;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoRevision\model\RevisionStorage;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Ramsey\Uuid\Uuid;
 
 class NewSqlStorage extends AbstractStorage
 {
+
+    const DATA_RESOURCE_ID = 'id';
 
     /**
      * @param string $resourceId
@@ -43,6 +47,7 @@ class NewSqlStorage extends AbstractStorage
      * @param string $message
      * @param Triple[] $data
      * @return Revision
+     * @throws Exception
      */
     public function addRevision($resourceId, $version, $created, $author, $message, $data)
     {
@@ -65,4 +70,28 @@ class NewSqlStorage extends AbstractStorage
         return $revision;
     }
 
+    /**
+     * @param Revision $revision
+     * @param array $data
+     * @return bool
+     * @throws Exception
+     */
+    protected function saveData(Revision $revision, $data)
+    {
+        $dataToSave = [];
+
+        foreach ($data as $triple) {
+            $dataToSave[] = [
+                self::DATA_RESOURCE_ID => (string)Uuid::uuid4(),
+                self::DATA_RESOURCE => (string)$revision->getResourceId(),
+                self::DATA_VERSION => (string)$revision->getVersion(),
+                self::DATA_SUBJECT => (string)$triple->subject,
+                self::DATA_PREDICATE => (string)$triple->predicate,
+                self::DATA_OBJECT => (string)$triple->object,
+                self::DATA_LANGUAGE => (string)$triple->lg
+            ];
+        }
+
+        return $this->getPersistence()->insertMultiple(self::DATA_TABLE_NAME, $dataToSave);
+    }
 }

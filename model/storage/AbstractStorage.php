@@ -62,11 +62,11 @@ class AbstractStorage extends ConfigurableService implements RevisionStorage
         $this->getPersistence()->insert(
             self::REVISION_TABLE_NAME,
             [
-                self::REVISION_RESOURCE => $resourceId,
-                self::REVISION_VERSION => $version,
-                self::REVISION_USER => $author,
-                self::REVISION_MESSAGE => $message,
-                self::REVISION_CREATED => $created
+                self::REVISION_RESOURCE => (string)$resourceId,
+                self::REVISION_VERSION => (string)$version,
+                self::REVISION_USER => (string)$author,
+                self::REVISION_MESSAGE => (string)$message,
+                self::REVISION_CREATED => (string)$created
             ]
         );
 
@@ -183,12 +183,12 @@ class AbstractStorage extends ConfigurableService implements RevisionStorage
 
         foreach ($data as $triple) {
             $dataToSave[] = [
-                self::DATA_RESOURCE => $revision->getResourceId(),
-                self::DATA_VERSION => $revision->getVersion(),
-                self::DATA_SUBJECT => $triple->subject,
-                self::DATA_PREDICATE => $triple->predicate,
-                self::DATA_OBJECT => $triple->object,
-                self::DATA_LANGUAGE => $triple->lg
+                self::DATA_RESOURCE => (string)$revision->getResourceId(),
+                self::DATA_VERSION => (string)$revision->getVersion(),
+                self::DATA_SUBJECT => (string)$triple->subject,
+                self::DATA_PREDICATE => (string)$triple->predicate,
+                self::DATA_OBJECT => (string)$triple->object,
+                self::DATA_LANGUAGE => (string)$triple->lg
             ];
         }
 
