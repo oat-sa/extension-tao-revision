@@ -35,4 +35,34 @@ use Doctrine\DBAL\Query\QueryBuilder;
 class NewSqlStorage extends AbstractStorage
 {
 
+    /**
+     * @param string $resourceId
+     * @param string $version
+     * @param string $created
+     * @param string $author
+     * @param string $message
+     * @param Triple[] $data
+     * @return Revision
+     */
+    public function addRevision($resourceId, $version, $created, $author, $message, $data)
+    {
+        $this->getPersistence()->insert(
+            self::REVISION_TABLE_NAME,
+            [
+                self::REVISION_RESOURCE => (string)$resourceId,
+                self::REVISION_VERSION => (string)$version,
+                self::REVISION_USER => (string)$author,
+                self::REVISION_MESSAGE => (string)$message,
+                self::REVISION_CREATED => (string)$created
+            ]
+        );
+
+        $revision = new Revision($resourceId, $version, $created, $author, $message);
+
+        if (!empty($data)) {
+            $this->saveData($revision, $data);
+        }
+        return $revision;
+    }
+
 }
