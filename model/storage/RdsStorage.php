@@ -21,22 +21,26 @@
 namespace oat\taoRevision\model\storage;
 
 use common_ext_Namespace;
+use common_ext_NamespaceManager;
 use common_persistence_SqlPersistence;
 use core_kernel_classes_Triple;
+use Doctrine\DBAL\Schema\Schema;
 use oat\generis\model\kernel\persistence\smoothsql\search\driver\TaoSearchDriver;
 use oat\generis\model\OntologyRdfs;
+use oat\generis\persistence\PersistenceManager;
 use oat\taoRevision\model\RevisionNotFound;
 use oat\taoRevision\model\Revision;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoRevision\model\RevisionStorage;
 use Doctrine\DBAL\Query\QueryBuilder;
+use oat\taoRevision\model\SchemaProviderInterface;
 
 /**
  * Storage class for the revision data
  *
  * @author Joel Bout <joel@taotesting.com>
  */
-class RdsStorage extends ConfigurableService implements RevisionStorage
+class RdsStorage extends ConfigurableService implements RevisionStorage, SchemaProviderInterface
 {
     const REVISION_TABLE_NAME = 'revision';
     const REVISION_ID = 'id';
@@ -54,6 +58,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorage
     const DATA_PREDICATE = 'predicate';
     const DATA_OBJECT = 'object';
     const DATA_LANGUAGE = 'language';
+    const OPTION_PERSISTENCE = 'persistence';
 
     /**
      * @var common_persistence_SqlPersistence
@@ -63,7 +68,9 @@ class RdsStorage extends ConfigurableService implements RevisionStorage
     public function getPersistence()
     {
         if (is_null($this->persistence)) {
-            $this->persistence = $this->getServiceLocator()->get(\common_persistence_Manager::SERVICE_KEY)->getPersistenceById($this->getOption('persistence'));
+            $this->persistence = $this->getServiceLocator()
+                ->get(PersistenceManager::SERVICE_ID)
+                ->getPersistenceById($this->getPersistenceId());
         }
         return $this->persistence;
     }
@@ -209,13 +216,13 @@ class RdsStorage extends ConfigurableService implements RevisionStorage
 
     /**
      * @param array $statement
-     * @param string $modelid
+     * @param string $modelId
      * @return core_kernel_classes_Triple
      */
-    private function prepareDataObject($statement, $modelid)
+    private function prepareDataObject($statement, $modelId)
     {
         $triple = new core_kernel_classes_Triple();
-        $triple->modelid = $modelid;
+        $triple->modelid = $modelId;
         $triple->subject = $statement[self::DATA_SUBJECT];
         $triple->predicate = $statement[self::DATA_PREDICATE];
         $triple->object = $statement[self::DATA_OBJECT];
@@ -237,7 +244,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorage
      */
     protected function getLocalModel()
     {
-        return \common_ext_NamespaceManager::singleton()->getLocalNamespace();
+        return common_ext_NamespaceManager::singleton()->getLocalNamespace();
     }
 
     /**
@@ -246,5 +253,18 @@ class RdsStorage extends ConfigurableService implements RevisionStorage
     protected function getLike()
     {
         return (new TaoSearchDriver())->like();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSchema(Schema $schema): Schema
+    {
+        return $this->getServiceLocator()->get(RdsSqlSchema::class)->getSchema($schema);
+    }
+
+    public function getPersistenceId(): string
+    {
+        return $this->getOption(self::OPTION_PERSISTENCE);
     }
 }

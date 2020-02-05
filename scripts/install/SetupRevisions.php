@@ -20,19 +20,20 @@
  */
 namespace oat\taoRevision\scripts\install;
 
+use oat\generis\persistence\PersistenceManager;
+use oat\oatbox\extension\InstallAction;
 use oat\oatbox\filesystem\FileSystemService;
+use oat\taoRevision\model\RevisionStorage;
+use oat\taoRevision\model\SchemaProviderInterface;
 use oat\taoRevision\model\storage\RdsStorage as Storage;
 use oat\taoRevision\model\RepositoryService;
 use oat\taoRevision\model\Repository;
 
-class SetupRevisions extends CreateTables {
+class SetupRevisions extends InstallAction {
 
     public function __invoke($params) {
 
         $persistenceId = count($params) > 0 ? reset($params) : 'default';
-
-        // createTable
-        parent::__invoke(array($persistenceId));
 
         // create separate file storage
         $fsName = 'revisions';
@@ -40,11 +41,35 @@ class SetupRevisions extends CreateTables {
         $fsm->createFileSystem($fsName, 'tao/revisions');
         $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $fsm);
 
+        $this->createTables();
+    }
 
-        $this->registerService('taoRevision/storage', new Storage(['persistence' => $persistenceId]));
-        $this->registerService(Repository::SERVICE_ID, new RepositoryService([
-            RepositoryService::OPTION_STORAGE => 'taoRevision/storage',
-            RepositoryService::OPTION_FS => $fsName
-        ]));
+    private function createTables()
+    {
+
+        $storageService = $this->getServiceLocator()->get(RevisionStorage::SERVICE_ID);
+        if ($storageService instanceof SchemaProviderInterface) {
+            $persistenceId = $storageService->getPersistenceId();
+            $persistence = $this->getServiceLocator()
+                ->get(PersistenceManager::SERVICE_ID)
+                ->getPersistenceById($persistenceId);
+
+            $schemaManager = $persistence->getDriver()->getSchemaManager();
+            $schema = $schemaManager->createSchema();
+            $fromSchema = clone $schema;
+
+            try {
+
+                $schema = $storageService->getSchema($schema);
+                $queries = $persistence->getPlatform()->getMigrateSchemaSql($fromSchema, $schema);
+                foreach ($queries as $query) {
+                    $persistence->exec($query);
+                }
+            } catch (SchemaException $e) {
+                \common_Logger::i('Database Schema already up to date.');
+            }
+
+
+        }
     }
 }

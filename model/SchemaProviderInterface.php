@@ -30,5 +30,4 @@ interface SchemaProviderInterface
      * @return Schema
      */
     public function getSchema(Schema $schema): Schema;
-
 }

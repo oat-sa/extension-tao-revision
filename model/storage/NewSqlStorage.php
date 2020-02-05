@@ -22,6 +22,7 @@
 namespace oat\taoRevision\model\storage;
 
 use core_kernel_classes_Triple;
+use Doctrine\DBAL\Schema\Schema;
 use Exception;
 use oat\generis\Helper\UuidPrimaryKeyTrait;
 use oat\taoRevision\model\Revision;
@@ -30,7 +31,7 @@ class NewSqlStorage extends RdsStorage
 {
     use UuidPrimaryKeyTrait;
 
-    const DATA_RESOURCE_ID = 'id';
+    public const DATA_RESOURCE_ID = 'id';
 
     /**
      * @param string $resourceId
@@ -129,5 +130,13 @@ class NewSqlStorage extends RdsStorage
             );
         }
         return $revisions;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSchema(Schema $schema): Schema
+    {
+        return $this->getServiceLocator()->get(NewSqlSchema::class)->getSchema($schema);
     }
 }
