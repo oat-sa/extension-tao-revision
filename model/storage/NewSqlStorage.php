@@ -87,4 +87,47 @@ class NewSqlStorage extends RdsStorage
 
         return $this->getPersistence()->insertMultiple(self::DATA_TABLE_NAME, $dataToSave);
     }
+
+    /**
+     * @param string $resourceId
+     * @return Revision[]
+     */
+    public function getAllRevisions($resourceId)
+    {
+
+        $queryBuilder = $this->getQueryBuilder()
+            ->select('*')
+            ->from(self::REVISION_TABLE_NAME)
+            ->where(
+                sprintf(' `%s` = ? ', self::REVISION_RESOURCE)
+            );
+
+        $parameters = [
+            $resourceId
+        ];
+        $variables = $this->getPersistence()
+            ->query($queryBuilder->getSQL(), $parameters)
+            ->fetchAll();
+
+        return $this->buildRevisionCollection($variables);
+    }
+
+    /**
+     * @param array $variables
+     * @return array
+     */
+    public function buildRevisionCollection(array $variables): array
+    {
+        $revisions = [];
+        foreach ($variables as $variable) {
+            $revisions[] = new Revision(
+                $variable[self::REVISION_RESOURCE],
+                $variable[self::REVISION_VERSION],
+                $variable[self::REVISION_CREATED],
+                $variable[self::REVISION_USER],
+                $variable[self::REVISION_MESSAGE]
+            );
+        }
+        return $revisions;
+    }
 }

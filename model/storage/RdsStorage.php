@@ -133,7 +133,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorage
         $variables = $this->getPersistence()->query($sql, $params);
 
         $revisions = array();
-        foreach ($variables as $variable) {
+        foreach ($variables->fetchAll() as $variable) {
             $revisions[] = new Revision($variable[self::REVISION_RESOURCE], $variable[self::REVISION_VERSION],
                 $variable[self::REVISION_CREATED], $variable[self::REVISION_USER], $variable[self::REVISION_MESSAGE]);
         }
@@ -226,7 +226,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorage
     /**
      * @return QueryBuilder
      */
-    private function getQueryBuilder()
+    protected function getQueryBuilder()
     {
         return $this->getPersistence()->getPlatForm()->getQueryBuilder();
     }
@@ -235,7 +235,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorage
     /**
      * @return common_ext_Namespace
      */
-    private function getLocalModel()
+    protected function getLocalModel()
     {
         return \common_ext_NamespaceManager::singleton()->getLocalNamespace();
     }
