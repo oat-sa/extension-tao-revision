@@ -24,6 +24,7 @@ use core_kernel_classes_Triple;
 
 interface RevisionStorage
 {
+    const SERVICE_ID = 'taoRevision/storage';
     /**
      * 
      * @param string $resourceId
