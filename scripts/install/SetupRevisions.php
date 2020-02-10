@@ -20,14 +20,12 @@
  */
 namespace oat\taoRevision\scripts\install;
 
+use Doctrine\DBAL\Schema\SchemaException;
 use oat\generis\persistence\PersistenceManager;
 use oat\oatbox\extension\InstallAction;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\taoRevision\model\RevisionStorage;
 use oat\taoRevision\model\SchemaProviderInterface;
-use oat\taoRevision\model\storage\RdsStorage as Storage;
-use oat\taoRevision\model\RepositoryService;
-use oat\taoRevision\model\Repository;
 
 class SetupRevisions extends InstallAction {
 

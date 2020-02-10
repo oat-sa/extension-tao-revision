@@ -20,9 +20,6 @@
 namespace oat\taoRevision\model;
 
 use core_kernel_classes_Resource;
-use common_session_SessionManager;
-use oat\tao\model\lock\LockManager;
-use oat\taoRevision\model\workspace\ApplicableLock;
 use oat\oatbox\service\ServiceManager;
 
 class RevisionService

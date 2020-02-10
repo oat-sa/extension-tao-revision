@@ -20,6 +20,7 @@
  */
 namespace oat\taoRevision\scripts\install;
 
+use Doctrine\DBAL\Schema\SchemaException;
 use oat\taoRevision\model\storage\RdsStorage as Storage;
 
 class CreateTables extends \common_ext_action_InstallAction {
