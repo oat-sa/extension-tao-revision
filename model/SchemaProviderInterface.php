@@ -29,5 +29,5 @@ interface SchemaProviderInterface
      * @param Schema $schema
      * @return Schema
      */
-    public function getSchema(Schema $schema): Schema;
+    public function getSchema(Schema $schema);
 }

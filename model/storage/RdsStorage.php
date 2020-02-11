@@ -219,7 +219,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorage, SchemaP
      * @param string $modelId
      * @return core_kernel_classes_Triple
      */
-    private function prepareDataObject($statement, $modelId)
+    private function prepareDataObject(array $statement, $modelId)
     {
         $triple = new core_kernel_classes_Triple();
         $triple->modelid = $modelId;
@@ -258,12 +258,12 @@ class RdsStorage extends ConfigurableService implements RevisionStorage, SchemaP
     /**
      * @inheritDoc
      */
-    public function getSchema(Schema $schema): Schema
+    public function getSchema(Schema $schema)
     {
         return $this->getServiceLocator()->get(RdsSqlSchema::class)->getSchema($schema);
     }
 
-    public function getPersistenceId(): string
+    public function getPersistenceId()
     {
         return $this->getOption(self::OPTION_PERSISTENCE);
     }

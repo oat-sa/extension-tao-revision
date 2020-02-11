@@ -27,7 +27,7 @@ use oat\oatbox\service\ConfigurableService;
 
 class NewSqlSchema extends ConfigurableService
 {
-    public function createRevisionTable(Table $revisionTable): void
+    public function createRevisionTable(Table $revisionTable)
     {
         $revisionTable->addColumn(NewSqlStorage::REVISION_RESOURCE, 'string', ['notnull' => false, 'length' => 255]);
         $revisionTable->addColumn(NewSqlStorage::REVISION_VERSION, 'string', ['notnull' => false, 'length' => 50]);
@@ -37,7 +37,7 @@ class NewSqlSchema extends ConfigurableService
         $revisionTable->setPrimaryKey([NewSqlStorage::REVISION_RESOURCE, NewSqlStorage::REVISION_VERSION]);
     }
 
-    public function createRevisionDataTable(Table $dataTable, Table $revisionTable): void
+    public function createRevisionDataTable(Table $dataTable, Table $revisionTable)
     {
         $dataTable->addColumn(NewSqlStorage::DATA_RESOURCE_ID, 'string', ['notnull' => false, 'length' => 50]);
         $dataTable->addColumn(NewSqlStorage::DATA_RESOURCE, 'string', ['notnull' => false, 'length' => 255]);
@@ -59,7 +59,7 @@ class NewSqlSchema extends ConfigurableService
     /**
      * @inheritDoc
      */
-    public function getSchema(Schema $schema): Schema
+    public function getSchema(Schema $schema)
     {
         /** @var Table $revisionTable */
         $revisionTable = $schema->createtable(NewSqlStorage::REVISION_TABLE_NAME);

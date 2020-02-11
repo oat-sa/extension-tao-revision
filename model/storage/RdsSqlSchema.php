@@ -27,7 +27,7 @@ use oat\oatbox\service\ConfigurableService;
 
 class RdsSqlSchema extends ConfigurableService
 {
-    public function createRevisionTable(Table $revisionTable): void
+    public function createRevisionTable(Table $revisionTable)
     {
         $revisionTable->addColumn(RdsStorage::REVISION_RESOURCE, 'string', ['notnull' => false, 'length' => 255]);
         $revisionTable->addColumn(RdsStorage::REVISION_VERSION, 'string', ['notnull' => false, 'length' => 50]);
@@ -37,7 +37,7 @@ class RdsSqlSchema extends ConfigurableService
         $revisionTable->setPrimaryKey([RdsStorage::REVISION_RESOURCE, RdsStorage::REVISION_VERSION]);
     }
 
-    public function createRevisionDataTable(Table $dataTable, Table $revisionTable): void
+    public function createRevisionDataTable(Table $dataTable, Table $revisionTable)
     {
         $dataTable->addColumn(RdsStorage::DATA_RESOURCE, 'string', ['notnull' => false, 'length' => 255]);
         $dataTable->addColumn(RdsStorage::DATA_VERSION, 'string', ['notnull' => false, 'length' => 50]);
@@ -57,7 +57,7 @@ class RdsSqlSchema extends ConfigurableService
     /**
      * @inheritDoc
      */
-    public function getSchema(Schema $schema): Schema
+    public function getSchema(Schema $schema)
     {
         /** @var Table $revisionTable */
         $revisionTable = $schema->createtable(RdsStorage::REVISION_TABLE_NAME);

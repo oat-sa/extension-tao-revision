@@ -57,17 +57,14 @@ class SetupRevisions extends InstallAction {
             $fromSchema = clone $schema;
 
             try {
-
                 $schema = $storageService->getSchema($schema);
                 $queries = $persistence->getPlatform()->getMigrateSchemaSql($fromSchema, $schema);
                 foreach ($queries as $query) {
                     $persistence->exec($query);
                 }
             } catch (SchemaException $e) {
-                \common_Logger::i('Database Schema already up to date.');
+                $this->logInfo('Database Schema already up to date.');
             }
-
-
         }
     }
 }

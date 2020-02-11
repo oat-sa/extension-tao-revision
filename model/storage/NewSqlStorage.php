@@ -117,7 +117,7 @@ class NewSqlStorage extends RdsStorage
      * @param array $variables
      * @return array
      */
-    public function buildRevisionCollection(array $variables): array
+    public function buildRevisionCollection(array $variables)
     {
         $revisions = [];
         foreach ($variables as $variable) {
@@ -135,7 +135,7 @@ class NewSqlStorage extends RdsStorage
     /**
      * @inheritDoc
      */
-    public function getSchema(Schema $schema): Schema
+    public function getSchema(Schema $schema)
     {
         return $this->getServiceLocator()->get(NewSqlSchema::class)->getSchema($schema);
     }
