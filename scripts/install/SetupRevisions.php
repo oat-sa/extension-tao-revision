@@ -31,8 +31,6 @@ class SetupRevisions extends InstallAction {
 
     public function __invoke($params) {
 
-        $persistenceId = count($params) > 0 ? reset($params) : 'default';
-
         // create separate file storage
         $fsName = 'revisions';
         $fsm = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
