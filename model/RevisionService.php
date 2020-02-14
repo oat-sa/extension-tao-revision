@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,12 +18,10 @@
  * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
  *
  */
+
 namespace oat\taoRevision\model;
 
 use core_kernel_classes_Resource;
-use common_session_SessionManager;
-use oat\tao\model\lock\LockManager;
-use oat\taoRevision\model\workspace\ApplicableLock;
 use oat\oatbox\service\ServiceManager;
 
 class RevisionService
@@ -36,7 +35,7 @@ class RevisionService
      * @deprecated
      * @return \oat\taoRevision\model\Revision
      */
-    static public function commit(core_kernel_classes_Resource $resource, $message, $version = null, $userId = null)
+    public static function commit(core_kernel_classes_Resource $resource, $message, $version = null, $userId = null)
     {
         \common_Logger::w('Please register events to cause autocommits');
 

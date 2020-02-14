@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,7 +23,9 @@ namespace oat\taoRevision\test\integration\model\rds;
 use common_persistence_Manager;
 use oat\taoRevision\model\storage\RdsStorage;
 use oat\taoRevision\model\Revision;
-use oat\generis\test\TestCase;;
+use oat\generis\test\TestCase;
+
+;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use oat\taoRevision\scripts\install\CreateTables;
 
@@ -175,7 +178,6 @@ class StorageTest extends TestCase
         $triple2->object = $object2;
         $triple2->lg = $lg2;
         return [$triple1, $triple2];
-
     }
 }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,7 +22,7 @@
 
 namespace oat\taoRevision\test\integration\helper;
 
-require_once dirname(__FILE__) .'/../../../../tao/includes/raw_start.php';
+require_once dirname(__FILE__) . '/../../../../tao/includes/raw_start.php';
 
 use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\oatbox\filesystem\Directory;
@@ -75,7 +76,6 @@ class CloneHelperTest extends TaoPhpUnitTestRunner
         $this->assertTrue($dirCopy->exists());
         $this->assertNotEquals($dir->getPrefix(), $dirCopy->getPrefix());
         $this->assertEquals(2, count($dirCopy->getDirectory('test')->getFlyIterator()->getArrayCopy()));
-
     }
 
 
@@ -116,14 +116,16 @@ class CloneHelperTest extends TaoPhpUnitTestRunner
     /**
      * @dataProvider fileProvider
      */
-    public function testIsFileReference($isRefProvider, $triple){
+    public function testIsFileReference($isRefProvider, $triple)
+    {
 
         $isRef = CloneHelper::isFileReference($triple);
 
         $this->assertEquals($isRefProvider, $isRef);
     }
 
-    public function testIsFileReferenceResourceRange(){
+    public function testIsFileReferenceResourceRange()
+    {
 
         $classFile = new \core_kernel_classes_Class("http://www.tao.lu/Ontologies/generis.rdf#File");
         $file = $classFile->createInstance("test");
@@ -136,7 +138,8 @@ class CloneHelperTest extends TaoPhpUnitTestRunner
         $file->delete();
     }
 
-    public function fileProvider(){
+    public function fileProvider()
+    {
         $fileTriple = new \core_kernel_classes_Triple();
         $fileTriple->predicate = "http://www.tao.lu/Ontologies/TAOItem.rdf#ItemContent";
 
@@ -173,6 +176,5 @@ class CloneHelperTest extends TaoPhpUnitTestRunner
 
         $return = CloneHelper::getPropertyStorageMap([$rdfsTriple]);
         $this->assertEquals($dir->getFileSystemId(), reset($return));
-
     }
 }
