@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +19,7 @@
  *
  *
  */
+
 namespace oat\taoRevision\scripts\install;
 
 use Doctrine\DBAL\Schema\SchemaException;
@@ -27,9 +29,11 @@ use oat\oatbox\filesystem\FileSystemService;
 use oat\taoRevision\model\RevisionStorage;
 use oat\taoRevision\model\SchemaProviderInterface;
 
-class SetupRevisions extends InstallAction {
+class SetupRevisions extends InstallAction
+{
 
-    public function __invoke($params) {
+    public function __invoke($params)
+    {
 
         // create separate file storage
         $fsName = 'revisions';

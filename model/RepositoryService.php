@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -53,7 +54,7 @@ class RepositoryService extends ConfigurableService implements Repository
      */
     protected function getStorage()
     {
-        if(is_null($this->storage)) {
+        if (is_null($this->storage)) {
             $this->storage = $this->getServiceLocator()->get($this->getOption(self::OPTION_STORAGE));
         }
         return $this->storage;
@@ -106,8 +107,10 @@ class RepositoryService extends ConfigurableService implements Repository
         $resource = new \core_kernel_classes_Resource($resourceId);
         $triples = $resource->getRdfTriples();
 
-        $filesystemMap = array_fill_keys(array_keys(CloneHelper::getPropertyStorageMap($triples)),
-            $this->getFileSystem()->getId());
+        $filesystemMap = array_fill_keys(
+            array_keys(CloneHelper::getPropertyStorageMap($triples)),
+            $this->getFileSystem()->getId()
+        );
 
         $data = CloneHelper::deepCloneTriples($triples, $filesystemMap);
 
@@ -120,7 +123,8 @@ class RepositoryService extends ConfigurableService implements Repository
      * (non-PHPdoc)
      * @see \oat\taoRevision\model\Repository::restore()
      */
-    public function restore(Revision $revision) {
+    public function restore(Revision $revision)
+    {
         $resourceId = $revision->getResourceId();
         $data = $this->getStorage()->getData($revision);
 
@@ -155,7 +159,8 @@ class RepositoryService extends ConfigurableService implements Repository
      * @param string $resourceId
      * @return number
      */
-    protected function getNextVersion($resourceId) {
+    protected function getNextVersion($resourceId)
+    {
         $candidate = 0;
         foreach ($this->getRevisions($resourceId) as $revision) {
             $version = $revision->getVersion();

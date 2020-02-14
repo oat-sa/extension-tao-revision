@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -124,9 +125,13 @@ class RdsStorage extends ConfigurableService implements RevisionStorage, SchemaP
             throw new RevisionNotFound($resourceId, $version);
         }
         $variable = reset($variables);
-        return new Revision($variable[self::REVISION_RESOURCE], $variable[self::REVISION_VERSION],
-            $variable[self::REVISION_CREATED], $variable[self::REVISION_USER], $variable[self::REVISION_MESSAGE]);
-
+        return new Revision(
+            $variable[self::REVISION_RESOURCE],
+            $variable[self::REVISION_VERSION],
+            $variable[self::REVISION_CREATED],
+            $variable[self::REVISION_USER],
+            $variable[self::REVISION_MESSAGE]
+        );
     }
 
     /**
@@ -141,8 +146,13 @@ class RdsStorage extends ConfigurableService implements RevisionStorage, SchemaP
 
         $revisions = array();
         foreach ($variables->fetchAll() as $variable) {
-            $revisions[] = new Revision($variable[self::REVISION_RESOURCE], $variable[self::REVISION_VERSION],
-                $variable[self::REVISION_CREATED], $variable[self::REVISION_USER], $variable[self::REVISION_MESSAGE]);
+            $revisions[] = new Revision(
+                $variable[self::REVISION_RESOURCE],
+                $variable[self::REVISION_VERSION],
+                $variable[self::REVISION_CREATED],
+                $variable[self::REVISION_USER],
+                $variable[self::REVISION_MESSAGE]
+            );
         }
         return $revisions;
     }

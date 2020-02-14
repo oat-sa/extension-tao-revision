@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -52,10 +53,16 @@ class Updater extends \common_ext_ExtensionUpdater
 
         //migrate from 1.0 to 1.0.1
         if ($currentVersion == '1.0') {
-            AclProxy::applyRule(new AccessRule('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor',
-                ['controller' => 'oat\\taoRevision\\controller\\History']));
-            AclProxy::applyRule(new AccessRule('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#TestAuthor',
-                ['controller' => 'oat\\taoRevision\\controller\\History']));
+            AclProxy::applyRule(new AccessRule(
+                'grant',
+                'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor',
+                ['controller' => 'oat\\taoRevision\\controller\\History']
+            ));
+            AclProxy::applyRule(new AccessRule(
+                'grant',
+                'http://www.tao.lu/Ontologies/TAOItem.rdf#TestAuthor',
+                ['controller' => 'oat\\taoRevision\\controller\\History']
+            ));
             $currentVersion = '1.0.1';
         }
 
@@ -91,6 +98,5 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('2.2.0', '7.1.0');
-      
     }
 }

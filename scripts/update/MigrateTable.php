@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,19 +19,22 @@
  *
  *
  */
+
 namespace oat\taoRevision\scripts\update;
 
 use oat\taoRevision\model\rds\Storage;
 use oat\taoRevision\model\Repository;
 use common_report_Report as Report;
 
-class MigrateTable extends \common_ext_action_InstallAction {
+class MigrateTable extends \common_ext_action_InstallAction
+{
 
-    public function __invoke($params) {
+    public function __invoke($params)
+    {
         
         $impl = $this->getServiceManager()->get(Repository::SERVICE_ID);
         if (!$impl instanceof \oat\taoRevision\model\rds\Repository) {
-            return new Report(Report::TYPE_ERROR,'Current implementation '.get_class($impl).' cannot be migrated');
+            return new Report(Report::TYPE_ERROR, 'Current implementation ' . get_class($impl) . ' cannot be migrated');
         }
         $persistenceId = count($params) > 0 ? reset($params) : 'default';
         $persistence = $this->getServiceLocator()->get(\common_persistence_Manager::SERVICE_KEY)->getPersistenceById($persistenceId);
@@ -46,7 +50,7 @@ class MigrateTable extends \common_ext_action_InstallAction {
         }
 
         // migrate data
-        $query = "UPDATE ".Storage::DATA_TABLE_NAME;
+        $query = "UPDATE " . Storage::DATA_TABLE_NAME;
         $persistence->exec($query);
         
         $intermediateSchema = clone $schema;
@@ -55,6 +59,5 @@ class MigrateTable extends \common_ext_action_InstallAction {
         foreach ($queries as $query) {
             $persistence->exec($query);
         }
-        
     }
 }

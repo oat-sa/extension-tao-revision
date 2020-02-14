@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,7 +22,6 @@
 
 namespace oat\taoRevision\test\integration\helper;
 
-
 use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\generis\model\GenerisRdf;
 use oat\oatbox\service\ServiceManager;
@@ -43,7 +43,6 @@ class DeleteHelperTest extends TaoPhpUnitTestRunner
         DeleteHelper::deepDelete($resource);
 
         $this->assertFalse($file->exists());
-
     }
 
     public function testDeepDeleteTriples()
@@ -55,7 +54,6 @@ class DeleteHelperTest extends TaoPhpUnitTestRunner
         //see if all is deleted
         $this->assertCount(0, $resource->getRdfTriples());
         $this->assertFalse($file->exists());
-
     }
 
     /**
@@ -75,9 +73,10 @@ class DeleteHelperTest extends TaoPhpUnitTestRunner
         $resource = $class->createInstance('fakeInstance');
         $prop = new \core_kernel_classes_Property('fakeProp');
         $prop->setRange(new \core_kernel_classes_Class(GenerisRdf::CLASS_GENERIS_FILE));
-        $resource->editPropertyValues($prop,
-            new \core_kernel_classes_Resource($fileUri));
+        $resource->editPropertyValues(
+            $prop,
+            new \core_kernel_classes_Resource($fileUri)
+        );
         return array($file, $resource);
     }
 }
- 
