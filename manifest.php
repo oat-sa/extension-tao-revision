@@ -1,4 +1,9 @@
 <?php
+
+use oat\taoRevision\controller\History;
+use oat\taoRevision\scripts\update\Updater;
+use oat\taoRevision\scripts\install\SetupRevisions;
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,7 +32,7 @@ return array(
     'version' => '7.1.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => array(
-        'generis'        => '>=12.5.0',
+        'generis'        => '>=12.10.2',
 	   'tao'             => '>=31.0.0',
 	   'taoItems'        => '*',
 	   'taoTests'        => '*',
@@ -36,26 +41,26 @@ return array(
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoRevisionManager',
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoRevisionManager', array('ext'=>'taoRevision')),
-        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', array('controller'=>'oat\\taoRevision\\controller\\History')),
-        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#TestAuthor', array('controller'=>'oat\\taoRevision\\controller\\History')),
+        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', array('controller'=> History::class)),
+        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#TestAuthor', array('controller'=> History::class)),
     ),
     'install' => array(
         'php' => array(
-            oat\taoRevision\scripts\install\SetupRevisions::class
+            SetupRevisions::class
         )
     ),
-    'update' => 'oat\\taoRevision\\scripts\\update\\Updater',
+    'update' => Updater::class,
     'routes' => array(
         '/taoRevision' => 'oat\\taoRevision\\controller'
     ),
 	'constants' => array(
 	    # views directory
-	    "DIR_VIEWS" => dirname(__FILE__).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR,
+	    "DIR_VIEWS" => __DIR__ .DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR,
 
 		#BASE URL (usually the domain root)
 		'BASE_URL' => ROOT_URL.'taoRevision/',
 	),
     'extra' => array(
-        'structures' => dirname(__FILE__).DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'structures.xml',
+        'structures' => __DIR__ .DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'structures.xml',
     )
 );
