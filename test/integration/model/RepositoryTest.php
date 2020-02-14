@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,7 +21,6 @@
  */
 
 namespace oat\taoRevision\test\integration\model;
-
 
 use oat\oatbox\filesystem\Directory;
 use oat\oatbox\filesystem\FileSystemService;
@@ -64,12 +64,14 @@ class RepositoryTest extends TaoPhpUnitTestRunner
         return $repository;
     }
 
-    public function tearDown(){
+    public function tearDown()
+    {
         self::$now = null;
     }
 
 
-    public function testGetRevisions(){
+    public function testGetRevisions()
+    {
 
         $returnValue = array(456, 789);
         $resourceId = 123;
@@ -85,7 +87,8 @@ class RepositoryTest extends TaoPhpUnitTestRunner
         $storageProphecy->getAllRevisions($resourceId)->shouldHaveBeenCalled();
     }
 
-    public function testGetRevision(){
+    public function testGetRevision()
+    {
 
         $resourceId = "MyId";
         $version = "version";
@@ -105,7 +108,8 @@ class RepositoryTest extends TaoPhpUnitTestRunner
     }
 
 
-    public function testCommit(){
+    public function testCommit()
+    {
 
         $resourceId = "MyId";
         $version = "version";
@@ -141,7 +145,6 @@ class RepositoryTest extends TaoPhpUnitTestRunner
 
         $return = $repository->commit($resourceId, $message, $version);
         $this->assertEquals($revision, $return);
-
     }
 
     public function testRestore()

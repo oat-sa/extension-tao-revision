@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -34,7 +35,8 @@ class RevisionTest extends TestCase
     
     private $time;
 
-    public function setUp(){
+    public function setUp()
+    {
         $this->time = time();
         
         $resourceId = 123;
@@ -45,23 +47,23 @@ class RevisionTest extends TestCase
         $this->revision = new Revision($resourceId, $version, $created, $author, $message);
     }
 
-    public function tearDown(){
+    public function tearDown()
+    {
         $this->revision = null;
     }
 
-    public function testConstruct(){
-        $this->assertInstanceOf("oat\\taoRevision\\model\\Revision",$this->revision, "RdsRevision should extends Revision");
-
+    public function testConstruct()
+    {
+        $this->assertInstanceOf("oat\\taoRevision\\model\\Revision", $this->revision, "RdsRevision should extends Revision");
     }
 
-    public function testGetters(){
+    public function testGetters()
+    {
 
         $this->assertEquals(123, $this->revision->getResourceId());
         $this->assertEquals(456, $this->revision->getVersion());
         $this->assertEquals($this->time, $this->revision->getDateCreated());
         $this->assertEquals("Great author", $this->revision->getAuthorId());
         $this->assertEquals("My message is really cool", $this->revision->getMessage());
-
     }
-
 }

@@ -1,21 +1,22 @@
 <?php
-/**  
+
+/**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2016 (original work) Open Assessment Technologies SA;
- * 
+ *
  */
 
 namespace oat\taoRevision\helper;
@@ -35,7 +36,7 @@ class CloneHelper
      * @param array $propertyFilesystemMap
      * @return array
      */
-    static public function deepCloneTriples($triples, array $propertyFilesystemMap = [])
+    public static function deepCloneTriples($triples, array $propertyFilesystemMap = [])
     {
 
         $clones = array();
@@ -54,18 +55,19 @@ class CloneHelper
      * @param \core_kernel_classes_Triple $triple
      * @return bool
      */
-    static public function isFileReference(\core_kernel_classes_Triple $triple) {
+    public static function isFileReference(\core_kernel_classes_Triple $triple)
+    {
         $prop = new \core_kernel_classes_Property($triple->predicate);
         $range = $prop->getRange();
-        $rangeUri = is_null($range) ? '' : $range->getUri(); 
+        $rangeUri = is_null($range) ? '' : $range->getUri();
         switch ($rangeUri) {
-        	case GenerisRdf::CLASS_GENERIS_FILE :
-        	    return true;
-        	case OntologyRdfs::RDFS_RESOURCE :
-        	    $object = new \core_kernel_classes_Resource($triple->object);
-        	    return $object->hasType(new \core_kernel_classes_Class(GenerisRdf::CLASS_GENERIS_FILE));
-        	default :
-        	    return false;
+            case GenerisRdf::CLASS_GENERIS_FILE:
+                return true;
+            case OntologyRdfs::RDFS_RESOURCE:
+                $object = new \core_kernel_classes_Resource($triple->object);
+                return $object->hasType(new \core_kernel_classes_Class(GenerisRdf::CLASS_GENERIS_FILE));
+            default:
+                return false;
         }
     }
 
@@ -74,7 +76,7 @@ class CloneHelper
      * @param string|null $targetFileSystemId
      * @return mixed
      */
-    static protected function cloneFile($fileUri, $targetFileSystemId = null)
+    protected static function cloneFile($fileUri, $targetFileSystemId = null)
     {
         $referencer = ServiceManager::getServiceManager()->get(FileReferenceSerializer::SERVICE_ID);
         $flySystemService = ServiceManager::getServiceManager()->get(FileSystemService::SERVICE_ID);
@@ -89,7 +91,6 @@ class CloneHelper
                 $destinationPath->getFile($source->getRelPath($file))->write($file->readStream());
             }
             $destination = $destinationPath;
-
         } elseif ($source instanceof File) {
             \common_Logger::i('clone file ' . $fileUri);
             $destination = $destinationPath->getFile($source->getBasename());
@@ -105,7 +106,7 @@ class CloneHelper
      * @param $triples
      * @return array
      */
-    static public function getPropertyStorageMap($triples)
+    public static function getPropertyStorageMap($triples)
     {
         $referencer = ServiceManager::getServiceManager()->get(FileReferenceSerializer::SERVICE_ID);
         $map = [];

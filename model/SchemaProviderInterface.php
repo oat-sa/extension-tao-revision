@@ -15,21 +15,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  *
  */
 
-namespace oat\taoRevision\model\workspace;
+namespace oat\taoRevision\model;
 
-use core_kernel_classes_Resource;
+use Doctrine\DBAL\Schema\Schema;
 
-/**
- * manage lock on a given resource
- *
- * @author plichart
- */
-interface ApplicableLock
+interface SchemaProviderInterface
 {
-    
-    public function apply(core_kernel_classes_Resource $resource, $ownerId, $release = true);
+    /**
+     * @param Schema $schema
+     * @return Schema
+     */
+    public function getSchema(Schema $schema);
 }
