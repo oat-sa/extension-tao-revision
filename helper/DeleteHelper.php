@@ -21,7 +21,10 @@
 
 namespace oat\taoRevision\helper;
 
-use core_kernel_persistence_smoothsql_SmoothModel;
+use core_kernel_classes_Resource as Resource;
+use core_kernel_classes_Triple as Triple;
+use core_kernel_persistence_smoothsql_SmoothModel as Model;
+use core_kernel_classes_ContainerCollection as TriplesCollection;
 use oat\generis\model\data\ModelManager;
 use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\oatbox\filesystem\Directory;
@@ -30,9 +33,8 @@ use oat\oatbox\service\ServiceManager;
 
 class DeleteHelper
 {
-    public static function deepDelete(\core_kernel_classes_Resource $resource, core_kernel_persistence_smoothsql_SmoothModel $model = null)
+    public static function deepDelete(Resource $resource, Model $model = null)
     {
-
         $triples = $model
             ? $model->getRdfsInterface()->getResourceImplementation()->getRdfTriples($resource)
             : $resource->getRdfTriples();
@@ -43,8 +45,8 @@ class DeleteHelper
 
         $resource->delete();
     }
-        
-    public static function deepDeleteTriples($triples)
+
+    public static function deepDeleteTriples(TriplesCollection $triples)
     {
         $rdf = ModelManager::getModel()->getRdfInterface();
         foreach ($triples as $triple) {
@@ -52,8 +54,8 @@ class DeleteHelper
             $rdf->remove($triple);
         }
     }
-    
-    protected static function deleteDependencies(\core_kernel_classes_Triple $triple)
+
+    protected static function deleteDependencies(Triple $triple)
     {
         if (CloneHelper::isFileReference($triple)) {
             $referencer = ServiceManager::getServiceManager()->get(FileReferenceSerializer::SERVICE_ID);

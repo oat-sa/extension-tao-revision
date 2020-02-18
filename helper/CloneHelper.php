@@ -21,6 +21,13 @@
 
 namespace oat\taoRevision\helper;
 
+use common_Exception;
+use common_exception_Error;
+use core_kernel_classes_Class;
+use core_kernel_classes_ContainerCollection as TriplesCollection;
+use core_kernel_classes_Property;
+use core_kernel_classes_Resource;
+use core_kernel_classes_Triple as Triple;
 use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\generis\model\GenerisRdf;
 use oat\generis\model\OntologyRdfs;
@@ -28,53 +35,63 @@ use oat\oatbox\filesystem\File;
 use oat\oatbox\service\ServiceManager;
 use oat\oatbox\filesystem\Directory;
 use oat\oatbox\filesystem\FileSystemService;
+use tao_models_classes_FileNotFoundException;
 
 class CloneHelper
 {
     /**
-     * @param $triples
-     * @param array $propertyFilesystemMap
+     * @param TriplesCollection $triples
+     * @param array             $propertyFilesystemMap
+     *
      * @return array
+     * @throws common_Exception
+     * @throws common_exception_Error
+     * @throws tao_models_classes_FileNotFoundException
      */
-    public static function deepCloneTriples($triples, array $propertyFilesystemMap = [])
+    public static function deepCloneTriples(TriplesCollection $triples, array $propertyFilesystemMap = [])
     {
-
-        $clones = array();
+        $clones = [];
         foreach ($triples as $original) {
             $triple = clone $original;
             if (self::isFileReference($triple)) {
-                $targetFileSystem = isset($propertyFilesystemMap[$triple->predicate]) ? $propertyFilesystemMap[$triple->predicate] : null;
+                $targetFileSystem = $propertyFilesystemMap[$triple->predicate] ?? null;
                 $triple->object = self::cloneFile($triple->object, $targetFileSystem);
             }
             $clones[] = $triple;
         }
+
         return $clones;
     }
 
     /**
-     * @param \core_kernel_classes_Triple $triple
+     * @param Triple $triple
+     *
      * @return bool
+     * @throws common_exception_Error
      */
-    public static function isFileReference(\core_kernel_classes_Triple $triple)
+    public static function isFileReference(Triple $triple)
     {
-        $prop = new \core_kernel_classes_Property($triple->predicate);
-        $range = $prop->getRange();
-        $rangeUri = is_null($range) ? '' : $range->getUri();
+        $property = new core_kernel_classes_Property($triple->predicate);
+        $range = $property->getRange();
+        $rangeUri = $range === null ? '' : $range->getUri();
         switch ($rangeUri) {
             case GenerisRdf::CLASS_GENERIS_FILE:
                 return true;
             case OntologyRdfs::RDFS_RESOURCE:
-                $object = new \core_kernel_classes_Resource($triple->object);
-                return $object->hasType(new \core_kernel_classes_Class(GenerisRdf::CLASS_GENERIS_FILE));
+                $object = new core_kernel_classes_Resource($triple->object);
+                return $object->hasType(new core_kernel_classes_Class(GenerisRdf::CLASS_GENERIS_FILE));
             default:
                 return false;
         }
     }
 
     /**
-     * @param $fileUri
+     * @param             $fileUri
      * @param string|null $targetFileSystemId
+     *
      * @return mixed
+     * @throws common_Exception
+     * @throws tao_models_classes_FileNotFoundException
      */
     protected static function cloneFile($fileUri, $targetFileSystemId = null)
     {
@@ -103,10 +120,13 @@ class CloneHelper
 
     /**
      * Determines origins of stored files
-     * @param $triples
+     *
+     * @param TriplesCollection $triples
+     *
      * @return array
+     * @throws common_exception_Error
      */
-    public static function getPropertyStorageMap($triples)
+    public static function getPropertyStorageMap(TriplesCollection $triples)
     {
         $referencer = ServiceManager::getServiceManager()->get(FileReferenceSerializer::SERVICE_ID);
         $map = [];
