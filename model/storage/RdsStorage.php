@@ -113,11 +113,10 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
             ->select('*')
             ->from(self::REVISION_TABLE_NAME)
             ->where(sprintf('%s = ?', self::REVISION_RESOURCE))
-            ->andWhere(sprintf('%s = ?', self::REVISION_VERSION))
-            ->setParameters([$resourceId, $version]);
+            ->andWhere(sprintf('%s = ?', self::REVISION_VERSION));
 
         $variables = $this->getPersistence()
-            ->query($queryBuilder->getSQL())
+            ->query($queryBuilder->getSQL(), [$resourceId, $version])
             ->fetchAll();
 
         if (count($variables) !== 1) {
@@ -145,11 +144,10 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
         $queryBuilder = $this->getQueryBuilder()
         ->select('*')
         ->from(self::REVISION_TABLE_NAME)
-        ->where(sprintf('%s = ?', self::REVISION_RESOURCE))
-        ->setParameters([$resourceId]);
+        ->where(sprintf('%s = ?', self::REVISION_RESOURCE));
 
         $variables = $this->getPersistence()
-            ->query($queryBuilder->getSQL())
+            ->query($queryBuilder->getSQL(), [$resourceId])
             ->fetchAll();
 
         return $this->buildRevisionCollection($variables);
@@ -186,11 +184,10 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
             ->select('*')
             ->from(self::DATA_TABLE_NAME)
             ->where(sprintf('%s = ?', self::DATA_RESOURCE))
-            ->andWhere(sprintf('%s = ?', self::DATA_VERSION))
-            ->setParameters([$revision->getResourceId(), $revision->getVersion()]);
+            ->andWhere(sprintf('%s = ?', self::DATA_VERSION));
 
         $result = $this->getPersistence()
-            ->query($queryBuilder->getSQL());
+            ->query($queryBuilder->getSQL(), [$revision->getResourceId(), $revision->getVersion()]);
 
         $triples = [];
         while ($statement = $result->fetch()) {
