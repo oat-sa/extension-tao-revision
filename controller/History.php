@@ -61,7 +61,7 @@ class History extends tao_actions_CommonModule
      */
     public function index()
     {
-        $resource = $this->getResource($this->getPsrRequest()->getQueryParams()['id']);
+        $resource = $this->getResource($this->getPsrRequest()->getParsedBody()['id']);
         $revisions = $this->getRevisionService()->getAllRevisions($resource->getUri());
 
         $revisionsList = [];
@@ -88,10 +88,10 @@ class History extends tao_actions_CommonModule
      */
     public function restoreRevision()
     {
-        $resource = $this->getResource($this->getPsrRequest()->getQueryParams()['id']);
+        $resource = $this->getResource($this->getPsrRequest()->getParsedBody()['id']);
 
-        $previousVersion = $this->getPsrRequest()->getQueryParams()['revisionId'];
-        $commitMessage = $this->getPsrRequest()->getQueryParams()['message'];
+        $previousVersion = $this->getPsrRequest()->getParsedBody()['revisionId'];
+        $commitMessage = $this->getPsrRequest()->getParsedBody()['message'];
         
         $previousRevision = $this->getRevisionService()->getRevision($resource->getUri(), $previousVersion);
 
@@ -115,7 +115,7 @@ class History extends tao_actions_CommonModule
      */
     public function commitResource()
     {
-        $resource = $this->getResource($this->getPsrRequest()->getQueryParams()['id']);
+        $resource = $this->getResource($this->getPsrRequest()->getParsedBody()['id']);
         $revision = $this->getRevisionService()->commit($resource->getUri(), $_POST['message'] ?? '');
 
         $this->returnJson([
