@@ -49,8 +49,8 @@ class RdsSqlSchema extends ConfigurableService
 
         $dataTable->addForeignKeyConstraint(
             $revisionTable,
-            array(RdsStorage::REVISION_RESOURCE, RdsStorage::REVISION_VERSION),
-            array(RdsStorage::REVISION_RESOURCE, RdsStorage::REVISION_VERSION)
+            [RdsStorage::REVISION_RESOURCE, RdsStorage::REVISION_VERSION],
+            [RdsStorage::REVISION_RESOURCE, RdsStorage::REVISION_VERSION]
         );
     }
 
