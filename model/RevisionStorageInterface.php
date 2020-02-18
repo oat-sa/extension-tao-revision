@@ -27,6 +27,8 @@ interface RevisionStorageInterface
 {
     public const SERVICE_ID = 'taoRevision/storage';
 
+    public const OPTION_PERSISTENCE = 'persistence';
+
     /**
      * @param Revision $revision
      * @param Triple[] $data

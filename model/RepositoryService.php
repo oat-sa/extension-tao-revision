@@ -27,6 +27,8 @@ use common_session_SessionManager;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
+use oat\oatbox\service\exception\InvalidService;
+use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\taoRevision\helper\CloneHelper;
 use oat\generis\model\data\ModelManager;
 use oat\taoRevision\helper\DeleteHelper;
@@ -43,10 +45,10 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
 {
     use OntologyAwareTrait;
 
-    public const FILES_SYSTEM_NAME = 'revisions';
+    public const FILE_SYSTEM_NAME = 'revisions';
 
     public const OPTION_STORAGE = 'storage';
-    public const OPTION_FS = 'filesystem';
+    public const OPTION_FILE_SYSTEM = 'filesystem';
 
     private $storage;
 
@@ -55,11 +57,13 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
 
     /**
      * @return RevisionStorageInterface
+     * @throws InvalidService
+     * @throws InvalidServiceManagerException
      */
     protected function getStorage()
     {
         if ($this->storage === null) {
-            $this->storage = $this->getServiceLocator()->get($this->getOption(self::OPTION_STORAGE));
+            $this->storage = $this->getSubService(self::OPTION_STORAGE);
         }
 
         return $this->storage;
@@ -72,7 +76,9 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
     protected function getFileSystem()
     {
         if ($this->fileSystem === null) {
-            $this->fileSystem = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID)->getFileSystem($this->getOption(self::OPTION_FS));
+            $this->fileSystem = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID)->getFileSystem(
+                $this->getOption(self::OPTION_FILE_SYSTEM)
+            );
         }
 
         return $this->fileSystem;
@@ -82,6 +88,8 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
      * @param string $resourceId
      *
      * @return Revision[]
+     * @throws InvalidService
+     * @throws InvalidServiceManagerException
      */
     public function getAllRevisions(string $resourceId): array
     {
@@ -93,6 +101,8 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
      * @param int    $version
      *
      * @return Revision
+     * @throws InvalidService
+     * @throws InvalidServiceManagerException
      */
     public function getRevision(string $resourceId, int $version): Revision
     {
@@ -159,7 +169,10 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
 
     /**
      * @param string $query
+     *
      * @return Resource[]
+     * @throws InvalidService
+     * @throws InvalidServiceManagerException
      */
     public function searchRevisionResources(string $query)
     {
@@ -176,7 +189,10 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
      * Helper to determine suitable next version
      *
      * @param string $resourceId
+     *
      * @return int
+     * @throws InvalidService
+     * @throws InvalidServiceManagerException
      */
     protected function getNextVersion(string $resourceId): int
     {

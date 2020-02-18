@@ -47,7 +47,7 @@ class SetupRevisions extends InstallAction
     public function __invoke($params)
     {
         $fss = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
-        $fss->createFileSystem(RepositoryService::FILES_SYSTEM_NAME, 'tao/revisions');
+        $fss->createFileSystem(RepositoryService::FILE_SYSTEM_NAME, 'tao/revisions');
         $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $fss);
 
         $this->createTables();

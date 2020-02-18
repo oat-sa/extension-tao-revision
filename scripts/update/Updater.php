@@ -28,6 +28,8 @@ use common_ext_ExtensionUpdater;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\taoRevision\model\RepositoryInterface;
 use oat\taoRevision\model\RepositoryService;
+use oat\taoRevision\model\RevisionStorageInterface;
+use oat\taoRevision\model\storage\RdsStorage;
 
 /**
  *
@@ -51,15 +53,32 @@ class Updater extends common_ext_ExtensionUpdater
 
         if ($this->isVersion('2.1.2')) {
             $fss = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
-            $fss->createFileSystem(RepositoryService::FILES_SYSTEM_NAME, 'tao/revisions');
+            $fss->createFileSystem(RepositoryService::FILE_SYSTEM_NAME, 'tao/revisions');
             $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $fss);
 
             $repositoryService = $this->getServiceManager()->get(RepositoryInterface::SERVICE_ID);
-            $repositoryService->setOption(RepositoryService::OPTION_FS, RepositoryService::FILES_SYSTEM_NAME);
+            $repositoryService->setOption(RepositoryService::OPTION_FILE_SYSTEM, RepositoryService::FILE_SYSTEM_NAME);
             $this->getServiceManager()->register(RepositoryInterface::SERVICE_ID, $repositoryService);
             $this->setVersion('2.2.0');
         }
 
-        $this->skip('2.2.0', '8.0.0');
+        $this->skip('2.2.0', '7.1.0');
+
+        if ($this->isVersion('7.1.0')) {
+
+            $repositoryService = $this->getServiceManager()->get(RepositoryInterface::SERVICE_ID);
+            $revisionStorageService = $this->getServiceManager()->get(
+                $repositoryService->getOption(RepositoryService::OPTION_STORAGE)
+            );
+
+            $this->getServiceManager()->register(RepositoryInterface::SERVICE_ID, new RepositoryService([
+                RepositoryService::OPTION_STORAGE => $revisionStorageService,
+                RepositoryService::OPTION_FILE_SYSTEM => $repositoryService->getOption(RepositoryService::OPTION_FILE_SYSTEM),
+            ]));
+
+            $this->getServiceManager()->unregister(RevisionStorageInterface::SERVICE_ID);
+
+            $this->setVersion('8.0.0');
+        }
     }
 }

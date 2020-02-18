@@ -59,7 +59,6 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
     public const DATA_PREDICATE = 'predicate';
     public const DATA_OBJECT = 'object';
     public const DATA_LANGUAGE = 'language';
-    public const OPTION_PERSISTENCE = 'persistence';
 
     /** @var common_persistence_SqlPersistence */
     private $persistence;
