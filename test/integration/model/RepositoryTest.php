@@ -22,14 +22,17 @@
 
 namespace oat\taoRevision\test\integration\model;
 
+use common_session_SessionManager;
+use oat\generis\test\TestCase;
 use oat\oatbox\filesystem\Directory;
 use oat\oatbox\filesystem\FileSystemService;
-use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoRevision\model\Revision;
 use oat\taoRevision\model\RepositoryService;
 use ReflectionMethod;
+use ReflectionProperty;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use oat\taoRevision\model\RevisionStorage;
+use oat\taoRevision\model\RevisionStorageInterface;
+use oat\oatbox\user\User;
 
 function time()
 {
@@ -37,7 +40,7 @@ function time()
 }
 
 
-class RepositoryTest extends TaoPhpUnitTestRunner
+class RepositoryTest extends TestCase
 {
     public static $now;
 
@@ -47,6 +50,7 @@ class RepositoryTest extends TaoPhpUnitTestRunner
         $smProphecy->get('mockStorage')->willReturn($storage);
 
         $fs = $this->getTempDirectory();
+
         $fsm = $this->prophesize(FileSystemService::class);
         $smProphecy->get('generis/filesystem')->willReturn($fsm->reveal());
 
@@ -56,11 +60,12 @@ class RepositoryTest extends TaoPhpUnitTestRunner
 
         $repository = new RepositoryService([
             RepositoryService::OPTION_STORAGE => 'mockStorage',
-            RepositoryService::OPTION_FS => 'mockFS'
+            RepositoryService::OPTION_FILE_SYSTEM => 'mockFS'
 
         ]);
 
         $repository->setServiceLocator($smProphecy->reveal());
+
         return $repository;
     }
 
@@ -76,12 +81,12 @@ class RepositoryTest extends TaoPhpUnitTestRunner
         $returnValue = array(456, 789);
         $resourceId = 123;
 
-        $storageProphecy = $this->prophesize(RevisionStorage::class);
+        $storageProphecy = $this->prophesize(RevisionStorageInterface::class);
         $storageProphecy->getAllRevisions($resourceId)->willReturn($returnValue);
 
         $repository = $this->getRepository($storageProphecy->reveal());
 
-        $return = $repository->getRevisions($resourceId);
+        $return = $repository->getAllRevisions($resourceId);
         $this->assertEquals($returnValue, $return);
 
         $storageProphecy->getAllRevisions($resourceId)->shouldHaveBeenCalled();
@@ -89,48 +94,48 @@ class RepositoryTest extends TaoPhpUnitTestRunner
 
     public function testGetRevision()
     {
+        $resourceId = '123';
+        $version = 456;
+        $created = 1582066925;
+        $author = 'Great author';
+        $message = 'My message is really cool';
 
-        $resourceId = "MyId";
-        $version = "version";
-        $created = time();
-        $author = "author";
-        $message = "my author";
         $revision = new Revision($resourceId, $version, $created, $author, $message);
 
-        $storageProphecy = $this->prophesize(RevisionStorage::class);
+        $storageProphecy = $this->prophesize(RevisionStorageInterface::class);
         $storageProphecy->getRevision($resourceId, $version)->willReturn($revision);
+
         $repository = $this->getRepository($storageProphecy->reveal());
 
         $return = $repository->getRevision($resourceId, $version);
 
         $this->assertEquals($revision, $return);
+
         $storageProphecy->getRevision($resourceId, $version)->shouldHaveBeenCalled();
     }
 
-
     public function testCommit()
     {
+        $resourceId = '123';
+        $version = 456;
+        $created = 1582066925;
+        $author = 'Great author';
+        $message = 'My message is really cool';
 
-        $resourceId = "MyId";
-        $version = "version";
-        self::$now = time();
-        $author = "author";
-        $message = "my message";
-        $revision = new Revision($resourceId, $version, self::$now, $author, $message);
+        $revision = new Revision($resourceId, $version, $created, $author, $message); // ?
 
-        $storageProphecy = $this->prophesize(RevisionStorage::class);
-        $storageProphecy->addRevision($resourceId, $version, self::$now, $author, $message, array())->willReturn($revision);
+        $storageProphecy = $this->prophesize(RevisionStorageInterface::class);
+        $storageProphecy->addRevision($revision, [])->willReturn($revision);
 
         $repository = $this->getRepository($storageProphecy->reveal());
 
-        //mock user manager to get custom identifier
-        $user = $this->getMockBuilder('oat\oatbox\user\User')
+        $user = $this->getMockBuilder(User::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $user->expects($this->any())
             ->method('getIdentifier')
-            ->willReturn("author");
+            ->willReturn('Great author');
 
         $session = $this->getMockBuilder('common_session_Session')
             ->disableOriginalConstructor()
@@ -139,11 +144,13 @@ class RepositoryTest extends TaoPhpUnitTestRunner
         $session->expects($this->any())
             ->method('getUser')
             ->willReturn($user);
-        $ref = new \ReflectionProperty('common_session_SessionManager', 'session');
+
+        $ref = new ReflectionProperty(common_session_SessionManager::class, 'session');
         $ref->setAccessible(true);
         $ref->setValue(null, $session);
 
         $return = $repository->commit($resourceId, $message, $version);
+
         $this->assertEquals($revision, $return);
     }
 
@@ -154,10 +161,11 @@ class RepositoryTest extends TaoPhpUnitTestRunner
         self::$now = time();
         $author = "author";
         $message = "my message";
+
         $revision = new Revision($resourceId, $version, self::$now, $author, $message);
         $data = array();
 
-        $storageProphecy = $this->prophesize(RevisionStorage::class);
+        $storageProphecy = $this->prophesize(RevisionStorageInterface::class);
         $storageProphecy->getData($revision)->willReturn($data);
 
         $repository = $this->getRepository($storageProphecy->reveal());
@@ -177,7 +185,7 @@ class RepositoryTest extends TaoPhpUnitTestRunner
             $triple
         );
 
-        $storageProphecy = $this->prophesize(RevisionStorage::class);
+        $storageProphecy = $this->prophesize(RevisionStorageInterface::class);
         $storageProphecy->getRevisionsDataByQuery('test')->willReturn($data);
 
         $repository = $this->getRepository($storageProphecy->reveal());

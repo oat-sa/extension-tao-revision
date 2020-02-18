@@ -27,24 +27,18 @@ use oat\generis\test\TestCase;
 
 class RevisionTest extends TestCase
 {
+    private const RESOURCE_ID = '123';
+    private const VERSION = 456;
+    private const CREATED = 1582066925;
+    private const AUTHOR = 'Great author';
+    private const MESSAGE = 'My message is really cool';
 
-    /**
-     * @var Revision
-     */
-    private $revision = null;
-    
-    private $time;
+    /** @var Revision */
+    private $revision;
 
     public function setUp()
     {
-        $this->time = time();
-        
-        $resourceId = 123;
-        $version = 456;
-        $created = $this->time;
-        $author = "Great author";
-        $message = "My message is really cool";
-        $this->revision = new Revision($resourceId, $version, $created, $author, $message);
+        $this->revision = new Revision(self::RESOURCE_ID, self::VERSION, self::CREATED, self::AUTHOR, self::MESSAGE);
     }
 
     public function tearDown()
@@ -54,16 +48,15 @@ class RevisionTest extends TestCase
 
     public function testConstruct()
     {
-        $this->assertInstanceOf("oat\\taoRevision\\model\\Revision", $this->revision, "RdsRevision should extends Revision");
+        $this->assertInstanceOf(Revision::class, $this->revision);
     }
 
     public function testGetters()
     {
-
-        $this->assertEquals(123, $this->revision->getResourceId());
-        $this->assertEquals(456, $this->revision->getVersion());
-        $this->assertEquals($this->time, $this->revision->getDateCreated());
-        $this->assertEquals("Great author", $this->revision->getAuthorId());
-        $this->assertEquals("My message is really cool", $this->revision->getMessage());
+        $this->assertEquals(self::RESOURCE_ID, $this->revision->getResourceId());
+        $this->assertEquals(self::VERSION, $this->revision->getVersion());
+        $this->assertEquals(self::CREATED, $this->revision->getDateCreated());
+        $this->assertEquals(self::AUTHOR, $this->revision->getAuthorId());
+        $this->assertEquals(self::MESSAGE, $this->revision->getMessage());
     }
 }
