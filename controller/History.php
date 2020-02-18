@@ -16,14 +16,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
- *
- *
  */
 
 namespace oat\taoRevision\controller;
 
+use common_Exception;
+use oat\generis\model\OntologyAwareTrait;
+use oat\oatbox\service\exception\InvalidServiceManagerException;
+use oat\oatbox\service\ServiceManagerAwareTrait;
 use oat\tao\helpers\UserHelper;
-use oat\taoRevision\model\Repository;
+use oat\taoRevision\model\RepositoryInterface;
+use oat\taoRevision\model\RepositoryService;
+use oat\taoRevision\model\Revision;
+use oat\taoRevision\model\RevisionNotFound;
+use tao_actions_CommonModule;
+use tao_helpers_Date;
+use tao_helpers_Display;
 
 /**
  * Revision history management controller
@@ -33,86 +41,90 @@ use oat\taoRevision\model\Repository;
  * @license GPL-2.0
  *
  */
-class History extends \tao_actions_CommonModule
+class History extends tao_actions_CommonModule
 {
+    use ServiceManagerAwareTrait;
+    use OntologyAwareTrait;
 
     /**
-     * @return Repository
+     * @return RepositoryInterface
+     * @throws InvalidServiceManagerException
      */
     protected function getRevisionService()
     {
-        return $this->getServiceManager()->get(Repository::SERVICE_ID);
+        return $this->getServiceManager()->get(RepositoryInterface::SERVICE_ID);
     }
 
     /**
-     * @requiresRight id WRITE
+     * @throws InvalidServiceManagerException
+     * @throws common_Exception
      */
     public function index()
     {
-        $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
-        $revisions = $this->getRevisionService()->getRevisions($resource->getUri());
+        $resource = $this->getResource($this->getPsrRequest()->getQueryParams()['id']);
+        $revisions = $this->getRevisionService()->getAllRevisions($resource->getUri());
 
-        $returnRevision = array();
+        $revisionsList = [];
+        /** @var Revision $revision */
         foreach ($revisions as $revision) {
-            $returnRevision[] = array(
-                'id'        => $revision->getVersion(),
-                'modified'  => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
-                'author'    => UserHelper::renderHtmlUser($revision->getAuthorId()),
-                'message'   => _dh($revision->getMessage()),
-            );
+            $revisionsList[] = [
+                'id' => $revision->getVersion(),
+                'modified' => tao_helpers_Date::displayeDate($revision->getDateCreated()),
+                'author' => UserHelper::renderHtmlUser($revision->getAuthorId()),
+                'message' => tao_helpers_Display::htmlize($revision->getMessage()),
+            ];
         }
-        
-        $this->setData('resourceLabel', _dh($resource->getLabel()));
+
+        $this->setData('resourceLabel', tao_helpers_Display::htmlize($resource->getLabel()));
         $this->setData('id', $resource->getUri());
-        $this->setData('revisions', $returnRevision);
+        $this->setData('revisions', $revisionsList);
         $this->setView('History/index.tpl');
     }
 
     /**
-     * @requiresRight id WRITE
+     * @throws InvalidServiceManagerException
+     * @throws RevisionNotFound
+     * @throws common_Exception
      */
     public function restoreRevision()
     {
-        $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
-        $oldVersion = $this->getRequestParameter('revisionId');
-        $message = $this->getRequestParameter('message');
+        $resource = $this->getResource($this->getPsrRequest()->getQueryParams()['id']);
+
+        $previousVersion = $this->getPsrRequest()->getQueryParams()['revisionId'];
+        $commitMessage = $this->getPsrRequest()->getQueryParams()['message'];
         
-        $oldRevision = $this->getRevisionService()->getRevision($resource->getUri(), $oldVersion);
-        
-        $success = $this->getRevisionService()->restore($oldRevision);
-        if ($success) {
-            $newRevision = $this->getRevisionService()->commit($resource->getUri(), $message);
-            $this->returnJson(array(
-                'success'   => true,
-                'id'        => $newRevision->getVersion(),
-                'modified'  => \tao_helpers_Date::displayeDate($newRevision->getDateCreated()),
-                'author'    => UserHelper::renderHtmlUser($newRevision->getAuthorId()),
-                'message'   => $newRevision->getMessage()
-            ));
+        $previousRevision = $this->getRevisionService()->getRevision($resource->getUri(), $previousVersion);
+
+        if ($this->getRevisionService()->restore($previousRevision)) {
+            $newRevision = $this->getRevisionService()->commit($resource->getUri(), $commitMessage);
+            $this->returnJson([
+                'success' => true,
+                'id' => $newRevision->getVersion(),
+                'modified' => tao_helpers_Date::displayeDate($newRevision->getDateCreated()),
+                'author' => UserHelper::renderHtmlUser($newRevision->getAuthorId()),
+                'message' => $newRevision->getMessage(),
+            ]);
         } else {
             $this->returnError(__('Unable to restore the selected version'));
         }
     }
 
     /**
-     * @requiresRight id WRITE
+     * @throws InvalidServiceManagerException
+     * @throws common_Exception
      */
     public function commitResource()
     {
+        $resource = $this->getResource($this->getPsrRequest()->getQueryParams()['id']);
+        $revision = $this->getRevisionService()->commit($resource->getUri(), $_POST['message'] ?? '');
 
-        $resource = new \core_kernel_classes_Resource($this->getRequestParameter('id'));
-        // prevent escaping on input
-        $message = isset($_POST['message']) ? $_POST['message'] : '';
-        
-        $revision = $this->getRevisionService()->commit($resource->getUri(), $message);
-        
-        $this->returnJson(array(
-            'success'       => true,
-            'id'            => $revision->getVersion(),
-            'modified'      => \tao_helpers_Date::displayeDate($revision->getDateCreated()),
-            'author'        => UserHelper::renderHtmlUser($revision->getAuthorId()),
-            'message'       => $revision->getMessage(),
-            'commitMessage' => __('%s has been committed', $resource->getLabel())
-        ));
+        $this->returnJson([
+            'success' => true,
+            'id' => $revision->getVersion(),
+            'modified' => tao_helpers_Date::displayeDate($revision->getDateCreated()),
+            'author' => UserHelper::renderHtmlUser($revision->getAuthorId()),
+            'message' => $revision->getMessage(),
+            'commitMessage' => __('%s has been committed', $resource->getLabel()),
+        ]);
     }
 }
