@@ -38,7 +38,7 @@ interface RepositoryInterface
      *
      * @param string $resourceId
      * @param int $version
-     * @throws RevisionNotFound
+     * @throws RevisionNotFoundException
      * @return Revision
      */
     public function getRevision(string $resourceId, int $version): Revision;

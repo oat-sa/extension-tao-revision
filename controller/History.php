@@ -28,7 +28,7 @@ use oat\tao\helpers\UserHelper;
 use oat\taoRevision\model\RepositoryInterface;
 use oat\taoRevision\model\RepositoryService;
 use oat\taoRevision\model\Revision;
-use oat\taoRevision\model\RevisionNotFound;
+use oat\taoRevision\model\RevisionNotFoundException;
 use tao_actions_CommonModule;
 use tao_helpers_Date;
 use tao_helpers_Display;
@@ -83,7 +83,7 @@ class History extends tao_actions_CommonModule
 
     /**
      * @throws InvalidServiceManagerException
-     * @throws RevisionNotFound
+     * @throws RevisionNotFoundException
      * @throws common_Exception
      */
     public function restoreRevision()

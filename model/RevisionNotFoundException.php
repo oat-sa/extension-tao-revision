@@ -22,7 +22,7 @@
 
 namespace oat\taoRevision\model;
 
-class RevisionNotFound extends \common_Exception implements \common_log_SeverityLevel
+class RevisionNotFoundException extends \common_Exception implements \common_log_SeverityLevel
 {
     public function __construct($resourceId, $version)
     {

@@ -31,7 +31,7 @@ use Doctrine\DBAL\Schema\Schema;
 use oat\generis\model\kernel\persistence\smoothsql\search\driver\TaoSearchDriver;
 use oat\generis\model\OntologyRdfs;
 use oat\generis\persistence\PersistenceManager;
-use oat\taoRevision\model\RevisionNotFound;
+use oat\taoRevision\model\RevisionNotFoundException;
 use oat\taoRevision\model\Revision;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoRevision\model\RevisionStorageInterface;
@@ -107,7 +107,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
      * @param int    $version
      *
      * @return Revision
-     * @throws RevisionNotFound
+     * @throws RevisionNotFoundException
      */
     public function getRevision(string $resourceId, int $version): Revision
     {
@@ -122,7 +122,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
             ->fetchAll();
 
         if (count($variables) !== 1) {
-            throw new RevisionNotFound($resourceId, $version);
+            throw new RevisionNotFoundException($resourceId, $version);
         }
 
         $variable = reset($variables);
