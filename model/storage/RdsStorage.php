@@ -23,8 +23,10 @@ namespace oat\taoRevision\model\storage;
 
 use common_ext_Namespace;
 use common_ext_NamespaceManager;
+use common_Object;
 use common_persistence_SqlPersistence;
 use core_kernel_classes_Triple as Triple;
+use core_kernel_classes_ContainerCollection as TriplesCollection;
 use Doctrine\DBAL\Schema\Schema;
 use oat\generis\model\kernel\persistence\smoothsql\search\driver\TaoSearchDriver;
 use oat\generis\model\OntologyRdfs;
@@ -176,7 +178,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
     /**
      * @param Revision $revision
      *
-     * @return Triple[]
+     * @return TriplesCollection
      */
     public function getData(Revision $revision)
     {
@@ -189,10 +191,9 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
         $result = $this->getPersistence()
             ->query($queryBuilder->getSQL(), [$revision->getResourceId(), $revision->getVersion()]);
 
-        $triples = [];
+        $triples = new TriplesCollection(new common_Object());
         while ($statement = $result->fetch()) {
-            $triple = $triple = $this->prepareDataObject($statement, $this->getLocalModel()->getModelId());
-            $triples[] = $triple;
+            $triples->add($this->prepareDataObject($statement, $this->getLocalModel()->getModelId()));
         }
 
         return $triples;

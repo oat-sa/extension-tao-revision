@@ -61,7 +61,6 @@ interface RevisionStorageInterface
      */
     public function getData(Revision $revision);
 
-
     /**
      * @param string $query
      *
