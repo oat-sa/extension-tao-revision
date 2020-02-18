@@ -109,15 +109,21 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
      */
     public function getRevision(string $resourceId, int $version): Revision
     {
-        $sql = 'SELECT * FROM ' . self::REVISION_TABLE_NAME
-            . ' WHERE (' . self::REVISION_RESOURCE . ' = ? AND ' . self::REVISION_VERSION . ' = ?)';
-        $params = [$resourceId, $version];
+        $queryBuilder = $this->getQueryBuilder()
+            ->select('*')
+            ->from(self::REVISION_TABLE_NAME)
+            ->where(sprintf('%s = ?', self::REVISION_RESOURCE))
+            ->andWhere(sprintf('%s = ?', self::REVISION_VERSION))
+            ->setParameters([$resourceId, $version]);
 
-        $variables = $this->getPersistence()->query($sql, $params)->fetchAll();
+        $variables = $this->getPersistence()
+            ->query($queryBuilder->getSQL())
+            ->fetchAll();
 
         if (count($variables) !== 1) {
             throw new RevisionNotFound($resourceId, $version);
         }
+
         $variable = reset($variables);
 
         return new Revision(
@@ -136,9 +142,15 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
      */
     public function getAllRevisions(string $resourceId)
     {
-        $sql = 'SELECT * FROM ' . self::REVISION_TABLE_NAME . ' WHERE ' . self::REVISION_RESOURCE . ' = ?';
-        $params = [$resourceId];
-        $variables = $this->getPersistence()->query($sql, $params)->fetchAll();
+        $queryBuilder = $this->getQueryBuilder()
+        ->select('*')
+        ->from(self::REVISION_TABLE_NAME)
+        ->where(sprintf('%s = ?', self::REVISION_RESOURCE))
+        ->setParameters([$resourceId]);
+
+        $variables = $this->getPersistence()
+            ->query($queryBuilder->getSQL())
+            ->fetchAll();
 
         return $this->buildRevisionCollection($variables);
     }
@@ -170,9 +182,15 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
      */
     public function getData(Revision $revision)
     {
-        // retrieve data
-        $query = 'SELECT * FROM ' . self::DATA_TABLE_NAME . ' WHERE ' . self::DATA_RESOURCE . ' = ? AND ' . self::DATA_VERSION . ' = ?';
-        $result = $this->getPersistence()->query($query, [$revision->getResourceId(), $revision->getVersion()]);
+        $queryBuilder = $this->getQueryBuilder()
+            ->select('*')
+            ->from(self::DATA_TABLE_NAME)
+            ->where(sprintf('%s = ?', self::DATA_RESOURCE))
+            ->andWhere(sprintf('%s = ?', self::DATA_VERSION))
+            ->setParameters([$revision->getResourceId(), $revision->getVersion()]);
+
+        $result = $this->getPersistence()
+            ->query($queryBuilder->getSQL());
 
         $triples = [];
         while ($statement = $result->fetch()) {

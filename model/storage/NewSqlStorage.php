@@ -46,7 +46,7 @@ class NewSqlStorage extends RdsStorage
             self::REVISION_TABLE_NAME,
             [
                 self::REVISION_RESOURCE => $revision->getResourceId(),
-                self::REVISION_VERSION => $revision->getVersion(), // why need convert to string?
+                self::REVISION_VERSION => $revision->getVersion(),
                 self::REVISION_USER => $revision->getAuthorId(),
                 self::REVISION_MESSAGE => $revision->getMessage(),
                 self::REVISION_CREATED => $revision->getDateCreated(),
@@ -94,15 +94,11 @@ class NewSqlStorage extends RdsStorage
         $queryBuilder = $this->getQueryBuilder()
             ->select('*')
             ->from(self::REVISION_TABLE_NAME)
-            ->where(
-                sprintf(' `%s` = ? ', self::REVISION_RESOURCE)
-            );
+            ->where(sprintf(' `%s` = ? ', self::REVISION_RESOURCE))
+            ->setParameters([$resourceId]);
 
-        $parameters = [
-            $resourceId
-        ];
         $variables = $this->getPersistence()
-            ->query($queryBuilder->getSQL(), $parameters)
+            ->query($queryBuilder->getSQL())
             ->fetchAll();
 
         return $this->buildRevisionCollection($variables);
