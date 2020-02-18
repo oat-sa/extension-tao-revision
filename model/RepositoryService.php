@@ -21,6 +21,9 @@
 
 namespace oat\taoRevision\model;
 
+use common_Exception;
+use common_exception_Error;
+use common_session_SessionManager;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
@@ -28,6 +31,7 @@ use oat\taoRevision\helper\CloneHelper;
 use oat\generis\model\data\ModelManager;
 use oat\taoRevision\helper\DeleteHelper;
 use oat\oatbox\service\ConfigurableService;
+use tao_models_classes_FileNotFoundException;
 
 /**
  * A simple repository implementation that stores the information
@@ -35,28 +39,29 @@ use oat\oatbox\service\ConfigurableService;
  *
  * @author bout
  */
-class RepositoryService extends ConfigurableService implements Repository
+class RepositoryService extends ConfigurableService implements RepositoryInterface
 {
     use OntologyAwareTrait;
 
-    const OPTION_STORAGE = 'storage';
-    const OPTION_FS = 'filesystem';
+    public const FILES_SYSTEM_NAME = 'revisions';
+
+    public const OPTION_STORAGE = 'storage';
+    public const OPTION_FS = 'filesystem';
 
     private $storage;
 
-    /**
-     * @var FileSystem
-     */
+    /** @var FileSystem */
     private $fileSystem;
 
     /**
-     * @return RevisionStorage
+     * @return RevisionStorageInterface
      */
     protected function getStorage()
     {
-        if (is_null($this->storage)) {
+        if ($this->storage === null) {
             $this->storage = $this->getServiceLocator()->get($this->getOption(self::OPTION_STORAGE));
         }
+
         return $this->storage;
     }
 
@@ -66,45 +71,55 @@ class RepositoryService extends ConfigurableService implements Repository
      */
     protected function getFileSystem()
     {
-        if (is_null($this->fileSystem)) {
+        if ($this->fileSystem === null) {
             $this->fileSystem = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID)->getFileSystem($this->getOption(self::OPTION_FS));
         }
+
         return $this->fileSystem;
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \oat\taoRevision\model\Repository::getRevisions()
+     * @param string $resourceId
+     *
+     * @return Revision[]
      */
-    public function getRevisions($resourceId)
+    public function getAllRevisions(string $resourceId): array
     {
         return $this->getStorage()->getAllRevisions($resourceId);
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \oat\taoRevision\model\Repository::getRevision()
+     * @param string $resourceId
+     * @param int    $version
+     *
+     * @return Revision
      */
-    public function getRevision($resourceId, $version)
+    public function getRevision(string $resourceId, int $version): Revision
     {
         return $this->getStorage()->getRevision($resourceId, $version);
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \oat\taoRevision\model\Repository::commit()
+     * @param string      $resourceId
+     * @param string      $message
+     * @param int|null    $version
+     * @param string|null $author
+     *
+     * @return Revision
+     * @throws common_Exception
+     * @throws common_exception_Error
+     * @throws tao_models_classes_FileNotFoundException
      */
-    public function commit($resourceId, $message, $version = null, $userId = null)
+    public function commit(string $resourceId, string $message, int $version = null, string $author = null): Revision
     {
-        if ($userId === null) {
-            $user = \common_session_SessionManager::getSession()->getUser();
-            $userId = ($user === null) ? '' : $user->getIdentifier();
+        if ($author === null) {
+            $user = common_session_SessionManager::getSession()->getUser();
+            $author = ($user === null) ? '' : $user->getIdentifier();
         }
-        $version = is_null($version) ? $this->getNextVersion($resourceId) : $version;
-        $created = time();
 
-        // save data
-        $resource = new \core_kernel_classes_Resource($resourceId);
+        $version = $version ?? $this->getNextVersion($resourceId);
+
+        $resource = $this->getResource($resourceId);
         $triples = $resource->getRdfTriples();
 
         $filesystemMap = array_fill_keys(
@@ -112,23 +127,26 @@ class RepositoryService extends ConfigurableService implements Repository
             $this->getFileSystem()->getId()
         );
 
+        $revision = new Revision($resourceId, $version, time(), $author, $message);
         $data = CloneHelper::deepCloneTriples($triples, $filesystemMap);
 
-        $revision = $this->getStorage()->addRevision($resourceId, $version, $created, $userId, $message, $data);
-
-        return $revision;
+        return $this->getStorage()->addRevision($revision, $data);
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \oat\taoRevision\model\Repository::restore()
+     * @param Revision $revision
+     *
+     * @return bool
+     * @throws common_Exception
+     * @throws common_exception_Error
+     * @throws tao_models_classes_FileNotFoundException
      */
-    public function restore(Revision $revision)
+    public function restore(Revision $revision): bool
     {
         $resourceId = $revision->getResourceId();
         $data = $this->getStorage()->getData($revision);
 
-        $resource = new \core_kernel_classes_Resource($resourceId);
+        $resource = $this->getResource($resourceId);
         $originFilesystemMap = CloneHelper::getPropertyStorageMap($resource->getRdfTriples());
         DeleteHelper::deepDelete($resource);
 
@@ -141,33 +159,35 @@ class RepositoryService extends ConfigurableService implements Repository
 
     /**
      * @param string $query
-     * @return \core_kernel_classes_Resource []
+     * @return Resource[]
      */
-    public function searchRevisionResources($query)
+    public function searchRevisionResources(string $query)
     {
         $data = $this->getStorage()->getRevisionsDataByQuery($query);
         $resources = [];
         foreach ($data as $item) {
             $resources[] = $this->getResource($item->subject);
         }
+
         return $resources;
     }
 
     /**
-     * Helper to determin suitable next version nr
+     * Helper to determine suitable next version
      *
      * @param string $resourceId
-     * @return number
+     * @return int
      */
-    protected function getNextVersion($resourceId)
+    protected function getNextVersion(string $resourceId): int
     {
         $candidate = 0;
-        foreach ($this->getRevisions($resourceId) as $revision) {
+        foreach ($this->getAllRevisions($resourceId) as $revision) {
             $version = $revision->getVersion();
             if (is_numeric($version) && $version > $candidate) {
                 $candidate = $version;
             }
         }
+
         return $candidate + 1;
     }
 }
