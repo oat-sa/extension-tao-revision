@@ -22,112 +22,101 @@
 
 namespace oat\taoRevision\test\integration\model;
 
+use common_session_Session;
 use common_session_SessionManager;
-use oat\generis\test\TestCase;
-use oat\oatbox\filesystem\Directory;
-use oat\oatbox\filesystem\FileSystemService;
+use oat\generis\model\OntologyAwareTrait;
+use oat\generis\test\GenerisTestCase;
+use oat\oatbox\service\ConfigurableService;
 use oat\taoRevision\model\Revision;
 use oat\taoRevision\model\RepositoryService;
+use oat\taoRevision\model\RevisionNotFoundException;
+use Prophecy\Argument;
+use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use oat\taoRevision\model\RevisionStorageInterface;
 use oat\oatbox\user\User;
 
-function time()
+class RepositoryTest extends GenerisTestCase
 {
-    return RepositoryTest::$now ?: \time();
-}
+    /** @var Revision[] */
+    private $revisions = [];
 
+    /** @var RepositoryService */
+    private $repository;
 
-class RepositoryTest extends TestCase
-{
-    public static $now;
-
-    private function getRepository($storage)
+    public function setUp()
     {
-        $smProphecy = $this->prophesize(ServiceLocatorInterface::class);
-        $smProphecy->get('mockStorage')->willReturn($storage);
+        parent::setUp();
 
-        $fs = $this->getTempDirectory();
-
-        $fsm = $this->prophesize(FileSystemService::class);
-        $smProphecy->get('generis/filesystem')->willReturn($fsm->reveal());
-
-        $method = new ReflectionMethod(Directory::class, 'getFileSystem');
-        $method->setAccessible(true);
-        $fsm->getFileSystem('mockFS')->willReturn($method->invoke($fs));
-
-        $repository = new RepositoryService([
-            RepositoryService::OPTION_STORAGE => 'mockStorage',
-            RepositoryService::OPTION_FILE_SYSTEM => 'mockFS'
-
-        ]);
-
-        $repository->setServiceLocator($smProphecy->reveal());
-
-        return $repository;
+        $this->revisions = [
+            new Revision('123', 456, 1582066925, 'Great author', 'My message is really cool'),
+            new Revision('123', 789, 1581566925, 'Great author', 'My message is really cool'),
+        ];
     }
 
-    public function tearDown()
+    public function testGetAllRevisions()
     {
-        self::$now = null;
-    }
+        $storage = $this->getRevisionStorage();
+        $storage->getAllRevisions(Argument::type('string'))->shouldBeCalled();
 
+        $repository = $this->getRepositoryService($storage->reveal());
 
-    public function testGetRevisions()
-    {
+        $revisions = $repository->getAllRevisions('123');
 
-        $returnValue = array(456, 789);
-        $resourceId = 123;
-
-        $storageProphecy = $this->prophesize(RevisionStorageInterface::class);
-        $storageProphecy->getAllRevisions($resourceId)->willReturn($returnValue);
-
-        $repository = $this->getRepository($storageProphecy->reveal());
-
-        $return = $repository->getAllRevisions($resourceId);
-        $this->assertEquals($returnValue, $return);
-
-        $storageProphecy->getAllRevisions($resourceId)->shouldHaveBeenCalled();
+        $this->assertEquals($this->revisions, $revisions);
     }
 
     public function testGetRevision()
     {
-        $resourceId = '123';
-        $version = 456;
-        $created = 1582066925;
-        $author = 'Great author';
-        $message = 'My message is really cool';
+        $revision = $this->revisions[0];
 
-        $revision = new Revision($resourceId, $version, $created, $author, $message);
+        $storage = $this->getRevisionStorage();
+        $storage->getRevision(Argument::type('string'), Argument::type('int'))->shouldBeCalled();
 
-        $storageProphecy = $this->prophesize(RevisionStorageInterface::class);
-        $storageProphecy->getRevision($resourceId, $version)->willReturn($revision);
+        $repository = $this->getRepositoryService($storage->reveal());
 
-        $repository = $this->getRepository($storageProphecy->reveal());
+        $returnedRevision = $repository->getRevision($revision->getResourceId(), $revision->getVersion());
 
-        $return = $repository->getRevision($resourceId, $version);
+        $this->assertInstanceOf(Revision::class, $returnedRevision);
+        $this->assertEquals($revision, $returnedRevision);
+    }
 
-        $this->assertEquals($revision, $return);
+    public function testNotFoundRevision()
+    {
+        $revision = $this->revisions[0];
 
-        $storageProphecy->getRevision($resourceId, $version)->shouldHaveBeenCalled();
+        $storage = $this->getRevisionStorage();
+        $storage->getRevision(Argument::type('string'), Argument::type('int'))->willThrow(RevisionNotFoundException::class);
+
+        $repository = $this->getRepositoryService($storage->reveal());
+
+        $this->expectException(RevisionNotFoundException::class);
+
+        $repository->getRevision($revision->getResourceId(), $revision->getVersion());
     }
 
     public function testCommit()
     {
-        $resourceId = '123';
-        $version = 456;
-        $created = 1582066925;
-        $author = 'Great author';
-        $message = 'My message is really cool';
+        $storage = $this->getRevisionStorage();
+        $storage->addRevision(Argument::type(Revision::class), Argument::type('array'))->shouldBeCalled();
 
-        $revision = new Revision($resourceId, $version, $created, $author, $message); // ?
+//        $repository = $this->createPartialMock(RepositoryService::class, ['getStorage', 'getFileSystem']);
+//        $repository->method('getStorage')->willReturn($storage);
+//        $repository->method('getFileSystem')->willReturn($this->getFileSystemMock());
+//
+//        $repository->method('getFileSystem')->willReturn($this->getFileSystemMock());
 
-        $storageProphecy = $this->prophesize(RevisionStorageInterface::class);
-        $storageProphecy->addRevision($revision, [])->willReturn($revision);
 
-        $repository = $this->getRepository($storageProphecy->reveal());
+        $repository = $this->getRepositoryService($storage->reveal());
+
+//        $model = $this->getOntologyMock();
+//        $model->getServiceLocator();
+//        $sl = $this->getServiceLocatorMock();
+//        $sl->
+//        $repository->setServiceLocator()
 
         $user = $this->getMockBuilder(User::class)
             ->disableOriginalConstructor()
@@ -137,7 +126,7 @@ class RepositoryTest extends TestCase
             ->method('getIdentifier')
             ->willReturn('Great author');
 
-        $session = $this->getMockBuilder('common_session_Session')
+        $session = $this->getMockBuilder(common_session_Session::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -149,30 +138,56 @@ class RepositoryTest extends TestCase
         $ref->setAccessible(true);
         $ref->setValue(null, $session);
 
-        $return = $repository->commit($resourceId, $message, $version);
+        $revision = $this->revisions[0];
 
-        $this->assertEquals($revision, $return);
+        $model = $this->getOntologyMock();
+        $r = $model->getResource($revision->getResourceId());
+
+        // need to creaye resource
+        $returnedRevision = $repository->commit($r, $revision->getMessage(), $revision->getVersion());
+
+        print_r($returnedRevision);
+
+        $this->assertEquals($revision, $returnedRevision);
     }
 
     public function testRestore()
     {
-        $resourceId = "MyId";
-        $version = "version";
-        self::$now = time();
-        $author = "author";
-        $message = "my message";
+        $revision = $this->revisions[0];
 
-        $revision = new Revision($resourceId, $version, self::$now, $author, $message);
-        $data = array();
+        $storage = $this->getRevisionStorage();
+        $storage->getData(Argument::type(Revision::class))->shouldBeCalled();
 
-        $storageProphecy = $this->prophesize(RevisionStorageInterface::class);
-        $storageProphecy->getData($revision)->willReturn($data);
+        $repository = $this->getRepositoryService($storage->reveal());
 
-        $repository = $this->getRepository($storageProphecy->reveal());
+        $ref = new ReflectionClass(RepositoryService::class);
+        $ontologyProp = $ref->getProperty('ontology');
+        $ontologyProp->setAccessible(true);
+        $ontologyProp->setValue($repository, $this->getOntologyMock());
 
-        $return = $repository->restore($revision);
+        $returnedResult = $repository->restore($revision);
 
-        $this->assertEquals(true, $return);
+        $this->assertEquals(true, $returnedResult);
+    }
+
+    public function testGetNextVersion()
+    {
+        $revisions = [
+            new Revision('123', 1, 1582066925, 'Author', 'Message')
+        ];
+
+        $storage = $this->getRevisionStorage();
+        $storage->getAllRevisions(Argument::type('string'))
+            ->shouldBeCalled()
+            ->willReturn($revisions);
+
+        $repository = $this->getRepositoryService($storage->reveal());
+
+        $getNextVersionMethod = new ReflectionMethod(RepositoryService::class, 'getNextVersion');
+        $getNextVersionMethod->setAccessible(true);
+        $newVersion = $getNextVersionMethod->invokeArgs($repository, ['123']);
+
+        $this->assertEquals(2, $newVersion);
     }
 
     public function testSearchRevisionResources()
@@ -193,5 +208,35 @@ class RepositoryTest extends TestCase
         $return = $repository->searchRevisionResources('test');
 
         $this->assertInstanceOf(\core_kernel_classes_Resource::class, $return[0]);
+    }
+
+    /**
+     * @param $storage
+     *
+     * @return RepositoryService
+     * @throws ReflectionException
+     */
+    private function getRepositoryService($storage)
+    {
+        $repositoryService = new RepositoryService();
+
+        $reflectionClass = new ReflectionClass(RepositoryService::class);
+        $reflectionProp = $reflectionClass->getProperty('storage');
+        $reflectionProp->setAccessible(true);
+
+        $reflectionProp->setValue($repositoryService, $storage);
+
+        return $repositoryService;
+    }
+
+    private function getRevisionStorage()
+    {
+        $revisionStorageProphecy = $this->prophesize(RevisionStorageInterface::class);
+        $revisionStorageProphecy->getRevision(Argument::type('string'), Argument::type('int'))->willReturn($this->revisions[0]);
+        $revisionStorageProphecy->getAllRevisions(Argument::type('string'))->willReturn($this->revisions);
+        $revisionStorageProphecy->addRevision($this->revisions[0], [])->willReturn($this->revisions[0]);
+        $revisionStorageProphecy->getData($this->revisions[0])->willReturn([]);
+
+        return $revisionStorageProphecy;
     }
 }
