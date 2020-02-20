@@ -26,7 +26,6 @@ use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\oatbox\service\ServiceManagerAwareTrait;
 use oat\tao\helpers\UserHelper;
 use oat\taoRevision\model\RepositoryInterface;
-use oat\taoRevision\model\RepositoryService;
 use oat\taoRevision\model\Revision;
 use oat\taoRevision\model\RevisionNotFoundException;
 use tao_actions_CommonModule;
@@ -96,7 +95,7 @@ class History extends tao_actions_CommonModule
         $previousRevision = $this->getRevisionService()->getRevision($resource->getUri(), $previousVersion);
 
         if ($this->getRevisionService()->restore($previousRevision)) {
-            $newRevision = $this->getRevisionService()->commit($resource->getUri(), $commitMessage);
+            $newRevision = $this->getRevisionService()->commit($resource, $commitMessage);
             $this->returnJson([
                 'success' => true,
                 'id' => $newRevision->getVersion(),
@@ -116,7 +115,7 @@ class History extends tao_actions_CommonModule
     public function commitResource()
     {
         $resource = $this->getResource($this->getPsrRequest()->getParsedBody()['id']);
-        $revision = $this->getRevisionService()->commit($resource->getUri(), $_POST['message'] ?? '');
+        $revision = $this->getRevisionService()->commit($resource, $_POST['message'] ?? '');
 
         $this->returnJson([
             'success' => true,

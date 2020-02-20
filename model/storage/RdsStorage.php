@@ -109,7 +109,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
      * @return Revision
      * @throws RevisionNotFoundException
      */
-    public function getRevision(string $resourceId, int $version): Revision
+    public function getRevision(string $resourceId, int $version)
     {
         $queryBuilder = $this->getQueryBuilder()
             ->select('*')

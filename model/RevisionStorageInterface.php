@@ -44,7 +44,7 @@ interface RevisionStorageInterface
      *
      * @return Revision
      */
-    public function getRevision(string $resourceId, int $version): Revision;
+    public function getRevision(string $resourceId, int $version);
 
     /**
      *

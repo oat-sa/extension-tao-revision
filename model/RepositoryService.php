@@ -24,6 +24,7 @@ namespace oat\taoRevision\model;
 use common_Exception;
 use common_exception_Error;
 use common_session_SessionManager;
+use core_kernel_classes_Resource as Resource;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
@@ -91,7 +92,7 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
      * @throws InvalidService
      * @throws InvalidServiceManagerException
      */
-    public function getAllRevisions(string $resourceId): array
+    public function getAllRevisions(string $resourceId)
     {
         return $this->getStorage()->getAllRevisions($resourceId);
     }
@@ -104,41 +105,42 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
      * @throws InvalidService
      * @throws InvalidServiceManagerException
      */
-    public function getRevision(string $resourceId, int $version): Revision
+    public function getRevision(string $resourceId, int $version)
     {
         return $this->getStorage()->getRevision($resourceId, $version);
     }
 
     /**
-     * @param string      $resourceId
+     * @param Resource    $resource
      * @param string      $message
      * @param int|null    $version
      * @param string|null $author
      *
      * @return Revision
+     * @throws InvalidService
+     * @throws InvalidServiceManagerException
      * @throws common_Exception
      * @throws common_exception_Error
      * @throws tao_models_classes_FileNotFoundException
      */
-    public function commit(string $resourceId, string $message, int $version = null, string $author = null): Revision
+    public function commit(Resource $resource, string $message, int $version = null, string $author = null)
     {
         if ($author === null) {
             $user = common_session_SessionManager::getSession()->getUser();
             $author = ($user === null) ? '' : $user->getIdentifier();
         }
 
-        $version = $version ?? $this->getNextVersion($resourceId);
+        $version = $version ?? $this->getNextVersion($resource->getUri());
 
-        $resource = $this->getResource($resourceId);
         $triples = $resource->getRdfTriples();
 
         $filesystemMap = array_fill_keys(
-            array_keys(CloneHelper::getPropertyStorageMap($triples)),
+            array_keys($this->getPropertyStorageMap($triples)),
             $this->getFileSystem()->getId()
         );
 
-        $revision = new Revision($resourceId, $version, time(), $author, $message);
-        $data = CloneHelper::deepCloneTriples($triples, $filesystemMap);
+        $revision = new Revision($resource->getUri(), $version, time(), $author, $message);
+        $data = $this->deepCloneTriples($triples, $filesystemMap);
 
         return $this->getStorage()->addRevision($revision, $data);
     }
@@ -151,16 +153,16 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
      * @throws common_exception_Error
      * @throws tao_models_classes_FileNotFoundException
      */
-    public function restore(Revision $revision): bool
+    public function restore(Revision $revision)
     {
-        $resourceId = $revision->getResourceId();
         $data = $this->getStorage()->getData($revision);
 
-        $resource = $this->getResource($resourceId);
+        $resource = $this->getResource($revision->getResourceId());
         $originFilesystemMap = CloneHelper::getPropertyStorageMap($resource->getRdfTriples());
-        DeleteHelper::deepDelete($resource);
 
-        foreach (CloneHelper::deepCloneTriples($data, $originFilesystemMap) as $triple) {
+        $this->deepDelete($resource);
+
+        foreach ($this->deepCloneTriples($data, $originFilesystemMap) as $triple) {
             ModelManager::getModel()->getRdfInterface()->add($triple);
         }
 
@@ -205,5 +207,29 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
         }
 
         return $candidate + 1;
+    }
+
+    /**
+     * @param $data
+     * @param $originFilesystemMap
+     *
+     * @return array
+     * @throws common_Exception
+     * @throws common_exception_Error
+     * @throws tao_models_classes_FileNotFoundException
+     */
+    private function deepCloneTriples($data, $originFilesystemMap)
+    {
+        return CloneHelper::deepCloneTriples($data, $originFilesystemMap);
+    }
+
+    private function getPropertyStorageMap($triples)
+    {
+        return CloneHelper::getPropertyStorageMap($triples);
+    }
+
+    private function deepDelete(Resource $resource)
+    {
+        DeleteHelper::deepDelete($resource);
     }
 }
