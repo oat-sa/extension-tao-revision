@@ -30,9 +30,7 @@ use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\exception\InvalidService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
-use oat\taoRevision\helper\CloneHelper;
 use oat\generis\model\data\ModelManager;
-use oat\taoRevision\helper\DeleteHelper;
 use oat\oatbox\service\ConfigurableService;
 use tao_models_classes_FileNotFoundException;
 
@@ -83,6 +81,14 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
         }
 
         return $this->fileSystem;
+    }
+
+    /**
+     * @return TriplesManagerService
+     */
+    public function getTriplesManagerService()
+    {
+        return $this->getServiceLocator()->get(TriplesManagerService::SERVICE_ID);
     }
 
     /**
@@ -158,7 +164,7 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
         $data = $this->getStorage()->getData($revision);
 
         $resource = $this->getResource($revision->getResourceId());
-        $originFilesystemMap = CloneHelper::getPropertyStorageMap($resource->getRdfTriples());
+        $originFilesystemMap = $this->getTriplesManagerService()->getPropertyStorageMap($resource->getRdfTriples());
 
         $this->deepDelete($resource);
 
@@ -176,11 +182,11 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
      * @throws InvalidService
      * @throws InvalidServiceManagerException
      */
-    public function searchRevisionResources(string $query)
+    public function searchRevisionResources(string $query) // used in nec
     {
-        $data = $this->getStorage()->getRevisionsDataByQuery($query);
         $resources = [];
-        foreach ($data as $item) {
+
+        foreach ($this->getStorage()->getRevisionsDataByQuery($query) as $item) {
             $resources[] = $this->getResource($item->subject);
         }
 
@@ -214,22 +220,27 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
      * @param $originFilesystemMap
      *
      * @return array
-     * @throws common_Exception
-     * @throws common_exception_Error
-     * @throws tao_models_classes_FileNotFoundException
      */
     private function deepCloneTriples($data, $originFilesystemMap)
     {
-        return CloneHelper::deepCloneTriples($data, $originFilesystemMap);
+        return $this->getTriplesManagerService()->cloneTriples($data, $originFilesystemMap);
     }
 
+    /**
+     * @param $triples
+     *
+     * @return array
+     */
     private function getPropertyStorageMap($triples)
     {
-        return CloneHelper::getPropertyStorageMap($triples);
+        return $this->getTriplesManagerService()->getPropertyStorageMap($triples);
     }
 
+    /**
+     * @param Resource $resource
+     */
     private function deepDelete(Resource $resource)
     {
-        DeleteHelper::deepDelete($resource);
+        $this->getTriplesManagerService()->deleteTriplesFor($resource);
     }
 }

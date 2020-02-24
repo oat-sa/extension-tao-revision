@@ -245,6 +245,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
             $triple = $this->prepareDataObject($statement, $this->getLocalModel()->getModelId());
             $revisionsData[] = $triple;
         }
+
         return $revisionsData;
     }
 
