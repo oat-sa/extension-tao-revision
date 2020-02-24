@@ -18,43 +18,46 @@
  * Copyright (c) 2019 (original work) Open Assessment Technologies SA ;
  */
 
-namespace oat\taoRevision\test\integration\model\rds;
+namespace oat\taoRevision\test\integration\model;
 
-use common_persistence_Manager;
+use common_ext_Namespace;
+use common_Object;
+use core_kernel_classes_Triple as Triple;
+use core_kernel_classes_ContainerCollection as TriplesCollection;
+use oat\generis\persistence\PersistenceManager;
+use oat\generis\test\TestCase;
+use oat\taoRevision\model\RevisionNotFoundException;
+use oat\taoRevision\model\RevisionStorageInterface;
+use oat\taoRevision\model\storage\RdsSqlSchema;
 use oat\taoRevision\model\storage\RdsStorage;
 use oat\taoRevision\model\Revision;
-use oat\generis\test\TestCase;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 class StorageTest extends TestCase
 {
+    /** @var TestRdsStorage */
     private $storage;
 
     public function setUp()
     {
-        $persistenceManager = new common_persistence_Manager([
-            'persistences' => [
-                'persistenceMock' => [
-                    'driver' => 'dbal',
-                    'connection' => [
-                        'driver' => 'pdo_sqlite',
-                        'memory' => true,
-                    ],
-                ],
-            ],
-        ]);
+        $persistenceKey = 'persistence';
+        $persistenceManager = $this->getSqlMock($persistenceKey);
 
-        $serviceManager = $this->getMockForAbstractClass(ServiceLocatorInterface::class);
-        $serviceManager->method('get')
-            ->with(common_persistence_Manager::SERVICE_KEY)
-            ->willReturn($persistenceManager);
+        $serviceLocator = $this->getServiceLocatorMock([PersistenceManager::SERVICE_ID => $persistenceManager]);
 
-        $createTables = new CreateTables();
-        $createTables->setServiceLocator($serviceManager);
-        $createTables(['persistenceMock']);
+        $rds = $persistenceManager->getPersistenceById($persistenceKey);
+        $schema = $rds->getSchemaManager()->createSchema();
 
-        $this->storage = new TestRdsStorage(['persistence' => 'persistenceMock']);
-        $this->storage->setServiceLocator($serviceManager);
+        $rdsSchema = new RdsSqlSchema();
+        $rdsSchema->setServiceLocator($serviceLocator);
+        $schema = $rdsSchema->getSchema($schema);
+
+        $queries = $rds->getPlatform()->schemaToSql($schema);
+        foreach ($queries as $query) {
+            $rds->query($query);
+        }
+
+        $this->storage = new TestRdsStorage([RevisionStorageInterface::OPTION_PERSISTENCE => $persistenceKey]);
+        $this->storage->setServiceLocator($serviceLocator);
     }
 
     public function tearDown()
@@ -62,69 +65,73 @@ class StorageTest extends TestCase
         $this->storage = null;
     }
 
-    public function testAddGetRevision()
+    public function testAddRevision()
     {
-        // set the revision we are supposed to get
-        $resourceId = 123;
-        $version = 456;
-        $author = 'author';
-        $message = 'my message';
-        $created = time();
+        $triples = $this->getTriplesMock();
+        $revision = new Revision('123', 456, time(), 'author', 'message');
 
-        $revision = new Revision($resourceId, $version, $created, $author, $message);
-
-        $persist = $this->storage
+        $persistence = $this->storage
             ->getServiceLocator()
-            ->get(common_persistence_Manager::SERVICE_KEY)
-            ->getPersistenceById('persistenceMock');
+            ->get(PersistenceManager::SERVICE_ID)
+            ->getPersistenceById('persistence');
 
-        $count = $persist->query('select count(*) as count from revision')->fetch()['count'];
-
+        // no any revision in the storage
+        $count = $persistence->query('select count(*) as count from revision')->fetch()['count'];
+        $countData = $persistence->query('select count(*) as count from revision_data')->fetch()['count'];
         $this->assertEquals(0, $count);
-        $returnValue = $this->storage->addRevision($resourceId, $version, $created, $author, $message, []);
-        $count = $persist->query('select count(*) as count from revision')->fetch()['count'];
+        $this->assertEquals(0, $countData);
+
+        // adding one revision to the storage
+        $addedRevision = $this->storage->addRevision($revision, $triples->toArray());
+        $count = $persistence->query('select count(*) as count from revision')->fetch()['count'];
+        $countData = $persistence->query('select count(*) as count from revision_data')->fetch()['count'];
+
         $this->assertEquals(1, $count);
-        $returnValue = $this->storage->getRevision($resourceId, $version);
+        $this->assertEquals(2, $countData);
+        $this->assertEquals($revision, $addedRevision);
+        $this->assertEquals($triples, $this->storage->getData($addedRevision));
+    }
 
-        $this->assertEquals($revision, $returnValue);
+    public function testGetRevision()
+    {
+        $revision = new Revision('123', 456, time(), 'author', 'message');
 
-        return $revision;
+        $this->storage->addRevision($revision, []);
+
+        // returned revision is exact that was added
+        $returnedRevision = $this->storage->getRevision('123', 456);
+        $this->assertEquals($revision, $returnedRevision);
+
+        // incorrect revision version, not found error raised
+        $this->expectException(RevisionNotFoundException::class);
+        $this->storage->getRevision('123', 789);
     }
 
     public function testGetAllRevisions()
     {
-        // set revisions we are supposed to get
-        $resourceId = 123;
-        $version1 = 456;
-        $version2 = 789;
-        $author = 'author';
-        $message1 = 'my message';
-        $message2 = 'my new message';
-        $created1 = time();
-        $created2 = time();
+        $resourceId = '123';
+
+        $revisionOne = new Revision($resourceId, 456, time(), 'author', 'message one');
+        $revisionTwo = new Revision($resourceId, 789, time(), 'author', 'message two');
 
         $revisions = [
-            $this->storage->addRevision($resourceId, $version1, $created1, $author, $message1, []),
-            $this->storage->addRevision($resourceId, $version2, $created2, $author, $message2, []),
+            $this->storage->addRevision($revisionOne, []),
+            $this->storage->addRevision($revisionTwo, []),
         ];
 
-        $returnValue = $this->storage->getAllRevisions($resourceId);
+        $allRevisions = $this->storage->getAllRevisions($resourceId);
 
-        $this->assertEquals($revisions, $returnValue);
+        $this->assertEquals($revisions, $allRevisions);
     }
 
     public function testGetData()
     {
-        // set the revision we are supposed to get
-        $resourceId = 123;
-        $version = 456;
-        $author = 'author';
-        $message = 'my message';
-        $created = time();
-
         $triples = $this->getTriplesMock();
 
-        $revision = $this->storage->addRevision($resourceId, $version, $created, $author, $message, $triples);
+        $revision = $this->storage->addRevision(
+            new Revision('123', 234, time(), 'author', 'message'),
+            $triples->toArray()
+        );
 
         $data = $this->storage->getData($revision);
 
@@ -133,53 +140,73 @@ class StorageTest extends TestCase
 
     public function testGetRevisionsDataByQuery()
     {
-        // set the revision we are supposed to get
-        $resourceId = 123;
-        $version = 456;
-        $author = 'author';
-        $message = 'my message';
-        $created = time();
-
         $triples = $this->getTriplesMock();
+        $revision = new Revision('123', 456, time(), 'author', 'message');
 
-        $this->storage->addRevision($resourceId, $version, $created, $author, $message, $triples);
+        $this->storage->addRevision($revision, $triples->toArray());
 
-        $data = $this->storage->getRevisionsDataByQuery('first');
+        $data = $this->storage->getRevisionsDataByQuery('first', 'my first predicate');
 
-        $this->assertEquals([$triples[0]], $data);
+        $this->assertEquals([$triples->get(0)], $data);
     }
 
+    public function testBuildRevisionCollection()
+    {
+        $dataBank = [];
+
+        for ($i = 0; $i < 3; $i++) {
+            $resourceId = '123' . $i;
+            $version = $i;
+            $created = time() + $i;
+            $user = 'author ' . $i;
+            $message = 'message ' . $i;
+            $dataBank['data'][] = [
+                RdsStorage::REVISION_RESOURCE => $resourceId,
+                RdsStorage::REVISION_VERSION => $version,
+                RdsStorage::REVISION_CREATED => $created,
+                RdsStorage::REVISION_USER => $user,
+                RdsStorage::REVISION_MESSAGE => $message
+            ];
+            $dataBank['revisions'][] = new Revision($resourceId, $version, $created, $user, $message);
+        }
+
+        $this->assertEquals($dataBank['revisions'], $this->storage->buildRevisionCollection($dataBank['data']));
+    }
+
+    /**
+     * @return TriplesCollection
+     */
     private function getTriplesMock()
     {
-        $subject1 = 'my first subject';
-        $predicate1 = 'my first predicate';
-        $object1 = 'my first object';
-        $lg1 = 'en-en';
+        $tripleOne = new Triple();
+        $tripleOne->modelid = 1;
+        $tripleOne->subject = 'my first subject';
+        $tripleOne->predicate = 'my first predicate';
+        $tripleOne->object = 'my first object';
+        $tripleOne->lg = 'en-en';
 
-        $subject2 = 'my second subject';
-        $predicate2 = 'my second predicate';
-        $object2 = 'my second object';
-        $lg2 = 'fr-fr';
+        $tripleTwo = new Triple();
+        $tripleTwo->modelid = 1;
+        $tripleTwo->subject = 'my second subject';
+        $tripleTwo->predicate = 'my second predicate';
+        $tripleTwo->object = 'my second object';
+        $tripleTwo->lg = 'fr-fr';
 
-        // Initialize the expected values
-        $triple1 = new \core_kernel_classes_Triple();
-        $triple2 = new \core_kernel_classes_Triple();
-        $triple1->modelid = 1;
-        $triple1->subject = $subject1;
-        $triple1->predicate = $predicate1;
-        $triple1->object = $object1;
-        $triple1->lg = $lg1;
-        $triple2->modelid = 1;
-        $triple2->subject = $subject2;
-        $triple2->predicate = $predicate2;
-        $triple2->object = $object2;
-        $triple2->lg = $lg2;
-        return [$triple1, $triple2];
+        $collection = new TriplesCollection(new common_Object());
+        $collection->add($tripleOne);
+        $collection->add($tripleTwo);
+
+        return $collection;
     }
 }
 
 class TestRdsStorage extends RdsStorage
 {
+    protected function getLocalModel()
+    {
+        return new common_ext_Namespace(1);
+    }
+
     protected function getLike()
     {
         return 'LIKE';

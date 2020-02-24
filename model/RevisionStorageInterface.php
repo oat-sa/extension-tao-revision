@@ -22,6 +22,7 @@
 namespace oat\taoRevision\model;
 
 use core_kernel_classes_Triple as Triple;
+use oat\generis\model\OntologyRdfs;
 
 interface RevisionStorageInterface
 {
@@ -63,10 +64,11 @@ interface RevisionStorageInterface
 
     /**
      * @param string $query
+     * @param string $predicate
      *
      * @return Triple[]
      */
-    public function getRevisionsDataByQuery(string $query);
+    public function getRevisionsDataByQuery(string $query, string $predicate = OntologyRdfs::RDFS_LABEL);
 
     /**
      * @param array $variables

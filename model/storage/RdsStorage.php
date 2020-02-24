@@ -65,13 +65,17 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
     /** @var common_persistence_SqlPersistence */
     private $persistence;
 
-    public function getPersistence()
+    /**
+     * @return common_persistence_SqlPersistence
+     */
+    private function getPersistence()
     {
         if ($this->persistence === null) {
             $this->persistence = $this->getServiceLocator()
                 ->get(PersistenceManager::SERVICE_ID)
                 ->getPersistenceById($this->getPersistenceId());
         }
+
         return $this->persistence;
     }
 
@@ -227,7 +231,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
     /**
      * @inheritDoc
      */
-    public function getRevisionsDataByQuery(string $query)
+    public function getRevisionsDataByQuery(string $query, string $predicate = OntologyRdfs::RDFS_LABEL)
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->select('*');
@@ -236,7 +240,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
         $fieldName = self::DATA_OBJECT;
         $condition = "$fieldName {$this->getLike()} '%$query%'";
         $queryBuilder->where($condition);
-        $queryBuilder->andWhere(sprintf('%s = \'%s\'', self::DATA_PREDICATE, OntologyRdfs::RDFS_LABEL));
+        $queryBuilder->andWhere(sprintf('%s = \'%s\'', self::DATA_PREDICATE, $predicate));
 
         $result = $this->getPersistence()->query($queryBuilder->getSQL());
         $revisionsData = [];
