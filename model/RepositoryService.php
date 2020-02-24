@@ -131,6 +131,8 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
      */
     public function commit(Resource $resource, string $message, int $version = null, string $author = null)
     {
+        $triplesManager = $this->getTriplesManagerService();
+
         if ($author === null) {
             $user = common_session_SessionManager::getSession()->getUser();
             $author = ($user === null) ? '' : $user->getIdentifier();
@@ -141,12 +143,12 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
         $triples = $resource->getRdfTriples();
 
         $filesystemMap = array_fill_keys(
-            array_keys($this->getPropertyStorageMap($triples)),
+            array_keys($triplesManager->getPropertyStorageMap($triples)),
             $this->getFileSystem()->getId()
         );
 
         $revision = new Revision($resource->getUri(), $version, time(), $author, $message);
-        $data = $this->deepCloneTriples($triples, $filesystemMap);
+        $data = $triplesManager->cloneTriples($triples, $filesystemMap);
 
         return $this->getStorage()->addRevision($revision, $data);
     }
@@ -156,19 +158,21 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
      *
      * @return bool
      * @throws common_Exception
-     * @throws common_exception_Error
-     * @throws tao_models_classes_FileNotFoundException
      */
     public function restore(Revision $revision)
     {
+        $triplesManager = $this->getTriplesManagerService();
+
         $data = $this->getStorage()->getData($revision);
 
         $resource = $this->getResource($revision->getResourceId());
         $originFilesystemMap = $this->getTriplesManagerService()->getPropertyStorageMap($resource->getRdfTriples());
 
-        $this->deepDelete($resource);
+        $triplesManager->deleteTriplesFor($resource);
 
-        foreach ($this->deepCloneTriples($data, $originFilesystemMap) as $triple) {
+        $clonedTriples = $triplesManager->cloneTriples($data, $originFilesystemMap);
+
+        foreach ($clonedTriples as $triple) {
             ModelManager::getModel()->getRdfInterface()->add($triple);
         }
 
@@ -213,34 +217,5 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
         }
 
         return $candidate + 1;
-    }
-
-    /**
-     * @param $data
-     * @param $originFilesystemMap
-     *
-     * @return array
-     */
-    private function deepCloneTriples($data, $originFilesystemMap)
-    {
-        return $this->getTriplesManagerService()->cloneTriples($data, $originFilesystemMap);
-    }
-
-    /**
-     * @param $triples
-     *
-     * @return array
-     */
-    private function getPropertyStorageMap($triples)
-    {
-        return $this->getTriplesManagerService()->getPropertyStorageMap($triples);
-    }
-
-    /**
-     * @param Resource $resource
-     */
-    private function deepDelete(Resource $resource)
-    {
-        $this->getTriplesManagerService()->deleteTriplesFor($resource);
     }
 }
