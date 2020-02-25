@@ -27,9 +27,9 @@ use Doctrine\DBAL\Schema\SchemaException;
 use oat\generis\persistence\PersistenceManager;
 use oat\oatbox\extension\InstallAction;
 use oat\oatbox\filesystem\FileSystemService;
+use oat\oatbox\service\exception\InvalidService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\taoRevision\model\RepositoryService;
-use oat\taoRevision\model\RevisionStorageInterface;
 use oat\taoRevision\model\SchemaProviderInterface;
 
 /**
@@ -53,9 +53,14 @@ class SetupRevisions extends InstallAction
         $this->createTables();
     }
 
+    /**
+     * @throws InvalidServiceManagerException
+     * @throws InvalidService
+     */
     private function createTables()
     {
-        $storageService = $this->getServiceLocator()->get(RevisionStorageInterface::SERVICE_ID);
+        $repositoryService = $this->getServiceManager()->get(RepositoryService::SERVICE_ID);
+        $storageService = $repositoryService->getSubService(RepositoryService::OPTION_STORAGE);
 
         if ($storageService instanceof SchemaProviderInterface) {
             $persistenceId = $storageService->getPersistenceId();

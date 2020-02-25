@@ -30,9 +30,7 @@ use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\exception\InvalidService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
-use oat\generis\model\data\ModelManager;
 use oat\oatbox\service\ConfigurableService;
-use tao_models_classes_FileNotFoundException;
 
 /**
  * A simple repository implementation that stores the information
