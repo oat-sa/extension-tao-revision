@@ -173,7 +173,7 @@ class TriplesManagerService extends ConfigurableService
     {
         $property = $this->getProperty($triple->predicate);
         $range = $property->getRange();
-        $rangeUri = $range->isClass() ? $range->getUri(): ''; // ?
+        $rangeUri = $range === null ? '' : $range->getUri();
         switch ($rangeUri) {
             case GenerisRdf::CLASS_GENERIS_FILE:
                 return true;

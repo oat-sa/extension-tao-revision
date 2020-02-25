@@ -30,6 +30,7 @@ use oat\taoRevision\model\RepositoryInterface;
 use oat\taoRevision\model\RepositoryService;
 use oat\taoRevision\model\RevisionStorageInterface;
 use oat\taoRevision\model\storage\RdsStorage;
+use oat\taoRevision\model\TriplesManagerService;
 
 /**
  *
@@ -77,6 +78,9 @@ class Updater extends common_ext_ExtensionUpdater
             ]));
 
             $this->getServiceManager()->unregister(RevisionStorageInterface::SERVICE_ID);
+
+            $triplesManagerService = new TriplesManagerService();
+            $this->getServiceManager()->register(TriplesManagerService::SERVICE_ID, $triplesManagerService);
 
             $this->setVersion('8.0.0');
         }
