@@ -21,6 +21,8 @@
 namespace oat\taoRevision\controller;
 
 use common_Exception;
+use common_exception_MissingParameter;
+use common_exception_ResourceNotFound;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\oatbox\service\ServiceManagerAwareTrait;
@@ -60,7 +62,10 @@ class History extends tao_actions_CommonModule
      */
     public function index()
     {
-        $resource = $this->getResource($this->getPsrRequest()->getParsedBody()['id']);
+        $bodyContent = $this->getPsrRequest()->getParsedBody();
+
+        $resource = $this->getValidatedResource($bodyContent);
+
         $revisions = $this->getRevisionService()->getAllRevisions($resource->getUri());
 
         $revisionsList = [];
@@ -87,11 +92,16 @@ class History extends tao_actions_CommonModule
      */
     public function restoreRevision()
     {
-        $resource = $this->getResource($this->getPsrRequest()->getParsedBody()['id']);
+        $bodyContent = $this->getPsrRequest()->getParsedBody();
 
-        $previousVersion = $this->getPsrRequest()->getParsedBody()['revisionId'];
-        $commitMessage = $this->getPsrRequest()->getParsedBody()['message'];
-        
+        $resource = $this->getValidatedResource($bodyContent);
+        $previousVersion = $bodyContent['revisionId'] ?? null;
+        $commitMessage = $bodyContent['message'] ?? '';
+
+        if ($previousVersion === null) {
+            throw new common_exception_MissingParameter('revisionId');
+        }
+
         $previousRevision = $this->getRevisionService()->getRevision($resource->getUri(), $previousVersion);
 
         if ($this->getRevisionService()->restore($previousRevision)) {
@@ -114,8 +124,12 @@ class History extends tao_actions_CommonModule
      */
     public function commitResource()
     {
-        $resource = $this->getResource($this->getPsrRequest()->getParsedBody()['id']);
-        $revision = $this->getRevisionService()->commit($resource, $_POST['message'] ?? '');
+        $bodyContent = $this->getPsrRequest()->getParsedBody();
+
+        $resource = $this->getValidatedResource($bodyContent);
+        $message = $bodyContent['message'] ?? '';
+
+        $revision = $this->getRevisionService()->commit($resource, $message);
 
         $this->returnJson([
             'success' => true,
@@ -125,5 +139,26 @@ class History extends tao_actions_CommonModule
             'message' => $revision->getMessage(),
             'commitMessage' => __('%s has been committed', $resource->getLabel()),
         ]);
+    }
+
+    /**
+     * @param array $body
+     *
+     * @throws common_exception_MissingParameter
+     * @throws common_exception_ResourceNotFound
+     */
+    private function getValidatedResource(array $body)
+    {
+        $id = $body['id'] ?? null;
+
+        if ($id === null) {
+            throw new common_exception_MissingParameter('id');
+        }
+
+        $resource = $this->getResource($id);
+
+        if (!$resource->exists()) {
+            throw new common_exception_ResourceNotFound(sprintf('Resource not found for requested id %s', $id));
+        }
     }
 }
