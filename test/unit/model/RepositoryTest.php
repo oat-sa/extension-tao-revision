@@ -20,7 +20,7 @@
  *
  */
 
-namespace oat\taoRevision\test\integration\model;
+namespace oat\taoRevision\test\unit\model;
 
 use common_session_Session;
 use common_session_SessionManager;

@@ -20,7 +20,7 @@
  *
  */
 
-namespace oat\taoRevision\test\integration\model\rds;
+namespace oat\taoRevision\test\unit\model;
 
 use oat\taoRevision\model\Revision;
 use oat\generis\test\TestCase;

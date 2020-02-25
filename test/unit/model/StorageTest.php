@@ -18,7 +18,7 @@
  * Copyright (c) 2019 (original work) Open Assessment Technologies SA ;
  */
 
-namespace oat\taoRevision\test\integration\model;
+namespace oat\taoRevision\test\unit\model;
 
 use common_ext_Namespace;
 use oat\generis\persistence\PersistenceManager;
