@@ -21,9 +21,6 @@
 namespace oat\taoRevision\test\integration\model;
 
 use common_ext_Namespace;
-use common_Object;
-use core_kernel_classes_Triple as Triple;
-use core_kernel_classes_ContainerCollection as TriplesCollection;
 use oat\generis\persistence\PersistenceManager;
 use oat\generis\test\TestCase;
 use oat\taoRevision\model\RevisionNotFoundException;
@@ -34,6 +31,8 @@ use oat\taoRevision\model\Revision;
 
 class StorageTest extends TestCase
 {
+    use TriplesMockTrait;
+
     /** @var TestRdsStorage */
     private $storage;
 
@@ -173,31 +172,6 @@ class StorageTest extends TestCase
         $this->assertEquals($dataBank['revisions'], $this->storage->buildRevisionCollection($dataBank['data']));
     }
 
-    /**
-     * @return TriplesCollection
-     */
-    private function getTriplesMock()
-    {
-        $tripleOne = new Triple();
-        $tripleOne->modelid = 1;
-        $tripleOne->subject = 'my first subject';
-        $tripleOne->predicate = 'my first predicate';
-        $tripleOne->object = 'my first object';
-        $tripleOne->lg = 'en-en';
-
-        $tripleTwo = new Triple();
-        $tripleTwo->modelid = 1;
-        $tripleTwo->subject = 'my second subject';
-        $tripleTwo->predicate = 'my second predicate';
-        $tripleTwo->object = 'my second object';
-        $tripleTwo->lg = 'fr-fr';
-
-        $collection = new TriplesCollection(new common_Object());
-        $collection->add($tripleOne);
-        $collection->add($tripleTwo);
-
-        return $collection;
-    }
 }
 
 class TestRdsStorage extends RdsStorage

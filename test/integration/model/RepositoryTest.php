@@ -24,28 +24,28 @@ namespace oat\taoRevision\test\integration\model;
 
 use common_session_Session;
 use common_session_SessionManager;
-use oat\generis\model\OntologyAwareTrait;
+use core_kernel_classes_Resource;
+use oat\generis\model\data\Ontology;
+use oat\generis\model\data\RdfInterface;
 use oat\generis\test\GenerisTestCase;
-use oat\oatbox\service\ConfigurableService;
+use oat\oatbox\filesystem\FileSystemService;
 use oat\taoRevision\model\Revision;
 use oat\taoRevision\model\RepositoryService;
 use oat\taoRevision\model\RevisionNotFoundException;
+use oat\taoRevision\model\TriplesManagerService;
 use Prophecy\Argument;
-use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use oat\taoRevision\model\RevisionStorageInterface;
 use oat\oatbox\user\User;
 
 class RepositoryTest extends GenerisTestCase
 {
+    use TriplesMockTrait;
+
     /** @var Revision[] */
     private $revisions = [];
-
-    /** @var RepositoryService */
-    private $repository;
 
     public function setUp()
     {
@@ -59,8 +59,10 @@ class RepositoryTest extends GenerisTestCase
 
     public function testGetAllRevisions()
     {
-        $storage = $this->getRevisionStorage();
-        $storage->getAllRevisions(Argument::type('string'))->shouldBeCalled();
+        $storage = $this->prophesize(RevisionStorageInterface::class);
+        $storage->getAllRevisions(Argument::type('string'))
+            ->shouldBeCalled()
+            ->willReturn($this->revisions);
 
         $repository = $this->getRepositoryService($storage->reveal());
 
@@ -73,8 +75,10 @@ class RepositoryTest extends GenerisTestCase
     {
         $revision = $this->revisions[0];
 
-        $storage = $this->getRevisionStorage();
-        $storage->getRevision(Argument::type('string'), Argument::type('int'))->shouldBeCalled();
+        $storage = $this->prophesize(RevisionStorageInterface::class);
+        $storage->getRevision(Argument::type('string'), Argument::type('int'))
+            ->shouldBeCalled()
+            ->willReturn($revision);
 
         $repository = $this->getRepositoryService($storage->reveal());
 
@@ -88,8 +92,10 @@ class RepositoryTest extends GenerisTestCase
     {
         $revision = $this->revisions[0];
 
-        $storage = $this->getRevisionStorage();
-        $storage->getRevision(Argument::type('string'), Argument::type('int'))->willThrow(RevisionNotFoundException::class);
+        $storage = $this->prophesize(RevisionStorageInterface::class);
+        $storage->getRevision(Argument::type('string'), Argument::type('int'))->willThrow(
+            RevisionNotFoundException::class
+        );
 
         $repository = $this->getRepositoryService($storage->reveal());
 
@@ -100,53 +106,46 @@ class RepositoryTest extends GenerisTestCase
 
     public function testCommit()
     {
-        $storage = $this->getRevisionStorage();
-        $storage->addRevision(Argument::type(Revision::class), Argument::type('array'))->shouldBeCalled();
+        $revision = $this->revisions[0];
 
-//        $repository = $this->createPartialMock(RepositoryService::class, ['getStorage', 'getFileSystem']);
-//        $repository->method('getStorage')->willReturn($storage);
-//        $repository->method('getFileSystem')->willReturn($this->getFileSystemMock());
-//
-//        $repository->method('getFileSystem')->willReturn($this->getFileSystemMock());
-
+        $storage = $this->prophesize(RevisionStorageInterface::class);
+        $storage->addRevision(Argument::type(Revision::class), Argument::type('array'))
+            ->shouldBeCalled()
+            ->willReturn($revision);
 
         $repository = $this->getRepositoryService($storage->reveal());
 
-//        $model = $this->getOntologyMock();
-//        $model->getServiceLocator();
-//        $sl = $this->getServiceLocatorMock();
-//        $sl->
-//        $repository->setServiceLocator()
-
-        $user = $this->getMockBuilder(User::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $user->expects($this->any())
+        $user = $this->getMockBuilder(User::class)->disableOriginalConstructor()->getMock();
+        $user->expects($this->once())
             ->method('getIdentifier')
             ->willReturn('Great author');
 
-        $session = $this->getMockBuilder(common_session_Session::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $session->expects($this->any())
+        $session = $this->getMockBuilder(common_session_Session::class)->disableOriginalConstructor()->getMock();
+        $session->expects($this->once())
             ->method('getUser')
             ->willReturn($user);
 
-        $ref = new ReflectionProperty(common_session_SessionManager::class, 'session');
-        $ref->setAccessible(true);
-        $ref->setValue(null, $session);
-
-        $revision = $this->revisions[0];
+        $sessionProperty = new ReflectionProperty(common_session_SessionManager::class, 'session');
+        $sessionProperty->setAccessible(true);
+        $sessionProperty->setValue(null, $session);
 
         $model = $this->getOntologyMock();
-        $r = $model->getResource($revision->getResourceId());
+        $resource = $model->getResource($revision->getResourceId());
 
-        // need to creaye resource
-        $returnedRevision = $repository->commit($r, $revision->getMessage(), $revision->getVersion());
+        $triplesManager = $this->createMock(TriplesManagerService::class);
+        $triplesManager->method('getPropertyStorageMap')->willReturn([]);
+        $triplesManager->method('cloneTriples')->willReturn([]);
 
-        print_r($returnedRevision);
+        $serviceLocator = $this->getServiceLocatorMock(
+            [
+                TriplesManagerService::SERVICE_ID => $triplesManager,
+                FileSystemService::SERVICE_ID => $this->getFileSystemMock(),
+            ]
+        );
+        $repository->setServiceLocator($serviceLocator);
+        $repository->setOption(RepositoryService::OPTION_FILE_SYSTEM, 'testfs');
+
+        $returnedRevision = $repository->commit($resource, $revision->getMessage(), $revision->getVersion());
 
         $this->assertEquals($revision, $returnedRevision);
     }
@@ -155,28 +154,56 @@ class RepositoryTest extends GenerisTestCase
     {
         $revision = $this->revisions[0];
 
-        $storage = $this->getRevisionStorage();
-        $storage->getData(Argument::type(Revision::class))->shouldBeCalled();
+        $storage = $this->prophesize(RevisionStorageInterface::class);
+        $storage->getData(Argument::type(Revision::class))
+            ->shouldBeCalled()
+            ->willReturn($this->getTriplesMock());
 
         $repository = $this->getRepositoryService($storage->reveal());
 
-        $ref = new ReflectionClass(RepositoryService::class);
-        $ontologyProp = $ref->getProperty('ontology');
-        $ontologyProp->setAccessible(true);
-        $ontologyProp->setValue($repository, $this->getOntologyMock());
+        $triplesManager = $this->createMock(TriplesManagerService::class);
+        $triplesManager->expects($this->once())
+            ->method('cloneTriples')
+            ->willReturn($this->getTriplesMock());
+        $triplesManager->expects($this->once())
+            ->method('getPropertyStorageMap')
+            ->willReturn([]);
 
-        $returnedResult = $repository->restore($revision);
+        $rdfInterface = $this->createPartialMock(RdfInterface::class);
+        $rdfInterface->expects($this->any())
+            ->method('add')
+            ->willReturn(true);
 
-        $this->assertEquals(true, $returnedResult);
+        $ontologyMock = $this->createPartialMock(Ontology::class);
+
+        $ontologyMock->expects($this->any())
+            ->method('getRdfInterface')
+            ->willReturn($rdfInterface);
+
+        $ontologyMock->expects($this->once())
+            ->method('getResource')
+            ->willReturn($this->getOntologyMock()->getResource('my first subject'));
+
+        $serviceLocator = $this->getServiceLocatorMock(
+            [
+                Ontology::SERVICE_ID => $ontologyMock,
+                TriplesManagerService::SERVICE_ID => $triplesManager
+            ]
+        );
+        $repository->setServiceLocator($serviceLocator);
+
+        $isRevisionRestored = $repository->restore($revision);
+
+        $this->assertEquals(true, $isRevisionRestored);
     }
 
     public function testGetNextVersion()
     {
         $revisions = [
-            new Revision('123', 1, 1582066925, 'Author', 'Message')
+            new Revision('123', 1, 1582066925, 'Author', 'Message'),
         ];
 
-        $storage = $this->getRevisionStorage();
+        $storage = $this->prophesize(RevisionStorageInterface::class);
         $storage->getAllRevisions(Argument::type('string'))
             ->shouldBeCalled()
             ->willReturn($revisions);
@@ -192,22 +219,32 @@ class RepositoryTest extends GenerisTestCase
 
     public function testSearchRevisionResources()
     {
-        // Initialize the expected values
-        $triple = new \core_kernel_classes_Triple();
-        $triple->modelid = 1;
-        $triple->subject = 'http://mock/Uri';
-        $data = array(
-            $triple
+        $triples = $this->getTriplesMock();
+
+        $storage = $this->prophesize(RevisionStorageInterface::class);
+        $storage->getRevisionsDataByQuery(Argument::exact('first'))
+            ->shouldBeCalled()
+            ->willReturn([$triples->get(0)]);
+
+        $repository = $this->getRepositoryService($storage->reveal());
+
+        $ontologyMock = $this->createPartialMock(Ontology::class);
+        $ontologyMock->expects($this->once())
+            ->method('getResource')
+            ->willReturn($this->getOntologyMock()->getResource('my first subject'));
+
+        $serviceLocator = $this->getServiceLocatorMock(
+            [
+                Ontology::SERVICE_ID => $ontologyMock
+            ]
         );
 
-        $storageProphecy = $this->prophesize(RevisionStorageInterface::class);
-        $storageProphecy->getRevisionsDataByQuery('test')->willReturn($data);
+        $repository->setServiceLocator($serviceLocator);
 
-        $repository = $this->getRepository($storageProphecy->reveal());
+        $found = $repository->searchRevisionResources('first');
 
-        $return = $repository->searchRevisionResources('test');
-
-        $this->assertInstanceOf(\core_kernel_classes_Resource::class, $return[0]);
+        $this->assertCount(1, $found);
+        $this->assertInstanceOf(core_kernel_classes_Resource::class, $found[0]);
     }
 
     /**
@@ -220,25 +257,10 @@ class RepositoryTest extends GenerisTestCase
     {
         $repositoryService = new RepositoryService();
 
-        $reflectionClass = new ReflectionClass(RepositoryService::class);
-        $reflectionProp = $reflectionClass->getProperty('storage');
-        $reflectionProp->setAccessible(true);
-
-        $reflectionProp->setValue($repositoryService, $storage);
+        $storageProperty = new ReflectionProperty(RepositoryService::class, 'storage');
+        $storageProperty->setAccessible(true);
+        $storageProperty->setValue($repositoryService, $storage);
 
         return $repositoryService;
-    }
-
-    private function getRevisionStorage()
-    {
-        // remove
-
-        $revisionStorageProphecy = $this->prophesize(RevisionStorageInterface::class);
-        $revisionStorageProphecy->getRevision(Argument::type('string'), Argument::type('int'))->willReturn($this->revisions[0]);
-        $revisionStorageProphecy->getAllRevisions(Argument::type('string'))->willReturn($this->revisions);
-        $revisionStorageProphecy->addRevision($this->revisions[0], [])->willReturn($this->revisions[0]);
-        $revisionStorageProphecy->getData($this->revisions[0])->willReturn([]);
-
-        return $revisionStorageProphecy;
     }
 }

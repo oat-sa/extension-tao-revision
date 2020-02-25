@@ -127,7 +127,6 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
      * @throws InvalidServiceManagerException
      * @throws common_Exception
      * @throws common_exception_Error
-     * @throws tao_models_classes_FileNotFoundException
      */
     public function commit(Resource $resource, string $message, int $version = null, string $author = null)
     {
@@ -142,15 +141,15 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
 
         $triples = $resource->getRdfTriples();
 
-        $filesystemMap = array_fill_keys(
+        $fileSystemMap = array_fill_keys(
             array_keys($triplesManager->getPropertyStorageMap($triples)),
             $this->getFileSystem()->getId()
         );
 
         $revision = new Revision($resource->getUri(), $version, time(), $author, $message);
-        $data = $triplesManager->cloneTriples($triples, $filesystemMap);
+        $clonedTriples = $triplesManager->cloneTriples($triples, $fileSystemMap);
 
-        return $this->getStorage()->addRevision($revision, $data);
+        return $this->getStorage()->addRevision($revision, $clonedTriples);
     }
 
     /**
@@ -173,7 +172,7 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
         $clonedTriples = $triplesManager->cloneTriples($data, $originFilesystemMap);
 
         foreach ($clonedTriples as $triple) {
-            ModelManager::getModel()->getRdfInterface()->add($triple);
+            $this->getModel()->getRdfInterface()->add($triple);
         }
 
         return true;
@@ -185,8 +184,10 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
      * @return Resource[]
      * @throws InvalidService
      * @throws InvalidServiceManagerException
+     *
+     * @todo Fix usage in the NEC project
      */
-    public function searchRevisionResources(string $query) // used in nec
+    public function searchRevisionResources(string $query)
     {
         $resources = [];
 
