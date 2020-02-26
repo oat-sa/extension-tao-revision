@@ -23,6 +23,7 @@ namespace oat\taoRevision\controller;
 use common_Exception;
 use common_exception_MissingParameter;
 use common_exception_ResourceNotFound;
+use core_kernel_classes_Resource;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
@@ -155,6 +156,7 @@ class History extends tao_actions_CommonModule
     /**
      * @param array $body
      *
+     * @return core_kernel_classes_Resource
      * @throws common_exception_MissingParameter
      * @throws common_exception_ResourceNotFound
      */
@@ -171,5 +173,7 @@ class History extends tao_actions_CommonModule
         if (!$resource->exists()) {
             throw new common_exception_ResourceNotFound(sprintf('Resource not found for requested id %s', $id));
         }
+
+        return $resource;
     }
 }

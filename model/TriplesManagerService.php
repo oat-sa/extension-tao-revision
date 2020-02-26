@@ -34,6 +34,7 @@ use core_kernel_classes_ContainerCollection as TriplesCollection;
 use core_kernel_classes_Resource as Resource;
 use core_kernel_classes_Triple as Triple;
 use core_kernel_persistence_smoothsql_SmoothModel as Model;
+use taoTests_models_classes_TestsService as TestsService;
 
 /**
  * Class TriplesManagerService
@@ -173,8 +174,12 @@ class TriplesManagerService extends ConfigurableService
     {
         $property = $this->getProperty($triple->predicate);
         $range = $property->getRange();
-        $rangeUri = $range === null ? '' : $range->getUri();
-        switch ($rangeUri) {
+
+        if ($range === null) {
+            return false;
+        }
+
+        switch ($range->getUri()) {
             case GenerisRdf::CLASS_GENERIS_FILE:
                 return true;
             case OntologyRdfs::RDFS_RESOURCE:
