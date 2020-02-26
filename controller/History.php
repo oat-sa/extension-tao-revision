@@ -24,11 +24,11 @@ use common_Exception;
 use common_exception_MissingParameter;
 use common_exception_ResourceNotFound;
 use oat\generis\model\OntologyAwareTrait;
+use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\oatbox\service\ServiceManagerAwareTrait;
 use oat\tao\helpers\UserHelper;
 use oat\taoRevision\model\RepositoryInterface;
-use oat\taoRevision\model\Revision;
 use oat\taoRevision\model\RevisionNotFoundException;
 use tao_actions_CommonModule;
 use tao_helpers_Date;
@@ -48,7 +48,7 @@ class History extends tao_actions_CommonModule
     use OntologyAwareTrait;
 
     /**
-     * @return RepositoryInterface
+     * @return ConfigurableService
      * @throws InvalidServiceManagerException
      */
     protected function getRevisionService()
@@ -57,8 +57,12 @@ class History extends tao_actions_CommonModule
     }
 
     /**
+     * @requiresRight id WRITE
+     *
      * @throws InvalidServiceManagerException
      * @throws common_Exception
+     * @throws common_exception_MissingParameter
+     * @throws common_exception_ResourceNotFound
      */
     public function index()
     {
@@ -69,7 +73,6 @@ class History extends tao_actions_CommonModule
         $revisions = $this->getRevisionService()->getAllRevisions($resource->getUri());
 
         $revisionsList = [];
-        /** @var Revision $revision */
         foreach ($revisions as $revision) {
             $revisionsList[] = [
                 'id' => $revision->getVersion(),
@@ -86,9 +89,13 @@ class History extends tao_actions_CommonModule
     }
 
     /**
+     * @requiresRight id WRITE
+     *
      * @throws InvalidServiceManagerException
      * @throws RevisionNotFoundException
      * @throws common_Exception
+     * @throws common_exception_MissingParameter
+     * @throws common_exception_ResourceNotFound
      */
     public function restoreRevision()
     {
@@ -119,8 +126,12 @@ class History extends tao_actions_CommonModule
     }
 
     /**
+     * @requiresRight id WRITE
+     *
      * @throws InvalidServiceManagerException
      * @throws common_Exception
+     * @throws common_exception_MissingParameter
+     * @throws common_exception_ResourceNotFound
      */
     public function commitResource()
     {
