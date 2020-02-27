@@ -51,8 +51,8 @@ class NewSqlSchema extends ConfigurableService
 
         $dataTable->addForeignKeyConstraint(
             $revisionTable,
-            array(NewSqlStorage::REVISION_RESOURCE, NewSqlStorage::REVISION_VERSION),
-            array(NewSqlStorage::REVISION_RESOURCE, NewSqlStorage::REVISION_VERSION)
+            [NewSqlStorage::REVISION_RESOURCE, NewSqlStorage::REVISION_VERSION],
+            [NewSqlStorage::REVISION_RESOURCE, NewSqlStorage::REVISION_VERSION]
         );
     }
 

@@ -21,12 +21,15 @@
 
 namespace oat\taoRevision\model;
 
+use common_Exception;
+use common_exception_Error;
+use common_session_SessionManager;
+use core_kernel_classes_Resource as Resource;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
-use oat\taoRevision\helper\CloneHelper;
-use oat\generis\model\data\ModelManager;
-use oat\taoRevision\helper\DeleteHelper;
+use oat\oatbox\service\exception\InvalidService;
+use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\oatbox\service\ConfigurableService;
 
 /**
@@ -35,28 +38,31 @@ use oat\oatbox\service\ConfigurableService;
  *
  * @author bout
  */
-class RepositoryService extends ConfigurableService implements Repository
+class RepositoryService extends ConfigurableService implements RepositoryInterface
 {
     use OntologyAwareTrait;
 
-    const OPTION_STORAGE = 'storage';
-    const OPTION_FS = 'filesystem';
+    public const FILE_SYSTEM_NAME = 'revisions';
+
+    public const OPTION_STORAGE = 'storage';
+    public const OPTION_FILE_SYSTEM = 'filesystem';
 
     private $storage;
 
-    /**
-     * @var FileSystem
-     */
+    /** @var FileSystem */
     private $fileSystem;
 
     /**
-     * @return RevisionStorage
+     * @return RevisionStorageInterface
+     * @throws InvalidService
+     * @throws InvalidServiceManagerException
      */
     protected function getStorage()
     {
-        if (is_null($this->storage)) {
-            $this->storage = $this->getServiceLocator()->get($this->getOption(self::OPTION_STORAGE));
+        if ($this->storage === null) {
+            $this->storage = $this->getSubService(self::OPTION_STORAGE);
         }
+
         return $this->storage;
     }
 
@@ -66,74 +72,105 @@ class RepositoryService extends ConfigurableService implements Repository
      */
     protected function getFileSystem()
     {
-        if (is_null($this->fileSystem)) {
-            $this->fileSystem = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID)->getFileSystem($this->getOption(self::OPTION_FS));
+        if ($this->fileSystem === null) {
+            $this->fileSystem = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID)->getFileSystem(
+                $this->getOption(self::OPTION_FILE_SYSTEM)
+            );
         }
+
         return $this->fileSystem;
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \oat\taoRevision\model\Repository::getRevisions()
+     * @return TriplesManagerService
      */
-    public function getRevisions($resourceId)
+    public function getTriplesManagerService()
+    {
+        return $this->getServiceLocator()->get(TriplesManagerService::SERVICE_ID);
+    }
+
+    /**
+     * @param string $resourceId
+     *
+     * @return Revision[]
+     * @throws InvalidService
+     * @throws InvalidServiceManagerException
+     */
+    public function getAllRevisions(string $resourceId)
     {
         return $this->getStorage()->getAllRevisions($resourceId);
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \oat\taoRevision\model\Repository::getRevision()
+     * @param string $resourceId
+     * @param int    $version
+     *
+     * @return Revision
+     * @throws InvalidService
+     * @throws InvalidServiceManagerException
      */
-    public function getRevision($resourceId, $version)
+    public function getRevision(string $resourceId, int $version)
     {
         return $this->getStorage()->getRevision($resourceId, $version);
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \oat\taoRevision\model\Repository::commit()
+     * @param Resource    $resource
+     * @param string      $message
+     * @param int|null    $version
+     * @param string|null $author
+     *
+     * @return Revision
+     * @throws InvalidService
+     * @throws InvalidServiceManagerException
+     * @throws common_Exception
+     * @throws common_exception_Error
      */
-    public function commit($resourceId, $message, $version = null, $userId = null)
+    public function commit(Resource $resource, string $message, int $version = null, string $author = null)
     {
-        if ($userId === null) {
-            $user = \common_session_SessionManager::getSession()->getUser();
-            $userId = ($user === null) ? '' : $user->getIdentifier();
-        }
-        $version = is_null($version) ? $this->getNextVersion($resourceId) : $version;
-        $created = time();
+        $triplesManager = $this->getTriplesManagerService();
 
-        // save data
-        $resource = new \core_kernel_classes_Resource($resourceId);
+        if ($author === null) {
+            $user = common_session_SessionManager::getSession()->getUser();
+            $author = ($user === null) ? '' : $user->getIdentifier();
+        }
+
+        $version = $version ?? $this->getNextVersion($resource->getUri());
+
         $triples = $resource->getRdfTriples();
 
-        $filesystemMap = array_fill_keys(
-            array_keys(CloneHelper::getPropertyStorageMap($triples)),
+        $fileSystemMap = array_fill_keys(
+            array_keys($triplesManager->getPropertyStorageMap($triples)),
             $this->getFileSystem()->getId()
         );
 
-        $data = CloneHelper::deepCloneTriples($triples, $filesystemMap);
+        $revision = new Revision($resource->getUri(), $version, time(), $author, $message);
+        $clonedTriples = $triplesManager->cloneTriples($triples, $fileSystemMap);
 
-        $revision = $this->getStorage()->addRevision($resourceId, $version, $created, $userId, $message, $data);
-
-        return $revision;
+        return $this->getStorage()->addRevision($revision, $clonedTriples);
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \oat\taoRevision\model\Repository::restore()
+     * @param Revision $revision
+     *
+     * @return bool
+     * @throws common_Exception
      */
     public function restore(Revision $revision)
     {
-        $resourceId = $revision->getResourceId();
+        $triplesManager = $this->getTriplesManagerService();
+
         $data = $this->getStorage()->getData($revision);
 
-        $resource = new \core_kernel_classes_Resource($resourceId);
-        $originFilesystemMap = CloneHelper::getPropertyStorageMap($resource->getRdfTriples());
-        DeleteHelper::deepDelete($resource);
+        $resource = $this->getResource($revision->getResourceId());
+        $originFilesystemMap = $this->getTriplesManagerService()->getPropertyStorageMap($resource->getRdfTriples());
 
-        foreach (CloneHelper::deepCloneTriples($data, $originFilesystemMap) as $triple) {
-            ModelManager::getModel()->getRdfInterface()->add($triple);
+        $triplesManager->deleteTriplesFor($resource);
+
+        $clonedTriples = $triplesManager->cloneTriples($data, $originFilesystemMap);
+
+        foreach ($clonedTriples as $triple) {
+            $this->getModel()->getRdfInterface()->add($triple);
         }
 
         return true;
@@ -141,33 +178,43 @@ class RepositoryService extends ConfigurableService implements Repository
 
     /**
      * @param string $query
-     * @return \core_kernel_classes_Resource []
+     *
+     * @return Resource[]
+     * @throws InvalidService
+     * @throws InvalidServiceManagerException
+     *
+     * @todo Fix usage in the NEC project
      */
-    public function searchRevisionResources($query)
+    public function searchRevisionResources(string $query)
     {
-        $data = $this->getStorage()->getRevisionsDataByQuery($query);
         $resources = [];
-        foreach ($data as $item) {
+
+        foreach ($this->getStorage()->getRevisionsDataByQuery($query) as $item) {
             $resources[] = $this->getResource($item->subject);
         }
+
         return $resources;
     }
 
     /**
-     * Helper to determin suitable next version nr
+     * Helper to determine suitable next version
      *
      * @param string $resourceId
-     * @return number
+     *
+     * @return int
+     * @throws InvalidService
+     * @throws InvalidServiceManagerException
      */
-    protected function getNextVersion($resourceId)
+    protected function getNextVersion(string $resourceId): int
     {
         $candidate = 0;
-        foreach ($this->getRevisions($resourceId) as $revision) {
+        foreach ($this->getAllRevisions($resourceId) as $revision) {
             $version = $revision->getVersion();
             if (is_numeric($version) && $version > $candidate) {
                 $candidate = $version;
             }
         }
+
         return $candidate + 1;
     }
 }

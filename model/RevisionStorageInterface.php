@@ -21,38 +21,40 @@
 
 namespace oat\taoRevision\model;
 
-use core_kernel_classes_Triple;
+use core_kernel_classes_Triple as Triple;
+use oat\generis\model\OntologyRdfs;
 
-interface RevisionStorage
+interface RevisionStorageInterface
 {
-    const SERVICE_ID = 'taoRevision/storage';
+    public const SERVICE_ID = 'taoRevision/storage';
+
+    public const OPTION_PERSISTENCE = 'persistence';
+
     /**
+     * @param Revision $revision
+     * @param Triple[] $data
      *
-     * @param string $resourceId
-     * @param string $version
-     * @param string $created
-     * @param string $author
-     * @param string $message
-     * @param core_kernel_classes_Triple[] $data
      * @return Revision
      */
-    public function addRevision($resourceId, $version, $created, $author, $message, $data);
-    
+    public function addRevision(Revision $revision, array $data);
+
     /**
      *
      * @param string $resourceId
-     * @param string $version
+     * @param int    $version
+     *
      * @return Revision
      */
-    public function getRevision($resourceId, $version);
-    
+    public function getRevision(string $resourceId, int $version);
+
     /**
      *
      * @param string $resourceId
+     *
      * @return Revision[]
      */
-    public function getAllRevisions($resourceId);
-    
+    public function getAllRevisions(string $resourceId);
+
     /**
      *
      * @param Revision $revision
@@ -60,10 +62,18 @@ interface RevisionStorage
      */
     public function getData(Revision $revision);
 
+    /**
+     * @param string $query
+     * @param string $predicate
+     *
+     * @return Triple[]
+     */
+    public function getRevisionsDataByQuery(string $query, string $predicate = OntologyRdfs::RDFS_LABEL);
 
     /**
-     * @param $query
-     * @return core_kernel_classes_Triple[]
+     * @param array $variables
+     *
+     * @return Revision[]
      */
-    public function getRevisionsDataByQuery($query);
+    public function buildRevisionCollection(array $variables);
 }
