@@ -21,40 +21,47 @@
 
 namespace oat\taoRevision\model;
 
-interface Repository
+use core_kernel_classes_Resource as Resource;
+
+interface RepositoryInterface
 {
-    const SERVICE_ID = 'taoRevision/repository';
-    
+    public const SERVICE_ID = 'taoRevision/repository';
+
     /**
+     * Returns an array of Revision objects for a given resource
      *
      * @param string $resourceId
-     * @return array return an array of Revision objects
+     * @return Revision[]
      */
-    public function getRevisions($resourceId);
-    
+    public function getAllRevisions(string $resourceId);
+
     /**
+     * Returns revision, a specific version of changes
      *
      * @param string $resourceId
-     * @param string $version
-     * @throws RevisionNotFound
+     * @param int $version
+     * @throws RevisionNotFoundException
      * @return Revision
      */
-    public function getRevision($resourceId, $version);
-    
+    public function getRevision(string $resourceId, int $version);
+
     /**
+     * Stores changes in the history
      *
-     * @param string $resourceId
-     * @param string $message
-     * @param string $revisionId
+     * @param Resource    $resource
+     * @param string      $message
+     * @param int|null    $version
+     * @param string|null $userId
+     *
      * @return Revision
      */
-    public function commit($resourceId, $message, $version = null);
+    public function commit(Resource $resource, string $message, int $version = null, string $userId = null);
     
     /**
      * Restore a previous version
      *
      * @param Revision $revision
-     * @return boolean success
+     * @return bool
      */
     public function restore(Revision $revision);
 }

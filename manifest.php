@@ -1,9 +1,5 @@
 <?php
 
-use oat\taoRevision\controller\History;
-use oat\taoRevision\scripts\update\Updater;
-use oat\taoRevision\scripts\install\SetupRevisions;
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,43 +20,47 @@ use oat\taoRevision\scripts\install\SetupRevisions;
  *
  */
 
-return array(
+use oat\taoRevision\controller\History;
+use oat\taoRevision\scripts\update\Updater;
+use oat\taoRevision\scripts\install\SetupRevisions;
+
+return [
     'name' => 'taoRevision',
     'label' => 'Data Revision Control',
-    'description' => '',
+    'description' => 'Allows saving the intermediate state of objects and restoring them',
     'license' => 'GPL-2.0',
-    'version' => '7.1.0',
+    'version' => '8.0.0',
     'author' => 'Open Assessment Technologies SA',
-    'requires' => array(
-        'generis'        => '>=12.10.1',
-       'tao'             => '>=31.0.0',
-       'taoItems'        => '*',
-       'taoTests'        => '*',
-       'taoMediaManager' => '*'
-    ),
+    'requires' => [
+        'generis' => '>=12.10.1',
+        'tao' => '>=31.0.0',
+        'taoItems' => '*',
+        'taoTests' => '*',
+        'taoMediaManager' => '*',
+    ],
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoRevisionManager',
-    'acl' => array(
-        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoRevisionManager', array('ext' => 'taoRevision')),
-        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', array('controller' => History::class)),
-        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#TestAuthor', array('controller' => History::class)),
-    ),
-    'install' => array(
-        'php' => array(
-            SetupRevisions::class
-        )
-    ),
+    'acl' => [
+        ['grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoRevisionManager', ['ext' => 'taoRevision']],
+        ['grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', ['controller' => History::class]],
+        ['grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#TestAuthor', ['controller' => History::class]],
+    ],
+    'install' => [
+        'php' => [
+            SetupRevisions::class,
+        ],
+    ],
     'update' => Updater::class,
-    'routes' => array(
-        '/taoRevision' => 'oat\\taoRevision\\controller'
-    ),
-    'constants' => array(
+    'routes' => [
+        '/taoRevision' => 'oat\\taoRevision\\controller',
+    ],
+    'constants' => [
         # views directory
-        "DIR_VIEWS" => __DIR__ . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR,
+        'DIR_VIEWS' => __DIR__ . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR,
 
         #BASE URL (usually the domain root)
         'BASE_URL' => ROOT_URL . 'taoRevision/',
-    ),
-    'extra' => array(
+    ],
+    'extra' => [
         'structures' => __DIR__ . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'structures.xml',
-    )
-);
+    ],
+];

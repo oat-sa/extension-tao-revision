@@ -17,29 +17,20 @@
  *
  * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
  *
+ *
  */
 
 namespace oat\taoRevision\model;
 
-use core_kernel_classes_Resource;
-use oat\oatbox\service\ServiceManager;
-
-class RevisionService
+class RevisionNotFoundException extends \common_Exception implements \common_log_SeverityLevel
 {
-    /**
-     *
-     * @param core_kernel_classes_Resource $resource
-     * @param string $message
-     * @param string $version
-     * @param string $userId owner of the resource
-     * @deprecated
-     * @return \oat\taoRevision\model\Revision
-     */
-    public static function commit(core_kernel_classes_Resource $resource, $message, $version = null, $userId = null)
+    public function __construct($resourceId, $version)
     {
-        \common_Logger::w('Please register events to cause autocommits');
-
-        $repositoryService = ServiceManager::getServiceManager()->get(Repository::SERVICE_ID);
-        return $repositoryService->commit($resource->getUri(), $message, $version, $userId);
+        parent::__construct('Version ' . $version . ' not found for resource ' . $resourceId);
+    }
+    
+    public function getSeverity()
+    {
+        return \common_Logger::WARNING_LEVEL;
     }
 }

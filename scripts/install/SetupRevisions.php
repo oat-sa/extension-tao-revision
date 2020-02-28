@@ -22,32 +22,46 @@
 
 namespace oat\taoRevision\scripts\install;
 
+use common_Exception;
 use Doctrine\DBAL\Schema\SchemaException;
 use oat\generis\persistence\PersistenceManager;
 use oat\oatbox\extension\InstallAction;
 use oat\oatbox\filesystem\FileSystemService;
-use oat\taoRevision\model\RevisionStorage;
+use oat\oatbox\service\exception\InvalidService;
+use oat\oatbox\service\exception\InvalidServiceManagerException;
+use oat\taoRevision\model\RepositoryService;
 use oat\taoRevision\model\SchemaProviderInterface;
 
+/**
+ * Setups and configure revisions extension for work
+ * @package oat\taoRevision\scripts\install
+ */
 class SetupRevisions extends InstallAction
 {
-
+    /**
+     * @param $params
+     *
+     * @throws common_Exception
+     * @throws InvalidServiceManagerException
+     */
     public function __invoke($params)
     {
-
-        // create separate file storage
-        $fsName = 'revisions';
-        $fsm = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
-        $fsm->createFileSystem($fsName, 'tao/revisions');
-        $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $fsm);
+        $fss = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
+        $fss->createFileSystem(RepositoryService::FILE_SYSTEM_NAME, 'tao/revisions');
+        $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $fss);
 
         $this->createTables();
     }
 
+    /**
+     * @throws InvalidServiceManagerException
+     * @throws InvalidService
+     */
     private function createTables()
     {
+        $repositoryService = $this->getServiceManager()->get(RepositoryService::SERVICE_ID);
+        $storageService = $repositoryService->getSubService(RepositoryService::OPTION_STORAGE);
 
-        $storageService = $this->getServiceLocator()->get(RevisionStorage::SERVICE_ID);
         if ($storageService instanceof SchemaProviderInterface) {
             $persistenceId = $storageService->getPersistenceId();
             $persistence = $this->getServiceLocator()

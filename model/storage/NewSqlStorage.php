@@ -21,7 +21,7 @@
 
 namespace oat\taoRevision\model\storage;
 
-use core_kernel_classes_Triple;
+use core_kernel_classes_Triple as Triple;
 use Doctrine\DBAL\Schema\Schema;
 use Exception;
 use oat\generis\Helper\UuidPrimaryKeyTrait;
@@ -34,33 +34,29 @@ class NewSqlStorage extends RdsStorage
     public const DATA_RESOURCE_ID = 'id';
 
     /**
-     * @param string $resourceId
-     * @param string $version
-     * @param string $created
-     * @param string $author
-     * @param string $message
-     * @param core_kernel_classes_Triple[] $data
+     * @param Revision $revision
+     * @param Triple[] $data
+     *
      * @return Revision
      * @throws Exception
      */
-    public function addRevision($resourceId, $version, $created, $author, $message, $data)
+    public function addRevision(Revision $revision, array $data)
     {
         $this->getPersistence()->insert(
             self::REVISION_TABLE_NAME,
             [
-                self::REVISION_RESOURCE => (string)$resourceId,
-                self::REVISION_VERSION => (string)$version,
-                self::REVISION_USER => (string)$author,
-                self::REVISION_MESSAGE => (string)$message,
-                self::REVISION_CREATED => (string)$created
+                self::REVISION_RESOURCE => $revision->getResourceId(),
+                self::REVISION_VERSION => $revision->getVersion(),
+                self::REVISION_USER => $revision->getAuthorId(),
+                self::REVISION_MESSAGE => $revision->getMessage(),
+                self::REVISION_CREATED => $revision->getDateCreated(),
             ]
         );
-
-        $revision = new Revision($resourceId, $version, $created, $author, $message);
 
         if (!empty($data)) {
             $this->saveData($revision, $data);
         }
+
         return $revision;
     }
 
@@ -70,7 +66,7 @@ class NewSqlStorage extends RdsStorage
      * @return bool
      * @throws Exception
      */
-    protected function saveData(Revision $revision, $data)
+    protected function saveData(Revision $revision, array $data)
     {
         $dataToSave = [];
 
@@ -93,43 +89,19 @@ class NewSqlStorage extends RdsStorage
      * @param string $resourceId
      * @return Revision[]
      */
-    public function getAllRevisions($resourceId)
+    public function getAllRevisions(string $resourceId)
     {
-
         $queryBuilder = $this->getQueryBuilder()
             ->select('*')
             ->from(self::REVISION_TABLE_NAME)
-            ->where(
-                sprintf(' `%s` = ? ', self::REVISION_RESOURCE)
-            );
+            ->where(sprintf(' `%s` = ? ', self::REVISION_RESOURCE))
+            ->setParameters([$resourceId]);
 
-        $parameters = [
-            $resourceId
-        ];
         $variables = $this->getPersistence()
-            ->query($queryBuilder->getSQL(), $parameters)
+            ->query($queryBuilder->getSQL())
             ->fetchAll();
 
         return $this->buildRevisionCollection($variables);
-    }
-
-    /**
-     * @param array $variables
-     * @return array
-     */
-    public function buildRevisionCollection(array $variables)
-    {
-        $revisions = [];
-        foreach ($variables as $variable) {
-            $revisions[] = new Revision(
-                $variable[self::REVISION_RESOURCE],
-                $variable[self::REVISION_VERSION],
-                $variable[self::REVISION_CREATED],
-                $variable[self::REVISION_USER],
-                $variable[self::REVISION_MESSAGE]
-            );
-        }
-        return $revisions;
     }
 
     /**

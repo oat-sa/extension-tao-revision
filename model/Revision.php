@@ -26,21 +26,25 @@ namespace oat\taoRevision\model;
  * A revision of a resource
  *
  * @author Joel Bout <joel@taotesting.com>
- *
  */
-class Revision
+final class Revision
 {
+    /** @var string Resource Identifier */
     private $resourceId;
 
+    /** @var int Version number of the resource */
     private $version;
 
+    /** @var int Creation date of the revision in UNIX timestamp */
     private $created;
 
+    /** @var string User who created the revision */
     private $author;
 
+    /** @var string Commit message */
     private $message;
 
-    public function __construct($resourceId, $version, $created, $author, $message)
+    public function __construct(string $resourceId, int $version, int $created, string $author, string $message)
     {
         $this->resourceId = $resourceId;
         $this->version = $version;
@@ -60,7 +64,7 @@ class Revision
 
     /**
      * Returns the version of the revision
-     * @return string
+     * @return int
      */
     public function getVersion()
     {
