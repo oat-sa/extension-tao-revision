@@ -36,12 +36,12 @@ class RevisionTest extends TestCase
     /** @var Revision */
     private $revision;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->revision = new Revision(self::RESOURCE_ID, self::VERSION, self::CREATED, self::AUTHOR, self::MESSAGE);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->revision = null;
     }
