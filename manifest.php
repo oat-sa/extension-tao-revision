@@ -32,7 +32,7 @@ return [
     'version' => '8.1.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => [
-        'generis' => '>=12.10.1',
+        'generis' => '>=12.15.0',
         'tao' => '>=31.0.0',
         'taoItems' => '*',
         'taoTests' => '*',
