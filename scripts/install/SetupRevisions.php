@@ -30,7 +30,7 @@ use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\exception\InvalidService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\taoRevision\model\RepositoryService;
-use oat\taoRevision\model\SchemaProviderInterface;
+use oat\generis\persistence\sql\SchemaProviderInterface;
 
 /**
  * Setups and configure revisions extension for work
@@ -63,21 +63,11 @@ class SetupRevisions extends InstallAction
         $storageService = $repositoryService->getSubService(RepositoryService::OPTION_STORAGE);
 
         if ($storageService instanceof SchemaProviderInterface) {
-            $persistenceId = $storageService->getPersistenceId();
-            $persistence = $this->getServiceLocator()
-                ->get(PersistenceManager::SERVICE_ID)
-                ->getPersistenceById($persistenceId);
-
-            $schemaManager = $persistence->getDriver()->getSchemaManager();
-            $schema = $schemaManager->createSchema();
-            $fromSchema = clone $schema;
-
+            $persistenceManager = $this->getServiceLocator()->get(PersistenceManager::SERVICE_ID);
+            $schemaCollection = $persistenceManager->getSqlSchemas();
             try {
-                $schema = $storageService->getSchema($schema);
-                $queries = $persistence->getPlatform()->getMigrateSchemaSql($fromSchema, $schema);
-                foreach ($queries as $query) {
-                    $persistence->exec($query);
-                }
+                $storageService->provideSchema($schemaCollection);
+                $persistenceManager->applySchemas($schemaCollection);
             } catch (SchemaException $e) {
                 $this->logInfo('Database Schema already up to date.');
             }
