@@ -47,7 +47,7 @@ class RepositoryTest extends GenerisTestCase
     /** @var Revision[] */
     private $revisions = [];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -169,12 +169,12 @@ class RepositoryTest extends GenerisTestCase
             ->method('getPropertyStorageMap')
             ->willReturn([]);
 
-        $rdfInterface = $this->createPartialMock(RdfInterface::class);
+        $rdfInterface = $this->getMockForAbstractClass(RdfInterface::class);
         $rdfInterface->expects($this->any())
             ->method('add')
             ->willReturn(true);
 
-        $ontologyMock = $this->createPartialMock(Ontology::class);
+        $ontologyMock = $this->getMockForAbstractClass(Ontology::class);
 
         $ontologyMock->expects($this->any())
             ->method('getRdfInterface')
@@ -228,7 +228,7 @@ class RepositoryTest extends GenerisTestCase
 
         $repository = $this->getRepositoryService($storage->reveal());
 
-        $ontologyMock = $this->createPartialMock(Ontology::class);
+        $ontologyMock = $this->getMockForAbstractClass(Ontology::class);
         $ontologyMock->expects($this->once())
             ->method('getResource')
             ->willReturn($this->getOntologyMock()->getResource('my first subject'));

@@ -36,7 +36,7 @@ class StorageTest extends TestCase
     /** @var TestRdsStorage */
     private $storage;
 
-    public function setUp()
+    public function setUp(): void
     {
         $persistenceKey = 'persistence';
         $persistenceManager = $this->getSqlMock($persistenceKey);
@@ -59,7 +59,7 @@ class StorageTest extends TestCase
         $this->storage->setServiceLocator($serviceLocator);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->storage = null;
     }
