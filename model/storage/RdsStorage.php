@@ -36,7 +36,8 @@ use oat\taoRevision\model\Revision;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoRevision\model\RevisionStorageInterface;
 use Doctrine\DBAL\Query\QueryBuilder;
-use oat\taoRevision\model\SchemaProviderInterface;
+use oat\generis\persistence\sql\SchemaCollection;
+use oat\generis\persistence\sql\SchemaProviderInterface;
 
 /**
  * Storage class for the revision data
@@ -307,4 +308,15 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
     {
         return $this->getOption(self::OPTION_PERSISTENCE);
     }
+
+    /**
+     * {@inheritDoc}
+     * @see \oat\generis\persistence\sql\SchemaProviderInterface::provideSchema()
+     */
+    public function provideSchema(SchemaCollection $schemaCollection)
+    {
+        $schema = $schemaCollection->getSchema($this->getPersistenceId());
+        $this->getSchema($schema);
+    }
+
 }
