@@ -174,7 +174,7 @@ class RepositoryTest extends GenerisTestCase
             ->method('add')
             ->willReturn(true);
 
-        $ontologyMock = $this->getMockForAbstractClass(Ontology::class);
+        $ontologyMock = $this->createMock(Ontology::class);
 
         $ontologyMock->expects($this->any())
             ->method('getRdfInterface')
@@ -219,19 +219,14 @@ class RepositoryTest extends GenerisTestCase
 
     public function testSearchRevisionResources()
     {
-        $triples = $this->getTriplesMock();
-
         $storage = $this->prophesize(RevisionStorageInterface::class);
-        $storage->getRevisionsDataByQuery(Argument::exact('first'))
+        $storage->getResourcesUriByQuery(Argument::exact('first'), Argument::exact([]))
             ->shouldBeCalled()
-            ->willReturn([$triples->get(0)]);
+            ->willReturn(['test']);
 
         $repository = $this->getRepositoryService($storage->reveal());
 
-        $ontologyMock = $this->getMockForAbstractClass(Ontology::class);
-        $ontologyMock->expects($this->once())
-            ->method('getResource')
-            ->willReturn($this->getOntologyMock()->getResource('my first subject'));
+        $ontologyMock = $this->createMock(Ontology::class);
 
         $serviceLocator = $this->getServiceLocatorMock(
             [
@@ -244,7 +239,7 @@ class RepositoryTest extends GenerisTestCase
         $found = $repository->searchRevisionResources('first');
 
         $this->assertCount(1, $found);
-        $this->assertInstanceOf(core_kernel_classes_Resource::class, $found[0]);
+        $this->stringContains($found[0]);
     }
 
     /**
