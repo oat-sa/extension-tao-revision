@@ -69,7 +69,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
     /**
      * @return common_persistence_SqlPersistence
      */
-    private function getPersistence()
+    protected function getPersistence()
     {
         if ($this->persistence === null) {
             $this->persistence = $this->getServiceLocator()
@@ -252,6 +252,48 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
         }
 
         return $revisionsData;
+    }
+
+    /**
+     * @param string $query
+     * @param array $options
+     * @param string $predicate
+     * @return array
+     */
+    public function getResourcesUriByQuery(string $query, array $options = [], string $predicate = OntologyRdfs::RDFS_LABEL)
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->select('rd.'.self::DATA_RESOURCE);
+        $queryBuilder->from(self::DATA_TABLE_NAME, 'rd');
+
+        $queryBuilder->join('rd', 'statements', 'st',
+            'st.subject = rd.'.self::DATA_RESOURCE);
+
+        $fieldName = self::DATA_OBJECT;
+        $condition = "rd.$fieldName {$this->getLike()} '%$query%'";
+        $queryBuilder->where($condition);
+        $queryBuilder->andWhere(sprintf('rd.%s = \'%s\'', self::DATA_PREDICATE, $predicate));
+
+        if (isset($options['limit'])) {
+            $queryBuilder->setMaxResults((int)$options['limit']);
+        }
+
+        if (isset($options['offset'])) {
+            $queryBuilder->setFirstResult((int)$options['offset']);
+        }
+
+        $sort = isset($options['sort']) ? $options['sort'] : self::DATA_RESOURCE;
+        $order = isset($options['order']) ? strtoupper($options['order']) : ' ASC';
+
+        $queryBuilder->addOrderBy($sort, $order);
+        $queryBuilder->groupBy('rd.'.self::DATA_RESOURCE);
+
+        $result = $this->getPersistence()->query($queryBuilder->getSQL());
+        $resourcesUri = [];
+        while ($statement = $result->fetch()) {
+            $resourcesUri[] = $statement[self::DATA_RESOURCE];
+        }
+        return $resourcesUri;
     }
 
     /**
