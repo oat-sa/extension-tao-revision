@@ -64,11 +64,13 @@ interface RevisionStorageInterface
 
     /**
      * @param string $query
+     * @param array $options
      * @param string $predicate
      *
-     * @return Triple[]
+     * @return array
      */
-    public function getRevisionsDataByQuery(string $query, string $predicate = OntologyRdfs::RDFS_LABEL);
+    public function getResourcesUriByQuery(string $query, array $options = [], string $predicate = OntologyRdfs::RDFS_LABEL);
+
 
     /**
      * @param array $variables

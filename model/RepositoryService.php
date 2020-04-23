@@ -179,21 +179,15 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
     /**
      * @param string $query
      *
+     * @param array $options
      * @return Resource[]
      * @throws InvalidService
      * @throws InvalidServiceManagerException
-     *
      * @todo Fix usage in the NEC project
      */
-    public function searchRevisionResources(string $query)
+    public function searchRevisionResources(string $query, array $options = [])
     {
-        $resources = [];
-
-        foreach ($this->getStorage()->getRevisionsDataByQuery($query) as $item) {
-            $resources[] = $this->getResource($item->subject);
-        }
-
-        return $resources;
+        return $this->getStorage()->getResourcesUriByQuery($query, $options);
     }
 
     /**
