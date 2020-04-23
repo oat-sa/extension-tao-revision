@@ -230,31 +230,6 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
     }
 
     /**
-     * @inheritDoc
-     */
-    public function getRevisionsDataByQuery(string $query, string $predicate = OntologyRdfs::RDFS_LABEL)
-    {
-        $queryBuilder = $this->getQueryBuilder();
-        $queryBuilder->select('*');
-        $queryBuilder->from(self::DATA_TABLE_NAME);
-
-        $fieldName = self::DATA_OBJECT;
-        $condition = "$fieldName {$this->getLike()} '%$query%'";
-        $queryBuilder->where($condition);
-        $queryBuilder->andWhere(sprintf('%s = \'%s\'', self::DATA_PREDICATE, $predicate));
-
-        $result = $this->getPersistence()->query($queryBuilder->getSQL());
-        $revisionsData = [];
-
-        while ($statement = $result->fetch()) {
-            $triple = $this->prepareDataObject($statement, $this->getLocalModel()->getModelId());
-            $revisionsData[] = $triple;
-        }
-
-        return $revisionsData;
-    }
-
-    /**
      * @param string $query
      * @param array $options
      * @param string $predicate

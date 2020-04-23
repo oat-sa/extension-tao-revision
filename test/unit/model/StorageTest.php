@@ -143,18 +143,6 @@ class StorageTest extends TestCase
         $this->assertEquals($triples, $data);
     }
 
-    public function testGetRevisionsDataByQuery()
-    {
-        $triples = $this->getTriplesMock();
-        $revision = new Revision('123', 456, time(), 'author', 'message');
-
-        $this->storage->addRevision($revision, $triples->toArray());
-
-        $data = $this->storage->getRevisionsDataByQuery('first', 'my first predicate');
-
-        $this->assertEquals([$triples->get(0)], $data);
-    }
-
     public function testGetResourcesUriByQuery()
     {
         $triples = $this->getTriplesMock();
