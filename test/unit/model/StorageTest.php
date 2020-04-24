@@ -22,6 +22,7 @@ namespace oat\taoRevision\test\unit\model;
 
 use common_ext_Namespace;
 use oat\generis\persistence\PersistenceManager;
+use oat\generis\test\OntologyMockTrait;
 use oat\generis\test\TestCase;
 use oat\taoRevision\model\RevisionNotFoundException;
 use oat\taoRevision\model\RevisionStorageInterface;
@@ -32,31 +33,36 @@ use oat\taoRevision\model\Revision;
 class StorageTest extends TestCase
 {
     use TriplesMockTrait;
+    use OntologyMockTrait;
+
+    const PERSISTENCE_KEY = 'mockSql';
 
     /** @var TestRdsStorage */
     private $storage;
 
     public function setUp(): void
     {
-        $persistenceKey = 'persistence';
-        $persistenceManager = $this->getSqlMock($persistenceKey);
+        $ontologyMock = $this->getOntologyMock();
+        $class = $ontologyMock->getClass('http://fakeClass');
+        $class->createInstance('Fake Item', '', 'http://fakeUri');
 
-        $serviceLocator = $this->getServiceLocatorMock([PersistenceManager::SERVICE_ID => $persistenceManager]);
+        $persistence = $ontologyMock->getPersistence();
 
-        $rds = $persistenceManager->getPersistenceById($persistenceKey);
+        $persistenceManager = $this->getSqlMock('tmp');
+        $rds = $persistenceManager->getPersistenceById('tmp');
+
         $schema = $rds->getSchemaManager()->createSchema();
-
         $rdsSchema = new RdsSqlSchema();
-        $rdsSchema->setServiceLocator($serviceLocator);
+        $rdsSchema->setServiceLocator($ontologyMock->getServiceLocator());
         $schema = $rdsSchema->getSchema($schema);
 
-        $queries = $rds->getPlatform()->schemaToSql($schema);
+        $queries = $persistence->getPlatform()->schemaToSql($schema);
         foreach ($queries as $query) {
-            $rds->query($query);
+            $persistence->query($query);
         }
 
-        $this->storage = new TestRdsStorage([RevisionStorageInterface::OPTION_PERSISTENCE => $persistenceKey]);
-        $this->storage->setServiceLocator($serviceLocator);
+        $this->storage = new TestRdsStorage([RevisionStorageInterface::OPTION_PERSISTENCE => self::PERSISTENCE_KEY]);
+        $this->storage->setServiceLocator($ontologyMock->getServiceLocator());
     }
 
     public function tearDown(): void
@@ -72,7 +78,7 @@ class StorageTest extends TestCase
         $persistence = $this->storage
             ->getServiceLocator()
             ->get(PersistenceManager::SERVICE_ID)
-            ->getPersistenceById('persistence');
+            ->getPersistenceById(self::PERSISTENCE_KEY);
 
         // no any revision in the storage
         $count = $persistence->query('select count(*) as count from revision')->fetch()['count'];
@@ -137,16 +143,17 @@ class StorageTest extends TestCase
         $this->assertEquals($triples, $data);
     }
 
-    public function testGetRevisionsDataByQuery()
+    public function testGetResourcesUriByQuery()
     {
         $triples = $this->getTriplesMock();
-        $revision = new Revision('123', 456, time(), 'author', 'message');
+
+        $revision = new Revision('http://fakeUri', 456, time(), 'author', 'message');
 
         $this->storage->addRevision($revision, $triples->toArray());
 
-        $data = $this->storage->getRevisionsDataByQuery('first', 'my first predicate');
+        $data = $this->storage->getResourcesUriByQuery('first', [], 'my first predicate');
 
-        $this->assertEquals([$triples->get(0)], $data);
+        $this->assertEquals(['http://fakeUri'], $data);
     }
 
     public function testBuildRevisionCollection()

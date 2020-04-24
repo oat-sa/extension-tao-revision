@@ -69,7 +69,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
     /**
      * @return common_persistence_SqlPersistence
      */
-    private function getPersistence()
+    protected function getPersistence()
     {
         if ($this->persistence === null) {
             $this->persistence = $this->getServiceLocator()
@@ -230,28 +230,45 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
     }
 
     /**
-     * @inheritDoc
+     * @param string $query
+     * @param array $options
+     * @param string $predicate
+     * @return array
      */
-    public function getRevisionsDataByQuery(string $query, string $predicate = OntologyRdfs::RDFS_LABEL)
+    public function getResourcesUriByQuery(string $query, array $options = [], string $predicate = OntologyRdfs::RDFS_LABEL)
     {
         $queryBuilder = $this->getQueryBuilder();
-        $queryBuilder->select('*');
-        $queryBuilder->from(self::DATA_TABLE_NAME);
+        $queryBuilder->select('rd.'.self::DATA_RESOURCE);
+        $queryBuilder->from(self::DATA_TABLE_NAME, 'rd');
+
+        $queryBuilder->join('rd', 'statements', 'st',
+            'st.subject = rd.'.self::DATA_RESOURCE);
 
         $fieldName = self::DATA_OBJECT;
-        $condition = "$fieldName {$this->getLike()} '%$query%'";
+        $condition = "rd.$fieldName {$this->getLike()} '%$query%'";
         $queryBuilder->where($condition);
-        $queryBuilder->andWhere(sprintf('%s = \'%s\'', self::DATA_PREDICATE, $predicate));
+        $queryBuilder->andWhere(sprintf('rd.%s = \'%s\'', self::DATA_PREDICATE, $predicate));
 
-        $result = $this->getPersistence()->query($queryBuilder->getSQL());
-        $revisionsData = [];
-
-        while ($statement = $result->fetch()) {
-            $triple = $this->prepareDataObject($statement, $this->getLocalModel()->getModelId());
-            $revisionsData[] = $triple;
+        if (isset($options['limit'])) {
+            $queryBuilder->setMaxResults((int)$options['limit']);
         }
 
-        return $revisionsData;
+        if (isset($options['offset'])) {
+            $queryBuilder->setFirstResult((int)$options['offset']);
+        }
+
+        $sort = isset($options['sort']) ? $options['sort'] : self::DATA_RESOURCE;
+        $order = isset($options['order']) ? strtoupper($options['order']) : ' ASC';
+
+        $queryBuilder->addOrderBy($sort, $order);
+        $queryBuilder->groupBy('rd.'.self::DATA_RESOURCE);
+
+        $result = $this->getPersistence()->query($queryBuilder->getSQL());
+        $resourcesUri = [];
+        while ($statement = $result->fetch()) {
+            $resourcesUri[] = $statement[self::DATA_RESOURCE];
+        }
+        return $resourcesUri;
     }
 
     /**
