@@ -31,6 +31,7 @@ use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\exception\InvalidService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\oatbox\service\ConfigurableService;
+use oat\oatbox\user\AnonymousUser;
 
 /**
  * A simple repository implementation that stores the information
@@ -132,7 +133,8 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
 
         if ($author === null) {
             $user = common_session_SessionManager::getSession()->getUser();
-            $author = ($user === null) ? '' : $user->getIdentifier();
+
+            $author = ($user === null) || ($user instanceof  AnonymousUser) ? '' : $user->getIdentifier();
         }
 
         $version = $version ?? $this->getNextVersion($resource->getUri());
