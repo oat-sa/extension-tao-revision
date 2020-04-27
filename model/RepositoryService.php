@@ -133,8 +133,12 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
 
         if ($author === null) {
             $user = common_session_SessionManager::getSession()->getUser();
-
-            $author = ($user === null) || ($user instanceof  AnonymousUser) ? '' : $user->getIdentifier();
+            if ($user !== null) {
+                $author = $user->getIdentifier();
+            }
+            if ($author === null) {
+                $author = '';
+            }
         }
 
         $version = $version ?? $this->getNextVersion($resource->getUri());
