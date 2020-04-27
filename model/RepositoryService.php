@@ -31,7 +31,6 @@ use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\exception\InvalidService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\oatbox\service\ConfigurableService;
-use oat\oatbox\user\AnonymousUser;
 
 /**
  * A simple repository implementation that stores the information
