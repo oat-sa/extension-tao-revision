@@ -75,10 +75,13 @@ class History extends tao_actions_CommonModule
 
         $revisionsList = [];
         foreach ($revisions as $revision) {
+            if ($author = $revision->getAuthorId()) {
+                $author = UserHelper::renderHtmlUser($revision->getAuthorId());
+            }
             $revisionsList[] = [
                 'id' => $revision->getVersion(),
                 'modified' => tao_helpers_Date::displayeDate($revision->getDateCreated()),
-                'author' => UserHelper::renderHtmlUser($revision->getAuthorId()),
+                'author' => $author,
                 'message' => tao_helpers_Display::htmlize($revision->getMessage()),
             ];
         }
