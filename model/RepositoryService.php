@@ -31,6 +31,8 @@ use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\exception\InvalidService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\oatbox\service\ConfigurableService;
+use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
+use oat\taoQtiItem\model\qti\Service;
 
 /**
  * A simple repository implementation that stores the information
@@ -168,6 +170,7 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
         $data = $this->getStorage()->getData($revision);
 
         $resource = $this->getResource($revision->getResourceId());
+        $item = $this->getQtiService()->getDataItemByRdfItem($resource);
         $originFilesystemMap = $this->getTriplesManagerService()->getPropertyStorageMap($resource->getRdfTriples());
 
         $triplesManager->deleteTriplesFor($resource);
@@ -178,7 +181,19 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
             $this->getModel()->getRdfInterface()->add($triple);
         }
 
+        $this->getUpdatedItemEventDispatcher()->dispatch($item, $resource);
+
         return true;
+    }
+
+    private function getUpdatedItemEventDispatcher(): UpdatedItemEventDispatcher
+    {
+        return $this->getServiceLocator()->get(UpdatedItemEventDispatcher::class);
+    }
+
+    private function getQtiService(): Service
+    {
+        return $this->getServiceLocator()->get(Service::class);
     }
 
     /**

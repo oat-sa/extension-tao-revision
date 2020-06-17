@@ -29,6 +29,9 @@ use oat\generis\model\data\Ontology;
 use oat\generis\model\data\RdfInterface;
 use oat\generis\test\GenerisTestCase;
 use oat\oatbox\filesystem\FileSystemService;
+use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
+use oat\taoQtiItem\model\qti\Item;
+use oat\taoQtiItem\model\qti\Service;
 use oat\taoRevision\model\Revision;
 use oat\taoRevision\model\RepositoryService;
 use oat\taoRevision\model\RevisionNotFoundException;
@@ -184,10 +187,18 @@ class RepositoryTest extends GenerisTestCase
             ->method('getResource')
             ->willReturn($this->getOntologyMock()->getResource('my first subject'));
 
+        $qtiServiceMock = $this->createMock(Service::class);
+        $itemMock = $this->createMock(Item::class);
+        $qtiServiceMock->method('getDataItemByRdfItem')->willReturn($itemMock);
+        $eventDispatcherMock = $this->createMock(UpdatedItemEventDispatcher::class);
+        $eventDispatcherMock->method('dispatch');
+
         $serviceLocator = $this->getServiceLocatorMock(
             [
                 Ontology::SERVICE_ID => $ontologyMock,
-                TriplesManagerService::SERVICE_ID => $triplesManager
+                TriplesManagerService::SERVICE_ID => $triplesManager,
+                UpdatedItemEventDispatcher::class => $eventDispatcherMock,
+                Service::class => $qtiServiceMock
             ]
         );
         $repository->setServiceLocator($serviceLocator);
