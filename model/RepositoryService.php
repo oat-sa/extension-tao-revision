@@ -170,7 +170,6 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
         $data = $this->getStorage()->getData($revision);
 
         $resource = $this->getResource($revision->getResourceId());
-        $item = $this->getQtiService()->getDataItemByRdfItem($resource);
         $originFilesystemMap = $this->getTriplesManagerService()->getPropertyStorageMap($resource->getRdfTriples());
 
         $triplesManager->deleteTriplesFor($resource);
@@ -181,6 +180,7 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
             $this->getModel()->getRdfInterface()->add($triple);
         }
 
+        $item = $this->getQtiService()->getDataItemByRdfItem($resource);
         $this->getUpdatedItemEventDispatcher()->dispatch($item, $resource);
 
         return true;
