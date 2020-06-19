@@ -36,7 +36,7 @@ return [
         'tao' => '>=31.0.0',
         'taoItems' => '*',
         'taoTests' => '*',
-        'taoQtiItem' => '24.3.0',
+        'taoQtiItem' => '>=24.3.0',
         'taoMediaManager' => '*',
     ],
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoRevisionManager',
