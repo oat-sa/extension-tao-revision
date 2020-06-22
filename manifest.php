@@ -29,7 +29,7 @@ return [
     'label' => 'Data Revision Control',
     'description' => 'Allows saving the intermediate state of objects and restoring them',
     'license' => 'GPL-2.0',
-    'version' => '8.7.0',
+    'version' => '8.8.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => [
         'generis' => '>=12.15.0',
