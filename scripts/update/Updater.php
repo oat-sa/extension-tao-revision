@@ -35,6 +35,7 @@ use oat\taoRevision\model\TriplesManagerService;
 /**
  *
  * @author Joel Bout <joel@taotesting.com>
+ * @deprecated use migrations instead. See https://github.com/oat-sa/generis/wiki/Tao-Update-Process
  */
 class Updater extends common_ext_ExtensionUpdater
 {
@@ -85,5 +86,10 @@ class Updater extends common_ext_ExtensionUpdater
             $this->setVersion('8.0.0');
         }
         $this->skip('8.0.0','8.7.0');
+        
+        //Updater files are deprecated. Please use migrations.
+        //See: https://github.com/oat-sa/generis/wiki/Tao-Update-Process
+
+        $this->setVersion($this->getExtension()->getManifest()->getVersion());
     }
 }
