@@ -23,6 +23,7 @@ namespace oat\taoRevision\model;
 use common_Exception;
 use common_Logger;
 use oat\generis\model\fileReference\FileReferenceSerializer;
+use oat\generis\model\fileReference\UrlFileSerializer;
 use oat\generis\model\GenerisRdf;
 use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdfs;
@@ -104,8 +105,10 @@ class TriplesManagerService extends ConfigurableService
         $clones = [];
         foreach ($triples as $original) {
             $triple = clone $original;
+
             if ($this->isFileReference($triple)) {
                 $targetFileSystem = $propertyFilesystemMap[$triple->predicate] ?? null;
+
                 $triple->object = $this->cloneFile($triple->object, $targetFileSystem);
             }
             $clones[] = $triple;
@@ -124,6 +127,7 @@ class TriplesManagerService extends ConfigurableService
      */
     protected function cloneFile($fileUri, $targetFileSystemId = null)
     {
+        /** @var UrlFileSerializer $referencer */
         $referencer = $this->getFileRefSerializer();
         $flySystemService = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
 
@@ -159,6 +163,7 @@ class TriplesManagerService extends ConfigurableService
             if ($this->isFileReference($triple)) {
                 $source = $this->getFileRefSerializer()->unserialize($triple->object);
                 $map[$triple->predicate] = $source->getFileSystemId();
+
             }
         }
 
@@ -172,6 +177,21 @@ class TriplesManagerService extends ConfigurableService
      */
     protected function isFileReference(Triple $triple)
     {
+        //FIXME
+        if ($triple->predicate == 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link') {
+            if (strpos($triple->object, 'mediaManager/') === 0) {
+                // to commits
+                $triple->object = str_replace('mediaManager/', '', $triple->object);
+            }
+
+            if (strpos($triple->object, 'file://') === false) {
+                // to commit
+                $triple->object = 'file://mediaManager/' . urlencode($triple->object);
+            }
+            return true;
+        }
+        //FIXME
+
         $property = $this->getProperty($triple->predicate);
         $range = $property->getRange();
 

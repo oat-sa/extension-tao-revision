@@ -181,7 +181,7 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
         }
 
         $item = $this->getQtiService()->getDataItemByRdfItem($resource);
-        $this->getUpdatedItemEventDispatcher()->dispatch($item, $resource);
+//        $this->getUpdatedItemEventDispatcher()->dispatch($item, $resource);
 
         return true;
     }
