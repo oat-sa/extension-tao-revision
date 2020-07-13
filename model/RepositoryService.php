@@ -180,21 +180,9 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
             $this->getModel()->getRdfInterface()->add($triple);
         }
 
-        $item = $this->getQtiService()->getDataItemByRdfItem($resource);
-        $this->getUpdatedItemEventDispatcher()->dispatch($item, $resource);
-
         return true;
     }
 
-    private function getUpdatedItemEventDispatcher(): UpdatedItemEventDispatcher
-    {
-        return $this->getServiceLocator()->get(UpdatedItemEventDispatcher::class);
-    }
-
-    private function getQtiService(): Service
-    {
-        return $this->getServiceLocator()->get(Service::class);
-    }
 
     /**
      * @param string $query
