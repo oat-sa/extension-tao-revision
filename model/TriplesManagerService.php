@@ -202,12 +202,12 @@ class TriplesManagerService extends ConfigurableService
         }
     }
 
-    public function addFilePrefixForAssets(Triple $triple): void
+    private function addFilePrefixForAssets(Triple $triple): void
     {
         $this->getMediaSource()->addFilePrefixForAssets($triple);
     }
 
-    public function getMediaSource(): MediaSource
+    private function getMediaSource(): MediaSource
     {
         return $this->getServiceLocator()->get(MediaSource::class);
     }
