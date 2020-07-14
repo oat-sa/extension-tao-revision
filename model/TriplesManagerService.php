@@ -162,8 +162,6 @@ class TriplesManagerService extends ConfigurableService
             if ($this->isFileReference($triple)) {
                 $this->addFilePrefixForAssets($triple);
                 $source = $this->getFileRefSerializer()->unserialize($triple->object);
-
-
                 $map[$triple->predicate] = $source->getFileSystemId();
             }
         }
