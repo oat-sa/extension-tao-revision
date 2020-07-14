@@ -34,8 +34,8 @@ use core_kernel_classes_ContainerCollection as TriplesCollection;
 use core_kernel_classes_Resource as Resource;
 use core_kernel_classes_Triple as Triple;
 use core_kernel_persistence_smoothsql_SmoothModel as Model;
+use oat\taoMediaManager\model\fileManagement\FileSourceSerializer;
 use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\MediaSource;
 
 /**
  * Class TriplesManagerService
@@ -65,7 +65,7 @@ class TriplesManagerService extends ConfigurableService
         }
 
         $referencer = $this->getFileRefSerializer();
-        $this->addFilePrefixForAssets($triple);
+        $this->serializeAsset($triple);
         $source = $referencer->unserialize($triple->object);
 
         if ($source instanceof Directory) {
@@ -108,7 +108,7 @@ class TriplesManagerService extends ConfigurableService
             $triple = clone $original;
             if ($this->isFileReference($triple)) {
                 $targetFileSystem = $propertyFilesystemMap[$triple->predicate] ?? null;
-                $this->addFilePrefixForAssets($triple);
+                $this->serializeAsset($triple);
                 $triple->object = $this->cloneFile($triple->object, $targetFileSystem);
             }
             $clones[] = $triple;
@@ -160,7 +160,7 @@ class TriplesManagerService extends ConfigurableService
 
         foreach ($triples as $triple) {
             if ($this->isFileReference($triple)) {
-                $this->addFilePrefixForAssets($triple);
+                $this->serializeAsset($triple);
                 $source = $this->getFileRefSerializer()->unserialize($triple->object);
                 $map[$triple->predicate] = $source->getFileSystemId();
             }
@@ -200,13 +200,13 @@ class TriplesManagerService extends ConfigurableService
         }
     }
 
-    private function addFilePrefixForAssets(Triple $triple): void
+    private function serializeAsset(Triple $triple): void
     {
-        $this->getMediaSource()->addFilePrefixForAssets($triple);
+        $this->getMediaSource()->serialize($triple);
     }
 
-    private function getMediaSource(): MediaSource
+    private function getMediaSource(): FileSourceSerializer
     {
-        return $this->getServiceLocator()->get(MediaSource::class);
+        return $this->getServiceLocator()->get(FileSourceSerializer::class);
     }
 }
