@@ -202,10 +202,10 @@ class TriplesManagerService extends ConfigurableService
 
     private function serializeAsset(Triple $triple): void
     {
-        $this->getMediaSource()->serialize($triple);
+        $this->getFileSourceSerializer()->serialize($triple);
     }
 
-    private function getMediaSource(): FileSourceSerializer
+    private function getFileSourceSerializer(): FileSourceSerializer
     {
         return $this->getServiceLocator()->get(FileSourceSerializer::class);
     }
