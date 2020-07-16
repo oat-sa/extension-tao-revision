@@ -33,6 +33,7 @@ use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
 use oat\taoQtiItem\model\qti\Service;
+use oat\taoQtiTest\models\creator\CreatorItems;
 
 /**
  * A simple repository implementation that stores the information
@@ -180,21 +181,11 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
             $this->getModel()->getRdfInterface()->add($triple);
         }
 
-        $item = $this->getQtiService()->getDataItemByRdfItem($resource);
-        $this->getUpdatedItemEventDispatcher()->dispatch($item, $resource);
+        $this->updateItemsRelations($originFilesystemMap, $resource);
 
         return true;
     }
 
-    private function getUpdatedItemEventDispatcher(): UpdatedItemEventDispatcher
-    {
-        return $this->getServiceLocator()->get(UpdatedItemEventDispatcher::class);
-    }
-
-    private function getQtiService(): Service
-    {
-        return $this->getServiceLocator()->get(Service::class);
-    }
 
     /**
      * @param string $query
@@ -230,5 +221,26 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
         }
 
         return $candidate + 1;
+    }
+
+    private function getUpdatedItemEventDispatcher(): UpdatedItemEventDispatcher
+    {
+        return $this->getServiceLocator()->get(UpdatedItemEventDispatcher::class);
+    }
+
+    private function getQtiService(): Service
+    {
+        return $this->getServiceLocator()->get(Service::class);
+    }
+
+    /**
+     * @throws common_Exception
+     */
+    private function updateItemsRelations(array $originFilesystemMap, Resource $resource): void
+    {
+        if (key($originFilesystemMap) === CreatorItems::PROPERTY_ITEM_CONTENT_URI) {
+            $item = $this->getQtiService()->getDataItemByRdfItem($resource);
+            $this->getUpdatedItemEventDispatcher()->dispatch($item, $resource);
+        }
     }
 }
