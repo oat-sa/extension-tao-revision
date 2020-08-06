@@ -1,12 +1,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.4.0-sprint121\n"
-"PO-Revision-Date: 2020-08-03T10:55:39\n"
+"PO-Revision-Date: 2020-08-03T10:55:40\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: lt-LT\n"
+"Language: pt-BR\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: lt-LT\n"
+"targetLanguage: pt-BR\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
@@ -14,72 +14,72 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "%s has been committed"
-msgstr "%s buvo paskirta"
+msgstr "%s foi confirmado"
 
 msgid "Actions"
-msgstr "Veiksmai"
+msgstr "Ações"
 
 msgid "Commit"
-msgstr "Paskirti"
+msgstr "Submeter"
 
 #, tao-public
 msgid "History"
-msgstr "Istorija"
+msgstr "Histórico"
 
 msgid "History of %s"
-msgstr "Istorija %s"
+msgstr "Hiistórico de %s"
 
 msgid "Id"
-msgstr "Id"
+msgstr "ID"
 
 #, tao-public
 msgid "Items"
-msgstr "Elementai"
+msgstr "Itens"
 
 #, tao-public
 msgid "Manage items"
-msgstr "Tvarkyti elementus"
+msgstr "Gerenciar itens"
 
 #, tao-public
 msgid "Manage Media"
-msgstr "Tvarkyti Mediją"
+msgstr "Gerenciar mídia"
 
 #, tao-public
 msgid "Manage tests"
-msgstr "Tvarkyti testus"
+msgstr "Gerenciar testes"
 
 #, tao-public
 msgid "Media"
-msgstr "Medija"
+msgstr "Mídia"
 
 msgid "Message"
-msgstr "Pranešimas"
+msgstr "Mensagem"
 
 msgid "Please give a message to your commit"
-msgstr "Aprašykite savo paskyrimą"
+msgstr "Por favor, deixe uma mensagem para o seu commit"
 
 msgid "Resource restored"
-msgstr "Resursas atstatytas"
+msgstr "Recursos restaurados."
 
 msgid "Restore"
-msgstr "Atstatyti"
+msgstr "Restaurar"
 
 msgid "Restored version %s"
-msgstr "Atstatyta versija %s"
+msgstr "Versão restaurada %s"
 
 msgid "Something went wrong..."
-msgstr "Kažkas blogai nutiko..."
+msgstr "Alguma coisa deu errado..."
 
 #, tao-public
 msgid "Tests"
-msgstr "Testai"
+msgstr "Testes"
 
 msgid "Time"
-msgstr "Laikas"
+msgstr "Tempo"
 
 msgid "Unable to restore the selected version"
-msgstr "Nepavyko atstatyti pasirinktos versijos"
+msgstr "Não é possível restaurar a versão selecionada"
 
 msgid "User"
-msgstr "Vartotojas"
+msgstr "Usuário"
 
