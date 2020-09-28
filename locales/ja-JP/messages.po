@@ -1,0 +1,85 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 3.4.0-sprint117\n"
+"PO-Revision-Date: 2020-09-22T16:02:17\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: ja-JP\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: ja-JP\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "%s has been committed"
+msgstr "%s はコミットされました"
+
+msgid "Actions"
+msgstr "アクション"
+
+msgid "Commit"
+msgstr "コミット"
+
+#, tao-public
+msgid "History"
+msgstr "履歴"
+
+msgid "History of %s"
+msgstr "%s の履歴"
+
+msgid "Id"
+msgstr "ID"
+
+#, tao-public
+msgid "Items"
+msgstr "アイテム"
+
+#, tao-public
+msgid "Manage items"
+msgstr "アイテム管理"
+
+#, tao-public
+msgid "Manage Media"
+msgstr "メディア管理"
+
+#, tao-public
+msgid "Manage tests"
+msgstr "テスト管理"
+
+#, tao-public
+msgid "Media"
+msgstr "メディア"
+
+msgid "Message"
+msgstr "メッセージ"
+
+msgid "Please give a message to your commit"
+msgstr "コミットにメッセージを渡してください"
+
+msgid "Resource restored"
+msgstr "復元したリソース"
+
+msgid "Restore"
+msgstr "復元"
+
+msgid "Restored version %s"
+msgstr "復元バージョン %s"
+
+msgid "Something went wrong..."
+msgstr "何か問題が発生しました..."
+
+#, tao-public
+msgid "Tests"
+msgstr "テスト"
+
+msgid "Time"
+msgstr "時間"
+
+msgid "Unable to restore the selected version"
+msgstr "選択したバージョンを復元できません"
+
+msgid "User"
+msgstr "ユーザー"
+
