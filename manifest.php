@@ -29,16 +29,7 @@ return [
     'label' => 'Data Revision Control',
     'description' => 'Allows saving the intermediate state of objects and restoring them',
     'license' => 'GPL-2.0',
-    'version' => '8.8.2',
     'author' => 'Open Assessment Technologies SA',
-    'requires' => [
-        'generis' => '>=12.15.0',
-        'tao' => '>=31.0.0',
-        'taoItems' => '*',
-        'taoTests' => '*',
-        'taoQtiItem' => '>=24.3.0',
-        'taoMediaManager' => '*',
-    ],
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoRevisionManager',
     'acl' => [
         ['grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoRevisionManager', ['ext' => 'taoRevision']],
