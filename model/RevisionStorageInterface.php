@@ -63,6 +63,8 @@ interface RevisionStorageInterface
     public function getData(Revision $revision);
 
     /**
+     * @deprecated
+     * @see getResourcesDataByQuery
      * @param string $query
      * @param array $options
      * @param string $predicate
@@ -71,6 +73,7 @@ interface RevisionStorageInterface
      */
     public function getResourcesUriByQuery(string $query, array $options = [], string $predicate = OntologyRdfs::RDFS_LABEL);
 
+    public function getResourcesDataByQuery(string $query, array $options = [], string $predicate = OntologyRdfs::RDFS_LABEL): array;
 
     /**
      * @param array $variables
