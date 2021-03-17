@@ -198,7 +198,7 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
      */
     public function searchRevisionResources(string $query, array $options = [])
     {
-        return $this->getStorage()->getResourcesDataByQuery($query, $options);
+        return $this->getStorage()->getResourcesUriByQuery($query, $options);
     }
 
     /**

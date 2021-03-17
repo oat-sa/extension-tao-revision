@@ -156,26 +156,6 @@ class StorageTest extends TestCase
         $this->assertEquals(['http://fakeUri'], $data);
     }
 
-    public function testGetResourcesDataByQuery()
-    {
-        $triples = $this->getTriplesMock();
-
-        $revision = new Revision('http://fakeUri', 456, time(), 'author', 'message');
-
-        $this->storage->addRevision($revision, $triples->toArray());
-
-        $data = $this->storage->getResourcesDataByQuery('first', [], 'my first predicate');
-
-        $this->assertCount(1, $data);
-        $this->assertEquals(
-            [
-                'id' => 'http://fakeUri',
-                'label' => 'my first object',
-            ],
-            $data[0]
-        );
-    }
-
     public function testBuildRevisionCollection()
     {
         $dataBank = [];
