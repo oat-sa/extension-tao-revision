@@ -231,7 +231,7 @@ class RepositoryTest extends GenerisTestCase
     public function testSearchRevisionResources()
     {
         $storage = $this->prophesize(RevisionStorageInterface::class);
-        $storage->getResourcesUriByQuery(Argument::exact('first'), Argument::exact([]))
+        $storage->getResourcesDataByQuery(Argument::exact('first'), Argument::exact([]))
             ->shouldBeCalled()
             ->willReturn(['test']);
 

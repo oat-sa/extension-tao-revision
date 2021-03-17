@@ -25,19 +25,20 @@ use common_ext_Namespace;
 use common_ext_NamespaceManager;
 use common_Object;
 use common_persistence_SqlPersistence;
-use core_kernel_classes_Triple as Triple;
 use core_kernel_classes_ContainerCollection as TriplesCollection;
+use core_kernel_classes_Triple as Triple;
+use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Schema\Schema;
 use oat\generis\model\kernel\persistence\smoothsql\search\driver\TaoSearchDriver;
 use oat\generis\model\OntologyRdfs;
 use oat\generis\persistence\PersistenceManager;
-use oat\taoRevision\model\RevisionNotFoundException;
-use oat\taoRevision\model\Revision;
-use oat\oatbox\service\ConfigurableService;
-use oat\taoRevision\model\RevisionStorageInterface;
-use Doctrine\DBAL\Query\QueryBuilder;
 use oat\generis\persistence\sql\SchemaCollection;
 use oat\generis\persistence\sql\SchemaProviderInterface;
+use oat\oatbox\service\ConfigurableService;
+use oat\taoRevision\model\Revision;
+use oat\taoRevision\model\RevisionNotFoundException;
+use oat\taoRevision\model\RevisionStorageInterface;
 
 /**
  * Storage class for the revision data
@@ -149,9 +150,9 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
     public function getAllRevisions(string $resourceId)
     {
         $queryBuilder = $this->getQueryBuilder()
-        ->select('*')
-        ->from(self::REVISION_TABLE_NAME)
-        ->where(sprintf('%s = ?', self::REVISION_RESOURCE));
+            ->select('*')
+            ->from(self::REVISION_TABLE_NAME)
+            ->where(sprintf('%s = ?', self::REVISION_RESOURCE));
 
         $variables = $this->getPersistence()
             ->query($queryBuilder->getSQL(), [$resourceId])
@@ -237,8 +238,54 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
      */
     public function getResourcesUriByQuery(string $query, array $options = [], string $predicate = OntologyRdfs::RDFS_LABEL)
     {
+        $result = $this->getSelectedResourcesDataByQuery(
+            [self::DATA_RESOURCE],
+            $query,
+            $options,
+            $predicate,
+        );
+
+        $resourcesUri = [];
+        while ($statement = $result->fetch()) {
+            $resourcesUri[] = $statement[self::DATA_RESOURCE];
+        }
+        return $resourcesUri;
+    }
+
+    public function getResourcesDataByQuery(string $query, array $options = [], string $predicate = OntologyRdfs::RDFS_LABEL): array
+    {
+        $result = $this->getSelectedResourcesDataByQuery(
+            [self::DATA_RESOURCE, self::DATA_OBJECT],
+            $query,
+            $options,
+            $predicate,
+        );
+
+        $resourcesData= [];
+        /** @var Revision $statement */
+        while ($statement = $result->fetch()) {
+            $resourcesData[] = [
+                'id' => $statement[self::DATA_RESOURCE],
+                'label' => $statement[self::DATA_OBJECT],
+            ];
+        }
+        return $resourcesData;
+    }
+
+    /**
+     * @param string[] $selectedFields
+     */
+    private function getSelectedResourcesDataByQuery(
+        array $selectedFields,
+        string $query,
+        array $options,
+        string $predicate
+    ): Statement
+    {
         $queryBuilder = $this->getQueryBuilder();
-        $queryBuilder->select('rd.'.self::DATA_RESOURCE);
+        foreach ($selectedFields as $selectedField) {
+            $queryBuilder->addSelect('rd.'.$selectedField);
+        }
         $queryBuilder->from(self::DATA_TABLE_NAME, 'rd');
 
         $queryBuilder->join('rd', 'statements', 'st',
@@ -263,12 +310,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
         $queryBuilder->addOrderBy($sort, $order);
         $queryBuilder->groupBy('rd.'.self::DATA_RESOURCE);
 
-        $result = $this->getPersistence()->query($queryBuilder->getSQL());
-        $resourcesUri = [];
-        while ($statement = $result->fetch()) {
-            $resourcesUri[] = $statement[self::DATA_RESOURCE];
-        }
-        return $resourcesUri;
+        return $this->getPersistence()->query($queryBuilder->getSQL());
     }
 
     /**
