@@ -231,6 +231,8 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
     }
 
     /**
+     * @deprecated
+     * @see getResourcesDataByQuery
      * @param string $query
      * @param array $options
      * @param string $predicate

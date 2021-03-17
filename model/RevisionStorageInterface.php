@@ -63,6 +63,8 @@ interface RevisionStorageInterface
     public function getData(Revision $revision);
 
     /**
+     * @deprecated
+     * @see getResourcesDataByQuery
      * @param string $query
      * @param array $options
      * @param string $predicate
