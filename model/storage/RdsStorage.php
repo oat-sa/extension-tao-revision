@@ -310,7 +310,9 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
         $order = isset($options['order']) ? strtoupper($options['order']) : ' ASC';
 
         $queryBuilder->addOrderBy($sort, $order);
-        $queryBuilder->groupBy('rd.'.self::DATA_RESOURCE);
+        foreach ($selectedFields as $selectedField) {
+            $queryBuilder->addGroupBy('rd.'.$selectedField);
+        }
 
         return $this->getPersistence()->query($queryBuilder->getSQL());
     }
