@@ -244,7 +244,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
             [self::DATA_RESOURCE],
             $query,
             $options,
-            $predicate,
+            $predicate
         );
 
         $resourcesUri = [];
@@ -260,7 +260,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
             [self::DATA_RESOURCE, self::DATA_OBJECT],
             $query,
             $options,
-            $predicate,
+            $predicate
         );
 
         $resourcesData= [];
