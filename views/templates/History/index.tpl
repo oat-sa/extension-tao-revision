@@ -6,6 +6,7 @@
     <form action="<?= _url('commitResource') ?>" method="POST" class="list-container">
         <input type="hidden" name="id" id="resource_id" value="<?= get_data('id') ?>">
 
+        <? if (get_data('hasWritePermission')): ?>
         <div class="grid-container msg-edit-area">
             <div class="grid-row commit">
                 <label class="col-1 block txt-rgt">
@@ -19,6 +20,7 @@
                 </div>
             </div>
         </div>
+        <? endif ?>
 
         <table class="matrix revision-table" id="revisions-table">
             <thead>
@@ -38,10 +40,12 @@
                     <td class="user"><?= $revision['author'] ?></td>
                     <td class="message"><?= $revision['message'] ?></td>
                     <td class="actions">
+                        <? if (get_data('hasWritePermission')): ?>
                         <button class="btn-info small restore_revision" data-revision="<?= $revision['id'] ?>" type="button">
                             <span class="icon-undo"></span>
                             <?= __('Restore')?>
                         </button>
+                        <? endif ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

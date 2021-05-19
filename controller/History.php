@@ -29,6 +29,9 @@ use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\oatbox\service\ServiceManagerAwareTrait;
 use oat\tao\helpers\UserHelper;
+use oat\tao\model\accessControl\PermissionChecker;
+use oat\tao\model\accessControl\PermissionCheckerInterface;
+use oat\tao\model\resources\ResourceAccessDeniedException;
 use oat\taoRevision\model\RepositoryInterface;
 use oat\taoRevision\model\RevisionNotFoundException;
 use tao_actions_CommonModule;
@@ -86,6 +89,10 @@ class History extends tao_actions_CommonModule
             ];
         }
 
+        $permissionChecker = $this->getPermissionChecker();
+
+        $this->setData('hasReadAccess', $permissionChecker->hasReadAccess($resource->getUri()));
+        $this->setData('hasWriteAccess', $permissionChecker->hasWriteAccess($resource->getUri()));
         $this->setData('resourceLabel', tao_helpers_Display::htmlize($resource->getLabel()));
         $this->setData('id', $resource->getUri());
         $this->setData('revisions', $revisionsList);
@@ -108,6 +115,10 @@ class History extends tao_actions_CommonModule
         $resource = $this->getValidatedResource($bodyContent);
         $previousVersion = $bodyContent['revisionId'] ?? null;
         $commitMessage = $bodyContent['message'] ?? '';
+
+        if (!$this->getPermissionChecker()->hasWriteAccess($resource->getUri())) {
+            throw new ResourceAccessDeniedException($resource->getUri());
+        }
 
         if ($previousVersion === null) {
             throw new common_exception_MissingParameter('revisionId');
@@ -144,6 +155,10 @@ class History extends tao_actions_CommonModule
         $resource = $this->getValidatedResource($bodyContent);
         $message = $bodyContent['message'] ?? '';
 
+        if (!$this->getPermissionChecker()->hasWriteAccess($resource->getUri())) {
+            throw new ResourceAccessDeniedException($resource->getUri());
+        }
+
         $revision = $this->getRevisionService()->commit($resource, $message);
 
         $this->returnJson([
@@ -178,5 +193,10 @@ class History extends tao_actions_CommonModule
         }
 
         return $resource;
+    }
+
+    private function getPermissionChecker(): PermissionCheckerInterface
+    {
+        return $this->getServiceLocator()->get(PermissionChecker::class);
     }
 }
