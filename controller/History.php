@@ -118,15 +118,13 @@ class History extends tao_actions_CommonModule
         $previousVersion = $bodyContent['revisionId'] ?? null;
         $commitMessage = $bodyContent['message'] ?? '';
 
-        if (!$this->getPermissionChecker()->hasWriteAccess($resource->getUri())) {
-            throw new ResourceAccessDeniedException($resource->getUri());
-        }
+        $this->validateWriteAccess($resource);
 
         if ($previousVersion === null) {
             throw new common_exception_MissingParameter('revisionId');
         }
 
-        $previousRevision = $this->getRevisionService()->getRevision($resource->getUri(), $previousVersion);
+        $previousRevision = $this->getRevisionService()->getRevision($resource->getUri(), (int)$previousVersion);
 
         if ($this->getRevisionService()->restore($previousRevision)) {
             $newRevision = $this->getRevisionService()->commit($resource, $commitMessage);
@@ -157,9 +155,7 @@ class History extends tao_actions_CommonModule
         $resource = $this->getValidatedResource($bodyContent);
         $message = $bodyContent['message'] ?? '';
 
-        if (!$this->getPermissionChecker()->hasWriteAccess($resource->getUri())) {
-            throw new ResourceAccessDeniedException($resource->getUri());
-        }
+        $this->validateWriteAccess($resource);
 
         $revision = $this->getRevisionService()->commit($resource, $message);
 
@@ -195,6 +191,13 @@ class History extends tao_actions_CommonModule
         }
 
         return $resource;
+    }
+
+    private function validateWriteAccess(core_kernel_classes_Resource $resource): void
+    {
+        if (!$this->getPermissionChecker()->hasWriteAccess($resource->getUri())) {
+            throw new ResourceAccessDeniedException($resource->getUri());
+        }
     }
 
     private function getPermissionChecker(): PermissionCheckerInterface
