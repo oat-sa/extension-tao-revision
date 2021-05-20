@@ -15,8 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2015-2021 (original work) Open Assessment Technologies SA;
  */
+
+declare(strict_types=1);
 
 namespace oat\taoRevision\controller;
 
@@ -29,6 +31,9 @@ use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\oatbox\service\ServiceManagerAwareTrait;
 use oat\tao\helpers\UserHelper;
+use oat\tao\model\accessControl\PermissionChecker;
+use oat\tao\model\accessControl\PermissionCheckerInterface;
+use oat\tao\model\resources\ResourceAccessDeniedException;
 use oat\taoRevision\model\RepositoryInterface;
 use oat\taoRevision\model\RevisionNotFoundException;
 use tao_actions_CommonModule;
@@ -86,6 +91,10 @@ class History extends tao_actions_CommonModule
             ];
         }
 
+        $permissionChecker = $this->getPermissionChecker();
+
+        $this->setData('hasReadAccess', $permissionChecker->hasReadAccess($resource->getUri()));
+        $this->setData('hasWriteAccess', $permissionChecker->hasWriteAccess($resource->getUri()));
         $this->setData('resourceLabel', tao_helpers_Display::htmlize($resource->getLabel()));
         $this->setData('id', $resource->getUri());
         $this->setData('revisions', $revisionsList);
@@ -109,11 +118,13 @@ class History extends tao_actions_CommonModule
         $previousVersion = $bodyContent['revisionId'] ?? null;
         $commitMessage = $bodyContent['message'] ?? '';
 
+        $this->validateWriteAccess($resource);
+
         if ($previousVersion === null) {
             throw new common_exception_MissingParameter('revisionId');
         }
 
-        $previousRevision = $this->getRevisionService()->getRevision($resource->getUri(), $previousVersion);
+        $previousRevision = $this->getRevisionService()->getRevision($resource->getUri(), (int)$previousVersion);
 
         if ($this->getRevisionService()->restore($previousRevision)) {
             $newRevision = $this->getRevisionService()->commit($resource, $commitMessage);
@@ -143,6 +154,8 @@ class History extends tao_actions_CommonModule
 
         $resource = $this->getValidatedResource($bodyContent);
         $message = $bodyContent['message'] ?? '';
+
+        $this->validateWriteAccess($resource);
 
         $revision = $this->getRevisionService()->commit($resource, $message);
 
@@ -178,5 +191,17 @@ class History extends tao_actions_CommonModule
         }
 
         return $resource;
+    }
+
+    private function validateWriteAccess(core_kernel_classes_Resource $resource): void
+    {
+        if (!$this->getPermissionChecker()->hasWriteAccess($resource->getUri())) {
+            throw new ResourceAccessDeniedException($resource->getUri());
+        }
+    }
+
+    private function getPermissionChecker(): PermissionCheckerInterface
+    {
+        return $this->getServiceLocator()->get(PermissionChecker::class);
     }
 }
