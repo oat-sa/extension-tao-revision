@@ -17,18 +17,18 @@
     <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionRole"/>
     <rdfs:label xml:lang="en-US"><![CDATA[Asset Revision History Viewer]]></rdfs:label>
     <rdfs:comment xml:lang="en-US"><![CDATA[Asset Revision History Viewer Role]]></rdfs:comment>
-    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#BackOfficeRole"/>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetViewerRole"/>
   </rdf:Description>
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionCreator">
     <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionRole"/>
     <rdfs:label xml:lang="en-US"><![CDATA[Asset Revision Creator]]></rdfs:label>
     <rdfs:comment xml:lang="en-US"><![CDATA[Asset Revision Creator Role]]></rdfs:comment>
-    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#BackOfficeRole"/>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionHistoryViewer"/>
   </rdf:Description>
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionManager">
     <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionRole"/>
     <rdfs:label xml:lang="en-US"><![CDATA[Asset Revision Manager]]></rdfs:label>
     <rdfs:comment xml:lang="en-US"><![CDATA[Asset Revision Creator Manager]]></rdfs:comment>
-    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#BackOfficeRole"/>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionCreator"/>
   </rdf:Description>
 </rdf:RDF>
