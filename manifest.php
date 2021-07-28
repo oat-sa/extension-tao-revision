@@ -37,6 +37,9 @@ return [
         ['grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#TestAuthor', ['controller' => History::class]],
     ],
     'install' => [
+        'rdf' => [
+            __DIR__ . '/model/ontology/tao-revision.rdf',
+        ],
         'php' => [
             SetupRevisions::class,
         ],

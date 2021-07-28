@@ -27,7 +27,7 @@
         <sections>
             <section id="media_manager" name="Manage Media" url="/taoMediaManager/MediaManager/index">
                 <actions>
-					<action id="assets-revision" name="History" url="/taoRevision/History/index" context="instance" group="content">
+					<action id="media-revision" name="History" url="/taoRevision/History/index" context="instance" group="content">
 					    <icon id="icon-repository"/>
 					</action>
 				</actions>
