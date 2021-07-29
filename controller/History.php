@@ -89,8 +89,8 @@ class History extends tao_actions_CommonModule
         $this->setData('resourceLabel', tao_helpers_Display::htmlize($resource->getLabel()));
         $this->setData('id', $resource->getUri());
         $this->setData('revisions', $revisionsList);
-        $this->setData('allowCreateRevision', false); //FIXME
-        $this->setData('allowRestoreRevision', false); //FIXME
+        $this->setData('allowCreateRevision', $this->hasAccess(self::class, 'commitResource', []));
+        $this->setData('allowRestoreRevision', $this->hasAccess(self::class, 'restoreRevision', []));
         $this->setData('revisions', $revisionsList);
         $this->setView('History/index.tpl');
     }
