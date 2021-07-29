@@ -37,7 +37,7 @@ return [
         ['grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#TestAuthor', ['controller' => History::class]],
         [
             AccessRule::GRANT,
-            TaoRevisionRoles::ASSET_REVISION_HISTORY_VIEWER,
+            TaoRevisionRoles::REVISION_HISTORY_VIEWER,
             [
                 'ext' => 'taoRevision',
                 'mod' => 'History',
@@ -46,7 +46,7 @@ return [
         ],
         [
             AccessRule::GRANT,
-            TaoRevisionRoles::ASSET_REVISION_CREATOR,
+            TaoRevisionRoles::REVISION_CREATOR,
             [
                 'ext' => 'taoRevision',
                 'mod' => 'History',
@@ -55,7 +55,7 @@ return [
         ],
         [
             AccessRule::GRANT,
-            TaoRevisionRoles::ASSET_REVISION_MANAGER,
+            TaoRevisionRoles::REVISION_MANAGER,
             [
                 'ext' => 'taoRevision',
                 'mod' => 'History',

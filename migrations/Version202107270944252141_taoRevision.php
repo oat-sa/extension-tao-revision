@@ -12,14 +12,14 @@ final class Version202107270944252141_taoRevision extends AbstractMigration
 {
     private const CONFIG = [
         SetRolesAccess::CONFIG_RULES => [
-            TaoRevisionRoles::ASSET_REVISION_HISTORY_VIEWER => [
+            TaoRevisionRoles::REVISION_HISTORY_VIEWER => [
                 [
                     'ext' => 'taoRevision',
                     'mod' => 'History',
                     'act' => 'index'
                 ],
             ],
-            TaoRevisionRoles::ASSET_REVISION_CREATOR => [
+            TaoRevisionRoles::REVISION_CREATOR => [
                 [
                     'ext' => 'taoRevision',
                     'mod' => 'History',
@@ -31,7 +31,7 @@ final class Version202107270944252141_taoRevision extends AbstractMigration
                     'act' => 'commitResource'
                 ],
             ],
-            TaoRevisionRoles::ASSET_REVISION_MANAGER => [
+            TaoRevisionRoles::REVISION_MANAGER => [
                 [
                     'ext' => 'taoRevision',
                     'mod' => 'History',
