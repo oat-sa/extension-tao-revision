@@ -3,10 +3,12 @@
     <td class="date">{{modified}}</td>
     <td class="user">{{{author}}}</td>
     <td class="message">{{message}}</td>
+    {{#if allowRestoreRevision}}
     <td class="actions">
         <button class="btn-info small restore_revision" data-revision="{{id}}">
             <span class="icon-undo"></span>
             {{__ "Restore"}}
         </button>
     </td>
+    {{/if}}
 </tr>

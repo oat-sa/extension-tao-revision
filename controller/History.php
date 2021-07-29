@@ -155,6 +155,7 @@ class History extends tao_actions_CommonModule
             'modified' => tao_helpers_Date::displayeDate($revision->getDateCreated()),
             'author' => UserHelper::renderHtmlUser($revision->getAuthorId()),
             'message' => $revision->getMessage(),
+            'allowRestoreRevision' => $this->hasAccess(self::class, 'restoreRevision', []),
             'commitMessage' => __('%s has been committed', $resource->getLabel()),
         ]);
     }
