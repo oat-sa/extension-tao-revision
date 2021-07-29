@@ -21,6 +21,7 @@
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoRevision\controller\History;
 use oat\taoRevision\model\user\TaoRevisionRoles;
+use oat\taoRevision\scripts\install\SetupRolesPermissions;
 use oat\taoRevision\scripts\update\Updater;
 use oat\taoRevision\scripts\install\SetupRevisions;
 
@@ -69,6 +70,7 @@ return [
         ],
         'php' => [
             SetupRevisions::class,
+            SetupRolesPermissions::class,
         ],
     ],
     'update' => Updater::class,

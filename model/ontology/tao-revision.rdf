@@ -50,8 +50,31 @@
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionManagerRole">
     <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole"/>
     <rdfs:label xml:lang="en-US"><![CDATA[Asset Revision Manager]]></rdfs:label>
-    <rdfs:comment xml:lang="en-US"><![CDATA[Asset Revision Creator Manager]]></rdfs:comment>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Asset Revision Manager Role]]></rdfs:comment>
     <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionCreatorRole"/>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionManagerRole"/>
+  </rdf:Description>
+
+  <!-- Items Roles -->
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOItem.rdf#ItemRevisionHistoryViewerRole">
+    <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOItem.rdf#ItemRole"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Item Revision History Viewer]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Item Revision History Viewer Role]]></rdfs:comment>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOItem.rdf#ItemViewerRole"/>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionHistoryViewerRole"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOItem.rdf#ItemRevisionCreatorRole">
+    <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOItem.rdf#ItemRole"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Item Revision Creator]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Item Revision Creator Role]]></rdfs:comment>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOItem.rdf#ItemRevisionHistoryViewerRole"/>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionCreatorRole"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOItem.rdf#ItemRevisionManagerRole">
+    <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOItem.rdf#ItemRole"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Item Revision Manager]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Item Revision Manager Role]]></rdfs:comment>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOItem.rdf#ItemRevisionCreatorRole"/>
     <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionManagerRole"/>
   </rdf:Description>
 </rdf:RDF>
