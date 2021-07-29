@@ -24,6 +24,9 @@ namespace oat\taoRevision\model\user;
 
 interface TaoRevisionRoles
 {
+    public const REVISION_HISTORY_VIEWER = 'http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionHistoryViewer';
+    public const REVISION_CREATOR = 'http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionCreator';
+    public const REVISION_MANAGER = 'http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionManager';
     public const ASSET_REVISION_HISTORY_VIEWER = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionHistoryViewer';
     public const ASSET_REVISION_CREATOR = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionCreator';
     public const ASSET_REVISION_MANAGER = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionManager';
