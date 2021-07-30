@@ -15,12 +15,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
- *
- *
+ * Copyright (c) 2015-2021 (original work) Open Assessment Technologies SA;
  */
 
+use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoRevision\controller\History;
+use oat\taoRevision\model\user\TaoRevisionRoles;
 use oat\taoRevision\scripts\update\Updater;
 use oat\taoRevision\scripts\install\SetupRevisions;
 
@@ -35,8 +35,38 @@ return [
         ['grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoRevisionManager', ['ext' => 'taoRevision']],
         ['grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', ['controller' => History::class]],
         ['grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#TestAuthor', ['controller' => History::class]],
+        [
+            AccessRule::GRANT,
+            TaoRevisionRoles::REVISION_HISTORY_VIEWER,
+            [
+                'ext' => 'taoRevision',
+                'mod' => 'History',
+                'act' => 'index'
+            ],
+        ],
+        [
+            AccessRule::GRANT,
+            TaoRevisionRoles::REVISION_CREATOR,
+            [
+                'ext' => 'taoRevision',
+                'mod' => 'History',
+                'act' => 'commitResource'
+            ],
+        ],
+        [
+            AccessRule::GRANT,
+            TaoRevisionRoles::REVISION_MANAGER,
+            [
+                'ext' => 'taoRevision',
+                'mod' => 'History',
+                'act' => 'restoreRevision'
+            ],
+        ],
     ],
     'install' => [
+        'rdf' => [
+            __DIR__ . '/model/ontology/tao-revision.rdf',
+        ],
         'php' => [
             SetupRevisions::class,
         ],
