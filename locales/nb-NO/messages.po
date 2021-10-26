@@ -1,0 +1,85 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 2021.10\n"
+"PO-Revision-Date: 2021-10-26T13:52:34\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: nb-NO\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: nb-NO\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "%s has been committed"
+msgstr "%s er utført"
+
+msgid "Actions"
+msgstr "Handlinger"
+
+msgid "Commit"
+msgstr "Utføre"
+
+#, tao-public
+msgid "History"
+msgstr "Historie"
+
+msgid "History of %s"
+msgstr "Historien til %s"
+
+msgid "Id"
+msgstr "Id"
+
+#, tao-public
+msgid "Items"
+msgstr "Oppgaver"
+
+#, tao-public
+msgid "Manage items"
+msgstr "Administrere oppgaver"
+
+#, tao-public
+msgid "Manage Media"
+msgstr "Administrere media"
+
+#, tao-public
+msgid "Manage tests"
+msgstr "Administrere prøver"
+
+#, tao-public
+msgid "Media"
+msgstr "Media"
+
+msgid "Message"
+msgstr "Melding"
+
+msgid "Please give a message to your commit"
+msgstr "Gi en melding til..."
+
+msgid "Resource restored"
+msgstr "Ressursen ble gjenopprettet"
+
+msgid "Restore"
+msgstr "Gjennopprette"
+
+msgid "Restored version %s"
+msgstr "Gjenopprettet versjon %s"
+
+msgid "Something went wrong..."
+msgstr "Noe gikk galt..."
+
+#, tao-public
+msgid "Tests"
+msgstr "Prøver"
+
+msgid "Time"
+msgstr "Tid"
+
+msgid "Unable to restore the selected version"
+msgstr "Kan ikke gjenopprette valgt versjon"
+
+msgid "User"
+msgstr "Bruker"
+
