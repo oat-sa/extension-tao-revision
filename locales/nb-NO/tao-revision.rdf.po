@@ -1,0 +1,112 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 2021.10\n"
+"PO-Revision-Date: 2021-10-26T13:52:34\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: nb-NO\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: nb-NO\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Revision Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Revision Role Class"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionHistoryViewerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Revision History Viewer"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionHistoryViewerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Revision History Viewer Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionCreatorRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Revision Creator"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionCreatorRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Revision Creator Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionManagerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Revision Manager"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionManagerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Revision Creator Manager"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionHistoryViewerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Revision History Viewer"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionHistoryViewerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Revision History Viewer Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionCreatorRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Revision Creator"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionCreatorRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Revision Creator Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionManagerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Revision Manager"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionManagerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Revision Manager Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOItem.rdf#ItemRevisionHistoryViewerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Item Revision History Viewer"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOItem.rdf#ItemRevisionHistoryViewerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Item Revision History Viewer Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOItem.rdf#ItemRevisionCreatorRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Item Revision Creator"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOItem.rdf#ItemRevisionCreatorRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Item Revision Creator Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOItem.rdf#ItemRevisionManagerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Item Revision Manager"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOItem.rdf#ItemRevisionManagerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Item Revision Manager Role"
+msgstr ""
+
