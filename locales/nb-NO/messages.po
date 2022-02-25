@@ -24,10 +24,10 @@ msgstr "Utføre"
 
 #, tao-public
 msgid "History"
-msgstr "Historie"
+msgstr "Historikk"
 
 msgid "History of %s"
-msgstr "Historien til %s"
+msgstr "Historikken til %s"
 
 msgid "Id"
 msgstr "Id"
@@ -42,21 +42,21 @@ msgstr "Administrere oppgaver"
 
 #, tao-public
 msgid "Manage Media"
-msgstr "Administrere media"
+msgstr "Administrere medibank"
 
 #, tao-public
 msgid "Manage tests"
-msgstr "Administrere prøver"
+msgstr "Administrere oppgavesett"
 
 #, tao-public
 msgid "Media"
-msgstr "Media"
+msgstr "Mediebank"
 
 msgid "Message"
 msgstr "Melding"
 
 msgid "Please give a message to your commit"
-msgstr "Gi en melding til..."
+msgstr "Gi en melding til"
 
 msgid "Resource restored"
 msgstr "Ressursen ble gjenopprettet"
@@ -72,7 +72,7 @@ msgstr "Noe gikk galt..."
 
 #, tao-public
 msgid "Tests"
-msgstr "Prøver"
+msgstr "Oppgavesett"
 
 msgid "Time"
 msgstr "Tid"
