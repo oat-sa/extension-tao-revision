@@ -15,8 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2015-2022 (original work) Open Assessment Technologies SA;
  */
 
 namespace oat\taoRevision\model;
@@ -32,6 +31,7 @@ use oat\oatbox\service\exception\InvalidService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
+use oat\taoQtiItem\model\qti\Item;
 use oat\taoQtiItem\model\qti\Service;
 use oat\taoQtiTest\models\creator\CreatorItems;
 
@@ -240,7 +240,11 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
     {
         if (key($originFilesystemMap) === CreatorItems::PROPERTY_ITEM_CONTENT_URI) {
             $item = $this->getQtiService()->getDataItemByRdfItem($resource);
-            $this->getUpdatedItemEventDispatcher()->dispatch($item, $resource);
+
+            $this->getUpdatedItemEventDispatcher()->dispatch(
+                $item ?? new Item(),
+                $resource
+            );
         }
     }
 }
