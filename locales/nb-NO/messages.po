@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 2021.10\n"
-"PO-Revision-Date: 2021-10-26T13:52:34\n"
+"Project-Id-Version: TAO 2023.02 LTS\n"
+"PO-Revision-Date: 2023-02-03T14:48:17\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nb-NO\n"
@@ -50,10 +50,13 @@ msgstr "Administrere oppgavesett"
 
 #, tao-public
 msgid "Media"
-msgstr "Mediebank"
+msgstr "Media"
 
 msgid "Message"
 msgstr "Melding"
+
+msgid "Please enter a message"
+msgstr ""
 
 msgid "Please give a message to your commit"
 msgstr "Gi en melding til"
