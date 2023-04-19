@@ -27,7 +27,8 @@ interface TaoRevisionRoles
     public const REVISION_HISTORY_VIEWER = 'http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionHistoryViewerRole';
     public const REVISION_CREATOR = 'http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionCreatorRole';
     public const REVISION_MANAGER = 'http://www.tao.lu/Ontologies/TAORevision.rdf#RevisionManagerRole';
-    public const ASSET_REVISION_HISTORY_VIEWER = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionHistoryViewerRole';
+    public const ASSET_REVISION_HISTORY_VIEWER
+        = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionHistoryViewerRole';
     public const ASSET_REVISION_CREATOR = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionCreatorRole';
     public const ASSET_REVISION_MANAGER = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRevisionManagerRole';
 }

@@ -61,7 +61,21 @@ class StorageTest extends TestCase
             $persistence->query($query);
         }
 
-        $this->storage = new TestRdsStorage([RevisionStorageInterface::OPTION_PERSISTENCE => self::PERSISTENCE_KEY]);
+        $this->storage = new class ([
+            RevisionStorageInterface::OPTION_PERSISTENCE => self::PERSISTENCE_KEY
+        ]) extends RdsStorage
+        {
+            protected function getLocalModel()
+            {
+                return new common_ext_Namespace(1);
+            }
+
+            protected function getLike()
+            {
+                return 'LIKE';
+            }
+        };
+
         $this->storage->setServiceLocator($ontologyMock->getServiceLocator());
     }
 
@@ -197,18 +211,5 @@ class StorageTest extends TestCase
         }
 
         $this->assertEquals($dataBank['revisions'], $this->storage->buildRevisionCollection($dataBank['data']));
-    }
-}
-
-class TestRdsStorage extends RdsStorage
-{
-    protected function getLocalModel()
-    {
-        return new common_ext_Namespace(1);
-    }
-
-    protected function getLike()
-    {
-        return 'LIKE';
     }
 }
