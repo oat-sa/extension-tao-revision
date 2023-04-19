@@ -35,7 +35,7 @@ class StorageTest extends TestCase
     use TriplesMockTrait;
     use OntologyMockTrait;
 
-    const PERSISTENCE_KEY = 'mockSql';
+    private const PERSISTENCE_KEY = 'mockSql';
 
     /** @var TestRdsStorage */
     private $storage;

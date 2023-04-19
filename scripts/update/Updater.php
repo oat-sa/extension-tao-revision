@@ -16,8 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2016 (original work) Open Assessment Technologies SA;
- *
- *
  */
 
 namespace oat\taoRevision\scripts\update;
@@ -72,10 +70,15 @@ class Updater extends common_ext_ExtensionUpdater
                 $repositoryService->getOption(RepositoryService::OPTION_STORAGE)
             );
 
-            $this->getServiceManager()->register(RepositoryInterface::SERVICE_ID, new RepositoryService([
-                RepositoryService::OPTION_STORAGE => $revisionStorageService,
-                RepositoryService::OPTION_FILE_SYSTEM => $repositoryService->getOption(RepositoryService::OPTION_FILE_SYSTEM),
-            ]));
+            $this->getServiceManager()->register(
+                RepositoryInterface::SERVICE_ID,
+                new RepositoryService([
+                    RepositoryService::OPTION_STORAGE => $revisionStorageService,
+                    RepositoryService::OPTION_FILE_SYSTEM => $repositoryService->getOption(
+                        RepositoryService::OPTION_FILE_SYSTEM
+                    ),
+                ])
+            );
 
             $this->getServiceManager()->unregister(RevisionStorageInterface::SERVICE_ID);
 

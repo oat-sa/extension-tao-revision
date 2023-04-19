@@ -238,8 +238,11 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
      * @param string $predicate
      * @return array
      */
-    public function getResourcesUriByQuery(string $query, array $options = [], string $predicate = OntologyRdfs::RDFS_LABEL)
-    {
+    public function getResourcesUriByQuery(
+        string $query,
+        array $options = [],
+        string $predicate = OntologyRdfs::RDFS_LABEL
+    ) {
         $result = $this->getSelectedResourcesDataByQuery(
             [self::DATA_RESOURCE],
             $query,
@@ -248,14 +251,19 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
         );
 
         $resourcesUri = [];
+
         while ($statement = $result->fetch()) {
             $resourcesUri[] = $statement[self::DATA_RESOURCE];
         }
+
         return $resourcesUri;
     }
 
-    public function getResourcesDataByQuery(string $query, array $options = [], string $predicate = OntologyRdfs::RDFS_LABEL): array
-    {
+    public function getResourcesDataByQuery(
+        string $query,
+        array $options = [],
+        string $predicate = OntologyRdfs::RDFS_LABEL
+    ): array {
         $result = $this->getSelectedResourcesDataByQuery(
             [self::DATA_RESOURCE, self::DATA_OBJECT],
             $query,
@@ -264,6 +272,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
         );
 
         $resourcesData = [];
+
         /** @var Revision $statement */
         while ($statement = $result->fetch()) {
             $resourcesData[] = [
@@ -271,6 +280,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
                 'label' => $statement[self::DATA_OBJECT],
             ];
         }
+
         return $resourcesData;
     }
 
@@ -284,11 +294,12 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
         string $predicate
     ): Statement {
         $queryBuilder = $this->getQueryBuilder();
+
         foreach ($selectedFields as $selectedField) {
             $queryBuilder->addSelect('rd.' . $selectedField);
         }
-        $queryBuilder->from(self::DATA_TABLE_NAME, 'rd');
 
+        $queryBuilder->from(self::DATA_TABLE_NAME, 'rd');
         $queryBuilder->join(
             'rd',
             'statements',
@@ -309,7 +320,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
             $queryBuilder->setFirstResult((int)$options['offset']);
         }
 
-        $sort = isset($options['sort']) ? $options['sort'] : self::DATA_RESOURCE;
+        $sort = $options['sort'] ?? self::DATA_RESOURCE;
         $order = isset($options['order']) ? strtoupper($options['order']) : ' ASC';
 
         $queryBuilder->addOrderBy($sort, $order);
@@ -377,7 +388,8 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
 
     /**
      * {@inheritDoc}
-     * @see \oat\generis\persistence\sql\SchemaProviderInterface::provideSchema()
+     *
+     * @see SchemaProviderInterface::provideSchema()
      */
     public function provideSchema(SchemaCollection $schemaCollection)
     {
