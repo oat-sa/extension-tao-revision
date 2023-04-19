@@ -263,7 +263,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
             $predicate
         );
 
-        $resourcesData= [];
+        $resourcesData = [];
         /** @var Revision $statement */
         while ($statement = $result->fetch()) {
             $resourcesData[] = [
@@ -282,16 +282,19 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
         string $query,
         array $options,
         string $predicate
-    ): Statement
-    {
+    ): Statement {
         $queryBuilder = $this->getQueryBuilder();
         foreach ($selectedFields as $selectedField) {
-            $queryBuilder->addSelect('rd.'.$selectedField);
+            $queryBuilder->addSelect('rd.' . $selectedField);
         }
         $queryBuilder->from(self::DATA_TABLE_NAME, 'rd');
 
-        $queryBuilder->join('rd', 'statements', 'st',
-            'st.subject = rd.'.self::DATA_RESOURCE);
+        $queryBuilder->join(
+            'rd',
+            'statements',
+            'st',
+            'st.subject = rd.' . self::DATA_RESOURCE
+        );
 
         $fieldName = self::DATA_OBJECT;
         $condition = "rd.$fieldName {$this->getLike()} '%$query%'";
@@ -311,7 +314,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
 
         $queryBuilder->addOrderBy($sort, $order);
         foreach ($selectedFields as $selectedField) {
-            $queryBuilder->addGroupBy('rd.'.$selectedField);
+            $queryBuilder->addGroupBy('rd.' . $selectedField);
         }
 
         return $this->getPersistence()->query($queryBuilder->getSQL());
@@ -381,5 +384,4 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
         $schema = $schemaCollection->getSchema($this->getPersistenceId());
         $this->getSchema($schema);
     }
-
 }

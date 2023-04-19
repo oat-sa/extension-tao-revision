@@ -198,7 +198,6 @@ class StorageTest extends TestCase
 
         $this->assertEquals($dataBank['revisions'], $this->storage->buildRevisionCollection($dataBank['data']));
     }
-
 }
 
 class TestRdsStorage extends RdsStorage
