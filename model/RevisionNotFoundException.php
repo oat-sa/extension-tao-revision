@@ -28,7 +28,7 @@ class RevisionNotFoundException extends \common_Exception implements \common_log
     {
         parent::__construct('Version ' . $version . ' not found for resource ' . $resourceId);
     }
-    
+
     public function getSeverity()
     {
         return \common_Logger::WARNING_LEVEL;

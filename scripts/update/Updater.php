@@ -16,8 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2016 (original work) Open Assessment Technologies SA;
- *
- *
  */
 
 namespace oat\taoRevision\scripts\update;
@@ -67,16 +65,20 @@ class Updater extends common_ext_ExtensionUpdater
         $this->skip('2.2.0', '7.1.0');
 
         if ($this->isVersion('7.1.0')) {
-
             $repositoryService = $this->getServiceManager()->get(RepositoryInterface::SERVICE_ID);
             $revisionStorageService = $this->getServiceManager()->get(
                 $repositoryService->getOption(RepositoryService::OPTION_STORAGE)
             );
 
-            $this->getServiceManager()->register(RepositoryInterface::SERVICE_ID, new RepositoryService([
-                RepositoryService::OPTION_STORAGE => $revisionStorageService,
-                RepositoryService::OPTION_FILE_SYSTEM => $repositoryService->getOption(RepositoryService::OPTION_FILE_SYSTEM),
-            ]));
+            $this->getServiceManager()->register(
+                RepositoryInterface::SERVICE_ID,
+                new RepositoryService([
+                    RepositoryService::OPTION_STORAGE => $revisionStorageService,
+                    RepositoryService::OPTION_FILE_SYSTEM => $repositoryService->getOption(
+                        RepositoryService::OPTION_FILE_SYSTEM
+                    ),
+                ])
+            );
 
             $this->getServiceManager()->unregister(RevisionStorageInterface::SERVICE_ID);
 
@@ -85,8 +87,8 @@ class Updater extends common_ext_ExtensionUpdater
 
             $this->setVersion('8.0.0');
         }
-        $this->skip('8.0.0','8.7.0');
-        
+        $this->skip('8.0.0', '8.7.0');
+
         //Updater files are deprecated. Please use migrations.
         //See: https://github.com/oat-sa/generis/wiki/Tao-Update-Process
 
