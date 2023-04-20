@@ -71,9 +71,17 @@ interface RevisionStorageInterface
      *
      * @return array
      */
-    public function getResourcesUriByQuery(string $query, array $options = [], string $predicate = OntologyRdfs::RDFS_LABEL);
+    public function getResourcesUriByQuery(
+        string $query,
+        array $options = [],
+        string $predicate = OntologyRdfs::RDFS_LABEL
+    );
 
-    public function getResourcesDataByQuery(string $query, array $options = [], string $predicate = OntologyRdfs::RDFS_LABEL): array;
+    public function getResourcesDataByQuery(
+        string $query,
+        array $options = [],
+        string $predicate = OntologyRdfs::RDFS_LABEL
+    ): array;
 
     /**
      * @param array $variables

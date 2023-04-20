@@ -56,7 +56,7 @@ interface RepositoryInterface
      * @return Revision
      */
     public function commit(Resource $resource, string $message, int $version = null, string $userId = null);
-    
+
     /**
      * Restore a previous version
      *
