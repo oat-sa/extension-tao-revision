@@ -26,7 +26,6 @@ use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\scripts\tools\accessControl\SetRolesAccess;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
 
-// phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
 final class Version202107270944252141_taoRevision extends AbstractMigration
 {
     private const CONFIG = [
