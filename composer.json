@@ -24,7 +24,7 @@
     "oat-sa/generis" : ">=15.22",
     "oat-sa/tao-core" : ">=50.24.6",
     "oat-sa/extension-tao-item" : ">=11.8.0",
-    "oat-sa/extension-tao-mediamanager" : ">=12.9.0",
+    "oat-sa/extension-tao-mediamanager" : "dev-feature/AUT-2995",
     "oat-sa/extension-tao-itemqti" : ">=28.8.0",
     "oat-sa/extension-tao-test" : ">=15.0.0"
   },
