@@ -1,0 +1,92 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2023-06-07 09:28\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: fr_LU\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: fr-LU\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-revision] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 643\n"
+"Language-Team: French, Luxembourg\n"
+
+msgid "%s has been committed"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "Commit"
+msgstr ""
+
+#, tao-public
+msgid "History"
+msgstr ""
+
+msgid "History of %s"
+msgstr ""
+
+msgid "Id"
+msgstr ""
+
+#, tao-public
+msgid "Items"
+msgstr ""
+
+#, tao-public
+msgid "Manage items"
+msgstr ""
+
+#, tao-public
+msgid "Manage Media"
+msgstr ""
+
+#, tao-public
+msgid "Manage tests"
+msgstr ""
+
+#, tao-public
+msgid "Media"
+msgstr ""
+
+msgid "Message"
+msgstr ""
+
+msgid "Please give a message to your commit"
+msgstr ""
+
+msgid "Resource restored"
+msgstr ""
+
+msgid "Restore"
+msgstr ""
+
+msgid "Restored version %s"
+msgstr ""
+
+msgid "Something went wrong..."
+msgstr ""
+
+#, tao-public
+msgid "Tests"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Unable to restore the selected version"
+msgstr ""
+
+msgid "User"
+msgstr ""
+
