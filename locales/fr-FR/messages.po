@@ -1,23 +1,30 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-05-05T16:24:31\n"
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2023-06-07 09:28\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: fr-FR\n"
+"Language: fr\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: fr-FR\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: fr\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-revision] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 643\n"
+"Language-Team: French\n"
 
 msgid "%s has been committed"
 msgstr "%s a été validé"
 
 msgid "Actions"
-msgstr "Actions"
+msgstr ""
 
 msgid "Commit"
 msgstr "Valider"
@@ -30,7 +37,7 @@ msgid "History of %s"
 msgstr "Historique de %s"
 
 msgid "Id"
-msgstr "Id"
+msgstr ""
 
 #, tao-public
 msgid "Items"
@@ -38,7 +45,7 @@ msgstr "Articles"
 
 #, tao-public
 msgid "Manage items"
-msgstr "Gérer les items"
+msgstr "Gestion des items"
 
 #, tao-public
 msgid "Manage Media"
@@ -46,14 +53,14 @@ msgstr "Gérer les médias"
 
 #, tao-public
 msgid "Manage tests"
-msgstr "Gérer les tests"
+msgstr "Gestion des tests"
 
 #, tao-public
 msgid "Media"
 msgstr "Média"
 
 msgid "Message"
-msgstr "Message"
+msgstr ""
 
 msgid "Please give a message to your commit"
 msgstr "Veuillez donner un message à votre validation."
@@ -72,7 +79,7 @@ msgstr "Quelque chose ne s'est pas passé comme prévu..."
 
 #, tao-public
 msgid "Tests"
-msgstr "Tests"
+msgstr ""
 
 msgid "Time"
 msgstr "Temps"
