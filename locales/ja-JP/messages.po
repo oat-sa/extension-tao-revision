@@ -1,23 +1,30 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 2021.11\n"
-"PO-Revision-Date: 2022-02-14T14:42:42\n"
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2023-06-07 09:28\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: ja-JP\n"
+"Language: ja\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: ja-JP\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-revision] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 643\n"
+"Language-Team: Japanese\n"
 
 msgid "%s has been committed"
 msgstr ""
 
 msgid "Actions"
-msgstr ""
+msgstr "アクション"
 
 msgid "Commit"
 msgstr ""
@@ -34,11 +41,11 @@ msgstr ""
 
 #, tao-public
 msgid "Items"
-msgstr ""
+msgstr "アイテム"
 
 #, tao-public
 msgid "Manage items"
-msgstr ""
+msgstr "アイテム管理"
 
 #, tao-public
 msgid "Manage Media"
@@ -46,17 +53,14 @@ msgstr ""
 
 #, tao-public
 msgid "Manage tests"
-msgstr ""
+msgstr "テスト管理"
 
 #, tao-public
 msgid "Media"
-msgstr ""
+msgstr "メディア"
 
 msgid "Message"
 msgstr "記録"
-
-msgid "Please enter a message"
-msgstr "記録を入力してください`"
 
 msgid "Please give a message to your commit"
 msgstr ""
@@ -75,7 +79,7 @@ msgstr ""
 
 #, tao-public
 msgid "Tests"
-msgstr ""
+msgstr "テスト"
 
 msgid "Time"
 msgstr ""
