@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-06-07 09:28\n"
+"PO-Revision-Date: 2023-12-04 16:04\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ar\n"
@@ -21,72 +21,72 @@ msgstr ""
 "Language-Team: Arabic\n"
 
 msgid "%s has been committed"
-msgstr ""
+msgstr "تم الالتزام ب %s"
 
 msgid "Actions"
-msgstr ""
+msgstr "إجراءات"
 
 msgid "Commit"
-msgstr ""
+msgstr "التزم"
 
 #, tao-public
 msgid "History"
-msgstr ""
+msgstr "سجل"
 
 msgid "History of %s"
-msgstr ""
+msgstr "سجل %s"
 
 msgid "Id"
-msgstr ""
+msgstr "معرف"
 
 #, tao-public
 msgid "Items"
-msgstr ""
+msgstr "بنود"
 
 #, tao-public
 msgid "Manage items"
-msgstr ""
+msgstr "إدارة البنود"
 
 #, tao-public
 msgid "Manage Media"
-msgstr ""
+msgstr "تدبير الوسائط"
 
 #, tao-public
 msgid "Manage tests"
-msgstr ""
+msgstr "إدارة الروائز"
 
 #, tao-public
 msgid "Media"
-msgstr ""
+msgstr "وسائط"
 
 msgid "Message"
-msgstr ""
+msgstr "رسالة"
 
 msgid "Please give a message to your commit"
-msgstr ""
+msgstr "من فضلك ابعث رسالة بالتزامك"
 
 msgid "Resource restored"
-msgstr ""
+msgstr "تم استعادة المورد"
 
 msgid "Restore"
-msgstr ""
+msgstr "استعادة"
 
 msgid "Restored version %s"
-msgstr ""
+msgstr "النسخة المستعادة %s"
 
 msgid "Something went wrong..."
-msgstr ""
+msgstr "حدث خطأ ما..."
 
 #, tao-public
 msgid "Tests"
-msgstr ""
+msgstr "روائز"
 
 msgid "Time"
-msgstr ""
+msgstr "وقت"
 
 msgid "Unable to restore the selected version"
-msgstr ""
+msgstr "غير قادر على استعادة الإصدار المحدد"
 
 msgid "User"
-msgstr ""
+msgstr "مستعمل"
 
