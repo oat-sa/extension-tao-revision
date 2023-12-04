@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-06-07 09:28\n"
+"PO-Revision-Date: 2023-12-04 16:04\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja\n"
@@ -21,13 +21,13 @@ msgstr ""
 "Language-Team: Japanese\n"
 
 msgid "%s has been committed"
-msgstr ""
+msgstr "%s はコミットされました"
 
 msgid "Actions"
 msgstr "アクション"
 
 msgid "Commit"
-msgstr ""
+msgstr "コミット"
 
 #, tao-public
 msgid "History"
@@ -37,7 +37,7 @@ msgid "History of %s"
 msgstr "履歴：%s"
 
 msgid "Id"
-msgstr ""
+msgstr "Id"
 
 #, tao-public
 msgid "Items"
@@ -49,7 +49,7 @@ msgstr "アイテム管理"
 
 #, tao-public
 msgid "Manage Media"
-msgstr ""
+msgstr "メディア管理"
 
 #, tao-public
 msgid "Manage tests"
@@ -63,30 +63,30 @@ msgid "Message"
 msgstr "記録"
 
 msgid "Please give a message to your commit"
-msgstr ""
+msgstr "コミットする際のメッセージを入力してください。"
 
 msgid "Resource restored"
-msgstr ""
+msgstr "リソースが復元されました。"
 
 msgid "Restore"
 msgstr "復元"
 
 msgid "Restored version %s"
-msgstr ""
+msgstr "復元されたバージョン %s"
 
 msgid "Something went wrong..."
-msgstr ""
+msgstr "何か問題が発生しました。"
 
 #, tao-public
 msgid "Tests"
 msgstr "テスト"
 
 msgid "Time"
-msgstr ""
+msgstr "時間"
 
 msgid "Unable to restore the selected version"
-msgstr ""
+msgstr "選択されたバージョンを復元できません。"
 
 msgid "User"
-msgstr ""
+msgstr "ユーザ"
 
