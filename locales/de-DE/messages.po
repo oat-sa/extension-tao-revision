@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-06-07 09:28\n"
+"PO-Revision-Date: 2023-12-04 16:04\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: de\n"
@@ -21,23 +21,23 @@ msgstr ""
 "Language-Team: German\n"
 
 msgid "%s has been committed"
-msgstr ""
+msgstr "%s wurde festgeschrieben"
 
 msgid "Actions"
-msgstr ""
+msgstr "Aktionen"
 
 msgid "Commit"
-msgstr ""
+msgstr "Übernahme/Commit"
 
 #, tao-public
 msgid "History"
-msgstr ""
+msgstr "Verlauf"
 
 msgid "History of %s"
-msgstr ""
+msgstr "Verlauf von %s"
 
 msgid "Id"
-msgstr ""
+msgstr "ID"
 
 #, tao-public
 msgid "Items"
@@ -49,7 +49,7 @@ msgstr "Elemente verwalten"
 
 #, tao-public
 msgid "Manage Media"
-msgstr ""
+msgstr "Medien verwalten"
 
 #, tao-public
 msgid "Manage tests"
@@ -60,33 +60,33 @@ msgid "Media"
 msgstr "Medium"
 
 msgid "Message"
-msgstr ""
+msgstr "Nachricht"
 
 msgid "Please give a message to your commit"
-msgstr ""
+msgstr "Bitte geben Sie Ihrem Commit eine Nachricht"
 
 msgid "Resource restored"
-msgstr ""
+msgstr "Ressource wiederhergestellt"
 
 msgid "Restore"
-msgstr ""
+msgstr "Wiederherstellen"
 
 msgid "Restored version %s"
-msgstr ""
+msgstr "Version %s wiederhergestellt"
 
 msgid "Something went wrong..."
-msgstr ""
+msgstr "Etwas ist schief gelaufen ..."
 
 #, tao-public
 msgid "Tests"
-msgstr ""
+msgstr "Tests"
 
 msgid "Time"
-msgstr ""
+msgstr "Zeit"
 
 msgid "Unable to restore the selected version"
-msgstr ""
+msgstr "Die ausgewählte Version kann nicht wiederhergestellt werden"
 
 msgid "User"
-msgstr ""
+msgstr "Nutzer"
 
