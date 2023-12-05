@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-12-04 16:04\n"
+"PO-Revision-Date: 2023-06-07 09:28\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: ja\n"
+"Language: es\n"
 "sourceLanguage: en-US\n"
 "targetLanguage: en-US\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -12,81 +12,81 @@ msgstr ""
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: tao-open-source\n"
 "X-Crowdin-Project-ID: 590867\n"
-"X-Crowdin-Language: ja\n"
+"X-Crowdin-Language: es-ES\n"
 "X-Crowdin-File: /[oat-sa.extension-tao-revision] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 643\n"
-"Language-Team: Japanese\n"
+"Language-Team: Spanish\n"
 
 msgid "%s has been committed"
-msgstr "%s はコミットされました"
+msgstr ""
 
 msgid "Actions"
-msgstr "アクション"
+msgstr ""
 
 msgid "Commit"
-msgstr "コミット"
+msgstr ""
 
 #, tao-public
 msgid "History"
-msgstr "履歴"
+msgstr ""
 
 msgid "History of %s"
-msgstr "履歴：%s"
+msgstr ""
 
 msgid "Id"
-msgstr "Id"
+msgstr ""
 
 #, tao-public
 msgid "Items"
-msgstr "アイテム"
+msgstr ""
 
 #, tao-public
 msgid "Manage items"
-msgstr "アイテム管理"
+msgstr "Gestionar elementos"
 
 #, tao-public
 msgid "Manage Media"
-msgstr "メディア管理"
+msgstr ""
 
 #, tao-public
 msgid "Manage tests"
-msgstr "テスト管理"
+msgstr "Gestionar pruebas"
 
 #, tao-public
 msgid "Media"
-msgstr "メディア"
+msgstr "Medios"
 
 msgid "Message"
-msgstr "記録"
+msgstr ""
 
 msgid "Please give a message to your commit"
-msgstr "コミットする際のメッセージを入力してください。"
+msgstr ""
 
 msgid "Resource restored"
-msgstr "リソースが復元されました。"
+msgstr ""
 
 msgid "Restore"
-msgstr "復元"
+msgstr ""
 
 msgid "Restored version %s"
-msgstr "復元されたバージョン %s"
+msgstr ""
 
 msgid "Something went wrong..."
-msgstr "何か問題が発生しました。"
+msgstr ""
 
 #, tao-public
 msgid "Tests"
-msgstr "テスト"
+msgstr ""
 
 msgid "Time"
-msgstr "時間"
+msgstr ""
 
 msgid "Unable to restore the selected version"
-msgstr "選択されたバージョンを復元できません。"
+msgstr ""
 
 msgid "User"
-msgstr "ユーザ"
+msgstr ""
 

@@ -1,17 +1,24 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-05-05T16:24:31\n"
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2023-06-07 09:28\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: nl-NL\n"
+"Language: nl\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: nl-NL\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: nl\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-revision] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 643\n"
+"Language-Team: Dutch\n"
 
 msgid "%s has been committed"
 msgstr "%s is doorgevoerd"
@@ -30,11 +37,11 @@ msgid "History of %s"
 msgstr "Geschiedenis van %s"
 
 msgid "Id"
-msgstr "Id"
+msgstr ""
 
 #, tao-public
 msgid "Items"
-msgstr "Items"
+msgstr ""
 
 #, tao-public
 msgid "Manage items"
@@ -46,11 +53,11 @@ msgstr "Beheer media"
 
 #, tao-public
 msgid "Manage tests"
-msgstr "Beheer examens"
+msgstr "Beheer toetsen"
 
 #, tao-public
 msgid "Media"
-msgstr "Media"
+msgstr ""
 
 msgid "Message"
 msgstr "Bericht"
@@ -72,7 +79,7 @@ msgstr "Er ging iets mis..."
 
 #, tao-public
 msgid "Tests"
-msgstr "Examens"
+msgstr "Toetsen"
 
 msgid "Time"
 msgstr "Tijd"

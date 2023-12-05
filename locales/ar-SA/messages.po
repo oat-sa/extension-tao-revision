@@ -4,7 +4,7 @@ msgstr ""
 "PO-Revision-Date: 2023-12-04 16:04\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: ja\n"
+"Language: ar\n"
 "sourceLanguage: en-US\n"
 "targetLanguage: en-US\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -12,81 +12,81 @@ msgstr ""
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
 "X-Crowdin-Project: tao-open-source\n"
 "X-Crowdin-Project-ID: 590867\n"
-"X-Crowdin-Language: ja\n"
+"X-Crowdin-Language: ar\n"
 "X-Crowdin-File: /[oat-sa.extension-tao-revision] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 643\n"
-"Language-Team: Japanese\n"
+"Language-Team: Arabic\n"
 
 msgid "%s has been committed"
-msgstr "%s はコミットされました"
+msgstr "تم الالتزام ب %s"
 
 msgid "Actions"
-msgstr "アクション"
+msgstr "إجراءات"
 
 msgid "Commit"
-msgstr "コミット"
+msgstr "التزم"
 
 #, tao-public
 msgid "History"
-msgstr "履歴"
+msgstr "سجل"
 
 msgid "History of %s"
-msgstr "履歴：%s"
+msgstr "سجل %s"
 
 msgid "Id"
-msgstr "Id"
+msgstr "معرف"
 
 #, tao-public
 msgid "Items"
-msgstr "アイテム"
+msgstr "بنود"
 
 #, tao-public
 msgid "Manage items"
-msgstr "アイテム管理"
+msgstr "إدارة البنود"
 
 #, tao-public
 msgid "Manage Media"
-msgstr "メディア管理"
+msgstr "تدبير الوسائط"
 
 #, tao-public
 msgid "Manage tests"
-msgstr "テスト管理"
+msgstr "إدارة الروائز"
 
 #, tao-public
 msgid "Media"
-msgstr "メディア"
+msgstr "وسائط"
 
 msgid "Message"
-msgstr "記録"
+msgstr "رسالة"
 
 msgid "Please give a message to your commit"
-msgstr "コミットする際のメッセージを入力してください。"
+msgstr "من فضلك ابعث رسالة بالتزامك"
 
 msgid "Resource restored"
-msgstr "リソースが復元されました。"
+msgstr "تم استعادة المورد"
 
 msgid "Restore"
-msgstr "復元"
+msgstr "استعادة"
 
 msgid "Restored version %s"
-msgstr "復元されたバージョン %s"
+msgstr "النسخة المستعادة %s"
 
 msgid "Something went wrong..."
-msgstr "何か問題が発生しました。"
+msgstr "حدث خطأ ما..."
 
 #, tao-public
 msgid "Tests"
-msgstr "テスト"
+msgstr "روائز"
 
 msgid "Time"
-msgstr "時間"
+msgstr "وقت"
 
 msgid "Unable to restore the selected version"
-msgstr "選択されたバージョンを復元できません。"
+msgstr "غير قادر على استعادة الإصدار المحدد"
 
 msgid "User"
-msgstr "ユーザ"
+msgstr "مستعمل"
 
