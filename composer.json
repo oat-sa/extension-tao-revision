@@ -25,7 +25,7 @@
     "oat-sa/tao-core" : ">=50.24.6",
     "oat-sa/extension-tao-item" : ">=11.8.0",
     "oat-sa/extension-tao-mediamanager" : ">=12.9.0",
-    "oat-sa/extension-tao-itemqti" : "dev-bugfix/AUT-4259/create-score-matching-conditions as v30.44.0",
+    "oat-sa/extension-tao-itemqti" : "dev-bugfix/AUT-4259/create-score-matching-conditions as v30.44.1",
     "oat-sa/extension-tao-test" : ">=15.0.0"
   },
   "autoload": {
