@@ -22,6 +22,7 @@ namespace oat\taoRevision\model;
 
 use common_Exception;
 use common_Logger;
+use http\Exception\RuntimeException;
 use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\generis\model\GenerisRdf;
 use oat\generis\model\OntologyAwareTrait;
@@ -78,7 +79,7 @@ class TriplesManagerService extends ConfigurableService
     }
 
     /**
-     * @param Resource   $resource
+     * @param Resource $resource
      * @param Model|null $model
      */
     public function deleteTriplesFor(Resource $resource, Model $model = null)
@@ -96,23 +97,23 @@ class TriplesManagerService extends ConfigurableService
 
     /**
      * @param TriplesCollection $triples
-     * @param array             $propertyFilesystemMap
+     * @param array $propertyFilesystemMap
      *
      * @return array
      * @throws common_Exception
      */
-    public function cloneTriples(TriplesCollection $triples, array $propertyFilesystemMap = [])
-    {
+    public function cloneTriples(
+        TriplesCollection $triples,
+        array $propertyFilesystemMap = [],
+        bool $shouldSerialize = true
+    ) {
         $clones = [];
         foreach ($triples as $original) {
             $triple = clone $original;
             if ($this->isFileReference($triple)) {
                 $targetFileSystem = $propertyFilesystemMap[$triple->predicate] ?? null;
                 $this->serializeAsset($triple);
-                $clonedFileUri = $this->cloneFile($triple->object, $targetFileSystem);
-
-                $file = $this->getFileRefSerializer()->unserializeFile($clonedFileUri);
-                $triple->object = $file->getPrefix();
+                $triple->object = $this->cloneFile($triple->object, $targetFileSystem, $shouldSerialize);
             }
             $clones[] = $triple;
         }
@@ -123,12 +124,12 @@ class TriplesManagerService extends ConfigurableService
     /**
      * @param      $fileUri
      * @param null $targetFileSystemId
-     *
+     * @param bool $shouldSerialize
      * @return string
-     * @throws \common_Exception
      * @throws \tao_models_classes_FileNotFoundException
+     * @throws common_Exception
      */
-    protected function cloneFile($fileUri, $targetFileSystemId = null)
+    protected function cloneFile($fileUri, $targetFileSystemId = null, bool $shouldSerialize = false): string
     {
         $referencer = $this->getFileRefSerializer();
         $flySystemService = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
@@ -142,14 +143,21 @@ class TriplesManagerService extends ConfigurableService
             foreach ($source->getFlyIterator(Directory::ITERATOR_FILE | Directory::ITERATOR_RECURSIVE) as $file) {
                 $destinationPath->getFile($source->getRelPath($file))->write($file->readStream());
             }
-            $destination = $destinationPath;
+
+            return $referencer->serialize($destinationPath);
         } elseif ($source instanceof File) {
             common_Logger::i('clone file ' . $fileUri);
-            $destination = $destinationPath->getFile($source->getBasename());
-            $destination->write($source->readStream());
+            $file = $destinationPath->getFile($source->getBasename());
+            $file->write($source->readStream());
+
+            if (!$shouldSerialize) {
+                return $file->getPrefix();
+            }
+
+            return $referencer->serialize($file);
         }
 
-        return $referencer->serialize($destination);
+        throw new RuntimeException("Unsupported source type: ", get_class($source));
     }
 
     /**

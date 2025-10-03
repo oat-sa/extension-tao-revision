@@ -175,7 +175,7 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
 
         $triplesManager->deleteTriplesFor($resource);
 
-        $clonedTriples = $triplesManager->cloneTriples($data, $originFilesystemMap);
+        $clonedTriples = $triplesManager->cloneTriples($data, $originFilesystemMap, false);
 
         foreach ($clonedTriples as $triple) {
             $this->getModel()->getRdfInterface()->add($triple);
