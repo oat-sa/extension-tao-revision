@@ -22,7 +22,7 @@ namespace oat\taoRevision\model;
 
 use common_Exception;
 use common_Logger;
-use http\Exception\RuntimeException;
+use RuntimeException;
 use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\generis\model\GenerisRdf;
 use oat\generis\model\OntologyAwareTrait;
@@ -157,7 +157,7 @@ class TriplesManagerService extends ConfigurableService
             return $referencer->serialize($file);
         }
 
-        throw new RuntimeException("Unsupported source type: ", get_class($source));
+        throw new RuntimeException(sprintf('Unsupported source type: %s', get_class($source)));
     }
 
     /**
