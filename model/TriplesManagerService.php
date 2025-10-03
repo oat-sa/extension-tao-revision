@@ -109,7 +109,10 @@ class TriplesManagerService extends ConfigurableService
             if ($this->isFileReference($triple)) {
                 $targetFileSystem = $propertyFilesystemMap[$triple->predicate] ?? null;
                 $this->serializeAsset($triple);
-                $triple->object = $this->cloneFile($triple->object, $targetFileSystem);
+                $clonedFileUri = $this->cloneFile($triple->object, $targetFileSystem);
+
+                $file = $this->getFileRefSerializer()->unserializeFile($clonedFileUri);
+                $triple->object = $file->getPrefix();
             }
             $clones[] = $triple;
         }
