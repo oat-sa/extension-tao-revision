@@ -102,18 +102,14 @@ class TriplesManagerService extends ConfigurableService
      * @return array
      * @throws common_Exception
      */
-    public function cloneTriples(
-        TriplesCollection $triples,
-        array $propertyFilesystemMap = [],
-        bool $shouldSerialize = true
-    ) {
+    public function cloneTriples(TriplesCollection $triples, array $propertyFilesystemMap = []) {
         $clones = [];
         foreach ($triples as $original) {
             $triple = clone $original;
             if ($this->isFileReference($triple)) {
                 $targetFileSystem = $propertyFilesystemMap[$triple->predicate] ?? null;
                 $this->serializeAsset($triple);
-                $triple->object = $this->cloneFile($triple->object, $targetFileSystem, $shouldSerialize);
+                $triple->object = $this->cloneFile($triple->object, $targetFileSystem);
             }
             $clones[] = $triple;
         }
@@ -129,7 +125,7 @@ class TriplesManagerService extends ConfigurableService
      * @throws \tao_models_classes_FileNotFoundException
      * @throws common_Exception
      */
-    protected function cloneFile($fileUri, $targetFileSystemId = null, bool $shouldSerialize = false): string
+    protected function cloneFile($fileUri, $targetFileSystemId = null): string
     {
         $referencer = $this->getFileRefSerializer();
         $flySystemService = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
@@ -149,10 +145,6 @@ class TriplesManagerService extends ConfigurableService
             common_Logger::i('clone file ' . $fileUri);
             $file = $destinationPath->getFile($source->getBasename());
             $file->write($source->readStream());
-
-            if (!$shouldSerialize) {
-                return $file->getPrefix();
-            }
 
             return $referencer->serialize($file);
         }

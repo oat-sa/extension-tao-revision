@@ -175,9 +175,14 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
 
         $triplesManager->deleteTriplesFor($resource);
 
-        $clonedTriples = $triplesManager->cloneTriples($data, $originFilesystemMap, false);
+        $clonedTriples = $triplesManager->cloneTriples($data, $originFilesystemMap);
 
         foreach ($clonedTriples as $triple) {
+            // Deserialize file:// URIs to plain paths before storing in RDF (like fresh passages)
+            if (is_string($triple->object) && str_starts_with($triple->object, 'file://')) {
+                $file = $this->getFileReferenceSerializer()->unserializeFile($triple->object);
+                $triple->object = $file->getPrefix();
+            }
             $this->getModel()->getRdfInterface()->add($triple);
         }
 
