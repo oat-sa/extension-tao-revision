@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015-2022 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2015-2025 (original work) Open Assessment Technologies SA;
  */
 
 namespace oat\taoRevision\model;
@@ -24,6 +24,7 @@ use common_Exception;
 use common_exception_Error;
 use common_session_SessionManager;
 use core_kernel_classes_Resource as Resource;
+use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
@@ -90,6 +91,14 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
     public function getTriplesManagerService()
     {
         return $this->getServiceLocator()->get(TriplesManagerService::SERVICE_ID);
+    }
+
+    /**
+     * @return FileReferenceSerializer
+     */
+    protected function getFileReferenceSerializer()
+    {
+        return $this->getServiceLocator()->get(FileReferenceSerializer::SERVICE_ID);
     }
 
     /**
@@ -178,6 +187,14 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
         $clonedTriples = $triplesManager->cloneTriples($data, $originFilesystemMap);
 
         foreach ($clonedTriples as $triple) {
+            if (
+                $triple->predicate === CreatorItems::PROPERTY_ITEM_CONTENT_URI
+                && is_string($triple->object)
+                && str_starts_with($triple->object, 'file://')
+            ) {
+                $file = $this->getFileReferenceSerializer()->unserializeFile($triple->object);
+                $triple->object = $file->getPrefix();
+            }
             $this->getModel()->getRdfInterface()->add($triple);
         }
 

@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2020-2025 (original work) Open Assessment Technologies SA;
  */
 
 namespace oat\taoRevision\model;
@@ -102,7 +102,8 @@ class TriplesManagerService extends ConfigurableService
      * @return array
      * @throws common_Exception
      */
-    public function cloneTriples(TriplesCollection $triples, array $propertyFilesystemMap = []) {
+    public function cloneTriples(TriplesCollection $triples, array $propertyFilesystemMap = [])
+    {
         $clones = [];
         foreach ($triples as $original) {
             $triple = clone $original;
@@ -120,7 +121,6 @@ class TriplesManagerService extends ConfigurableService
     /**
      * @param      $fileUri
      * @param null $targetFileSystemId
-     * @param bool $shouldSerialize
      * @return string
      * @throws \tao_models_classes_FileNotFoundException
      * @throws common_Exception
