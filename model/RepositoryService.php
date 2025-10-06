@@ -24,6 +24,7 @@ use common_Exception;
 use common_exception_Error;
 use common_session_SessionManager;
 use core_kernel_classes_Resource as Resource;
+use core_kernel_classes_Triple;
 use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\FileSystem;
@@ -187,14 +188,12 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
         $clonedTriples = $triplesManager->cloneTriples($data, $originFilesystemMap);
 
         foreach ($clonedTriples as $triple) {
-            if (
-                $triple->predicate === CreatorItems::PROPERTY_ITEM_CONTENT_URI
-                && is_string($triple->object)
-                && str_starts_with($triple->object, 'file://')
-            ) {
-                $file = $this->getFileReferenceSerializer()->unserializeFile($triple->object);
-                $triple->object = $file->getPrefix();
+            if ($this->isMediaManagerFile($triple)) {
+                $triple->object = $this->getFileReferenceSerializer()
+                    ->unserializeFile($triple->object)
+                    ->getPrefix();
             }
+
             $this->getModel()->getRdfInterface()->add($triple);
         }
 
@@ -263,5 +262,10 @@ class RepositoryService extends ConfigurableService implements RepositoryInterfa
                 $resource
             );
         }
+    }
+
+    private function isMediaManagerFile(core_kernel_classes_Triple $triple): bool
+    {
+        return is_string($triple->object) && str_starts_with($triple->object, 'file://');
     }
 }

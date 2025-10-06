@@ -121,35 +121,33 @@ class TriplesManagerService extends ConfigurableService
     /**
      * @param      $fileUri
      * @param null $targetFileSystemId
+     *
      * @return string
+     * @throws \common_Exception
      * @throws \tao_models_classes_FileNotFoundException
-     * @throws common_Exception
      */
-    protected function cloneFile($fileUri, $targetFileSystemId = null): string
+    protected function cloneFile($fileUri, $targetFileSystemId = null)
     {
         $referencer = $this->getFileRefSerializer();
         $flySystemService = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
-
         $source = $referencer->unserialize($fileUri);
         $targetFileSystemId = !$targetFileSystemId ? $source->getFileSystemId() : $targetFileSystemId;
         $destinationPath = $flySystemService->getDirectory($targetFileSystemId)->getDirectory(uniqid('', true));
+        $destination = null;
 
         if ($source instanceof Directory) {
             common_Logger::i('clone directory ' . $fileUri);
             foreach ($source->getFlyIterator(Directory::ITERATOR_FILE | Directory::ITERATOR_RECURSIVE) as $file) {
                 $destinationPath->getFile($source->getRelPath($file))->write($file->readStream());
             }
-
-            return $referencer->serialize($destinationPath);
+            $destination = $destinationPath;
         } elseif ($source instanceof File) {
             common_Logger::i('clone file ' . $fileUri);
-            $file = $destinationPath->getFile($source->getBasename());
-            $file->write($source->readStream());
-
-            return $referencer->serialize($file);
+            $destination = $destinationPath->getFile($source->getBasename());
+            $destination->write($source->readStream());
         }
 
-        throw new RuntimeException(sprintf('Unsupported source type: %s', get_class($source)));
+        return $referencer->serialize($destination);
     }
 
     /**
