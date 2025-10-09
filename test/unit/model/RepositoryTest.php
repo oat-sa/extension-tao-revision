@@ -42,6 +42,10 @@ use ReflectionMethod;
 use ReflectionProperty;
 use oat\taoRevision\model\RevisionStorageInterface;
 use oat\oatbox\user\User;
+use oat\generis\model\fileReference\FileReferenceSerializer;
+use oat\oatbox\filesystem\File;
+use core_kernel_classes_Triple as Triple;
+use core_kernel_classes_ContainerCollection as TriplesCollection;
 
 class RepositoryTest extends GenerisTestCase
 {
@@ -251,6 +255,123 @@ class RepositoryTest extends GenerisTestCase
 
         $this->assertCount(1, $found);
         $this->stringContains($found[0]);
+    }
+
+    public function testIsMediaManagerFileWithFileUri()
+    {
+        $storage = $this->prophesize(RevisionStorageInterface::class);
+        $repository = $this->getRepositoryService($storage->reveal());
+
+        $triple = new Triple();
+        $triple->subject = 'http://www.tao.lu/test.rdf#i123';
+        $triple->predicate = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link';
+        $triple->object = 'file://mediaManager/68dfe0104aafe8.99405914%2Fpassage.xml';
+
+        $isMediaManagerFileMethod = new ReflectionMethod(RepositoryService::class, 'isMediaManagerFile');
+        $isMediaManagerFileMethod->setAccessible(true);
+        $result = $isMediaManagerFileMethod->invokeArgs($repository, [$triple]);
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsMediaManagerFileWithPlainPath()
+    {
+        $storage = $this->prophesize(RevisionStorageInterface::class);
+        $repository = $this->getRepositoryService($storage->reveal());
+
+        $triple = new Triple();
+        $triple->subject = 'http://www.tao.lu/test.rdf#i123';
+        $triple->predicate = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link';
+        $triple->object = '68dfe0104aafe8.99405914/passage.xml';
+
+        $isMediaManagerFileMethod = new ReflectionMethod(RepositoryService::class, 'isMediaManagerFile');
+        $isMediaManagerFileMethod->setAccessible(true);
+        $result = $isMediaManagerFileMethod->invokeArgs($repository, [$triple]);
+
+        $this->assertFalse($result);
+    }
+
+    public function testRestoreDeserializesFileUris()
+    {
+        $revision = $this->revisions[0];
+
+        $tripleWithFileUri = new Triple();
+        $tripleWithFileUri->subject = 'http://www.tao.lu/test.rdf#i123';
+        $tripleWithFileUri->predicate = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link';
+        $tripleWithFileUri->object = 'file://mediaManager/68dfe0104aafe8.99405914%2Fpassage.xml';
+
+        $tripleWithPlainPath = new Triple();
+        $tripleWithPlainPath->subject = 'http://www.tao.lu/test.rdf#i123';
+        $tripleWithPlainPath->predicate = 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemModel';
+        $tripleWithPlainPath->object = 'http://www.tao.lu/Ontologies/TAOItem.rdf#QTI';
+
+        $triplesCollection = new TriplesCollection(new \common_Object());
+        $triplesCollection->add($tripleWithFileUri);
+        $triplesCollection->add($tripleWithPlainPath);
+
+        $storage = $this->prophesize(RevisionStorageInterface::class);
+        $storage->getData(Argument::type(Revision::class))
+            ->shouldBeCalled()
+            ->willReturn($triplesCollection);
+
+        $repository = $this->getRepositoryService($storage->reveal());
+
+        $fileMock = $this->createMock(File::class);
+        $fileMock->method('getPrefix')->willReturn('68dfe0104aafe8.99405914/passage.xml');
+
+        $fileRefSerializer = $this->createMock(FileReferenceSerializer::class);
+        $fileRefSerializer->expects($this->once())
+            ->method('unserializeFile')
+            ->with('file://mediaManager/68dfe0104aafe8.99405914%2Fpassage.xml')
+            ->willReturn($fileMock);
+
+        $triplesManager = $this->createMock(TriplesManagerService::class);
+        $triplesManager->expects($this->once())
+            ->method('cloneTriples')
+            ->willReturn($triplesCollection);
+        $triplesManager->expects($this->once())
+            ->method('getPropertyStorageMap')
+            ->willReturn([]);
+
+        $rdfInterface = $this->getMockForAbstractClass(RdfInterface::class);
+        $rdfInterface->expects($this->exactly(2))
+            ->method('add')
+            ->with($this->callback(function ($triple) {
+                if ($triple->predicate === 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link') {
+                    return $triple->object === '68dfe0104aafe8.99405914/passage.xml';
+                }
+                return true;
+            }))
+            ->willReturn(true);
+
+        $ontologyMock = $this->createMock(Ontology::class);
+        $ontologyMock->expects($this->any())
+            ->method('getRdfInterface')
+            ->willReturn($rdfInterface);
+        $ontologyMock->expects($this->once())
+            ->method('getResource')
+            ->willReturn($this->getOntologyMock()->getResource('my first subject'));
+
+        $qtiServiceMock = $this->createMock(Service::class);
+        $itemMock = $this->createMock(Item::class);
+        $qtiServiceMock->method('getDataItemByRdfItem')->willReturn($itemMock);
+        $eventDispatcherMock = $this->createMock(UpdatedItemEventDispatcher::class);
+        $eventDispatcherMock->method('dispatch');
+
+        $serviceLocator = $this->getServiceLocatorMock(
+            [
+                Ontology::SERVICE_ID => $ontologyMock,
+                TriplesManagerService::SERVICE_ID => $triplesManager,
+                FileReferenceSerializer::SERVICE_ID => $fileRefSerializer,
+                UpdatedItemEventDispatcher::class => $eventDispatcherMock,
+                Service::class => $qtiServiceMock
+            ]
+        );
+        $repository->setServiceLocator($serviceLocator);
+
+        $isRevisionRestored = $repository->restore($revision);
+
+        $this->assertTrue($isRevisionRestored);
     }
 
     /**
