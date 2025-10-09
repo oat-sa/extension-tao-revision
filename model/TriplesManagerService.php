@@ -15,13 +15,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2020-2025 (original work) Open Assessment Technologies SA;
  */
 
 namespace oat\taoRevision\model;
 
 use common_Exception;
 use common_Logger;
+use RuntimeException;
 use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\generis\model\GenerisRdf;
 use oat\generis\model\OntologyAwareTrait;
@@ -78,7 +79,7 @@ class TriplesManagerService extends ConfigurableService
     }
 
     /**
-     * @param Resource   $resource
+     * @param Resource $resource
      * @param Model|null $model
      */
     public function deleteTriplesFor(Resource $resource, Model $model = null)
@@ -96,7 +97,7 @@ class TriplesManagerService extends ConfigurableService
 
     /**
      * @param TriplesCollection $triples
-     * @param array             $propertyFilesystemMap
+     * @param array $propertyFilesystemMap
      *
      * @return array
      * @throws common_Exception
@@ -129,10 +130,10 @@ class TriplesManagerService extends ConfigurableService
     {
         $referencer = $this->getFileRefSerializer();
         $flySystemService = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
-
         $source = $referencer->unserialize($fileUri);
         $targetFileSystemId = !$targetFileSystemId ? $source->getFileSystemId() : $targetFileSystemId;
         $destinationPath = $flySystemService->getDirectory($targetFileSystemId)->getDirectory(uniqid('', true));
+        $destination = null;
 
         if ($source instanceof Directory) {
             common_Logger::i('clone directory ' . $fileUri);
