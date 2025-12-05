@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2025-12-05 08:53\n"
+"PO-Revision-Date: 2025-12-05 08:54\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: pt\n"
+"Language: hu\n"
 "sourceLanguage: en-US\n"
 "targetLanguage: en-US\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15,78 +15,78 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: tao-open-source\n"
 "X-Crowdin-Project-ID: 590867\n"
-"X-Crowdin-Language: pt-BR\n"
+"X-Crowdin-Language: hu\n"
 "X-Crowdin-File: /[oat-sa.extension-tao-revision] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 643\n"
-"Language-Team: Portuguese, Brazilian\n"
+"Language-Team: Hungarian\n"
 
 msgid "%s has been committed"
-msgstr "%s foi aplicado"
+msgstr "%s elkötelezve"
 
 msgid "Actions"
-msgstr "Ações"
+msgstr "Műveletek"
 
 msgid "Commit"
-msgstr "Aplicar"
+msgstr "Kötelezettségvállalás"
 
 #, tao-public
 msgid "History"
-msgstr "Histórico"
+msgstr "Történelem"
 
 msgid "History of %s"
-msgstr "Histórico de %s"
+msgstr "%störténete"
 
 msgid "Id"
-msgstr "Id"
+msgstr "Azonosító"
 
 #, tao-public
 msgid "Items"
-msgstr "Itens"
+msgstr "Tételek"
 
 #, tao-public
 msgid "Manage items"
-msgstr "Gerenciar itens"
+msgstr "Elemek kezelése"
 
 #, tao-public
 msgid "Manage Media"
-msgstr "Gerenciar mídia"
+msgstr "Média kezelése"
 
 #, tao-public
 msgid "Manage tests"
-msgstr "Gerenciar testes"
+msgstr "Tesztek kezelése"
 
 #, tao-public
 msgid "Media"
-msgstr "Multimídia"
+msgstr "Média"
 
 msgid "Message"
-msgstr "Mensagem"
+msgstr "Üzenet"
 
 msgid "Please give a message to your commit"
-msgstr "Por favor informe o comentário para essa ação"
+msgstr "Kérlek, adj egy üzenetet a commitodnak"
 
 msgid "Resource restored"
-msgstr "Recurso restaurado"
+msgstr "Erőforrás visszaállítva"
 
 msgid "Restore"
-msgstr "Restaurar"
+msgstr "Visszaállítás"
 
 msgid "Restored version %s"
-msgstr "Restaurar versão %s"
+msgstr "Visszaállított verzió %s"
 
 msgid "Something went wrong..."
-msgstr "Ocorreu um erro..."
+msgstr "Valami rosszul sült el..."
 
 #, tao-public
 msgid "Tests"
-msgstr "Testes"
+msgstr "Tesztek"
 
 msgid "Time"
-msgstr "Hora"
+msgstr "Idő"
 
 msgid "Unable to restore the selected version"
-msgstr "Não é possível restaurar a versão selecionada"
+msgstr "A kiválasztott verzió visszaállítása sikertelen"
 
 msgid "User"
-msgstr "Usuário"
+msgstr "Felhasználó"
 
