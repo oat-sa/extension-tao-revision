@@ -4,7 +4,7 @@ msgstr ""
 "PO-Revision-Date: 2025-12-05 08:53\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: pt\n"
+"Language: ro\n"
 "sourceLanguage: en-US\n"
 "targetLanguage: en-US\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -12,81 +12,81 @@ msgstr ""
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
 "X-Crowdin-Project: tao-open-source\n"
 "X-Crowdin-Project-ID: 590867\n"
-"X-Crowdin-Language: pt-BR\n"
+"X-Crowdin-Language: ro\n"
 "X-Crowdin-File: /[oat-sa.extension-tao-revision] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 643\n"
-"Language-Team: Portuguese, Brazilian\n"
+"Language-Team: Romanian\n"
 
 msgid "%s has been committed"
-msgstr "%s foi aplicado"
+msgstr ""
 
 msgid "Actions"
-msgstr "Ações"
+msgstr ""
 
 msgid "Commit"
-msgstr "Aplicar"
+msgstr ""
 
 #, tao-public
 msgid "History"
-msgstr "Histórico"
+msgstr ""
 
 msgid "History of %s"
-msgstr "Histórico de %s"
+msgstr ""
 
 msgid "Id"
-msgstr "Id"
+msgstr ""
 
 #, tao-public
 msgid "Items"
-msgstr "Itens"
+msgstr ""
 
 #, tao-public
 msgid "Manage items"
-msgstr "Gerenciar itens"
+msgstr ""
 
 #, tao-public
 msgid "Manage Media"
-msgstr "Gerenciar mídia"
+msgstr ""
 
 #, tao-public
 msgid "Manage tests"
-msgstr "Gerenciar testes"
+msgstr ""
 
 #, tao-public
 msgid "Media"
-msgstr "Multimídia"
+msgstr ""
 
 msgid "Message"
-msgstr "Mensagem"
+msgstr ""
 
 msgid "Please give a message to your commit"
-msgstr "Por favor informe o comentário para essa ação"
+msgstr ""
 
 msgid "Resource restored"
-msgstr "Recurso restaurado"
+msgstr ""
 
 msgid "Restore"
-msgstr "Restaurar"
+msgstr ""
 
 msgid "Restored version %s"
-msgstr "Restaurar versão %s"
+msgstr ""
 
 msgid "Something went wrong..."
-msgstr "Ocorreu um erro..."
+msgstr ""
 
 #, tao-public
 msgid "Tests"
-msgstr "Testes"
+msgstr ""
 
 msgid "Time"
-msgstr "Hora"
+msgstr ""
 
 msgid "Unable to restore the selected version"
-msgstr "Não é possível restaurar a versão selecionada"
+msgstr ""
 
 msgid "User"
-msgstr "Usuário"
+msgstr ""
 

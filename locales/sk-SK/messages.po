@@ -4,7 +4,7 @@ msgstr ""
 "PO-Revision-Date: 2025-12-05 08:53\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: pt\n"
+"Language: sk\n"
 "sourceLanguage: en-US\n"
 "targetLanguage: en-US\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -12,81 +12,81 @@ msgstr ""
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 3;\n"
 "X-Crowdin-Project: tao-open-source\n"
 "X-Crowdin-Project-ID: 590867\n"
-"X-Crowdin-Language: pt-BR\n"
+"X-Crowdin-Language: sk\n"
 "X-Crowdin-File: /[oat-sa.extension-tao-revision] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 643\n"
-"Language-Team: Portuguese, Brazilian\n"
+"Language-Team: Slovak\n"
 
 msgid "%s has been committed"
-msgstr "%s foi aplicado"
+msgstr "%s bolo potvrdené"
 
 msgid "Actions"
-msgstr "Ações"
+msgstr "Akcie"
 
 msgid "Commit"
-msgstr "Aplicar"
+msgstr "Potvrdiť"
 
 #, tao-public
 msgid "History"
-msgstr "Histórico"
+msgstr "História"
 
 msgid "History of %s"
-msgstr "Histórico de %s"
+msgstr "História %s"
 
 msgid "Id"
-msgstr "Id"
+msgstr "Identifikačné číslo"
 
 #, tao-public
 msgid "Items"
-msgstr "Itens"
+msgstr "Položky"
 
 #, tao-public
 msgid "Manage items"
-msgstr "Gerenciar itens"
+msgstr "Spravovať položky"
 
 #, tao-public
 msgid "Manage Media"
-msgstr "Gerenciar mídia"
+msgstr "Spravovať médiá"
 
 #, tao-public
 msgid "Manage tests"
-msgstr "Gerenciar testes"
+msgstr "Spravovať testy"
 
 #, tao-public
 msgid "Media"
-msgstr "Multimídia"
+msgstr "Médiá"
 
 msgid "Message"
-msgstr "Mensagem"
+msgstr "Správa"
 
 msgid "Please give a message to your commit"
-msgstr "Por favor informe o comentário para essa ação"
+msgstr "Prosím, napíšte správu k Vašej aktualizácii"
 
 msgid "Resource restored"
-msgstr "Recurso restaurado"
+msgstr "Zdroj obnovený"
 
 msgid "Restore"
-msgstr "Restaurar"
+msgstr "Obnoviť"
 
 msgid "Restored version %s"
-msgstr "Restaurar versão %s"
+msgstr "Obnovená verzia %s"
 
 msgid "Something went wrong..."
-msgstr "Ocorreu um erro..."
+msgstr "Niečo sa pokazilo..."
 
 #, tao-public
 msgid "Tests"
-msgstr "Testes"
+msgstr "Testy"
 
 msgid "Time"
-msgstr "Hora"
+msgstr "Čas"
 
 msgid "Unable to restore the selected version"
-msgstr "Não é possível restaurar a versão selecionada"
+msgstr "Vybranú verziu sa nepodarilo obnoviť"
 
 msgid "User"
-msgstr "Usuário"
+msgstr "Používateľ"
 
