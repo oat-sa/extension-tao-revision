@@ -1,0 +1,92 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2025-12-05 08:53\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: hu\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: hu\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-revision] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 643\n"
+"Language-Team: Hungarian\n"
+
+msgid "%s has been committed"
+msgstr "%s elkötelezve"
+
+msgid "Actions"
+msgstr "Műveletek"
+
+msgid "Commit"
+msgstr "Kötelezettségvállalás"
+
+#, tao-public
+msgid "History"
+msgstr "Történelem"
+
+msgid "History of %s"
+msgstr "%störténete"
+
+msgid "Id"
+msgstr "Azonosító"
+
+#, tao-public
+msgid "Items"
+msgstr "Tételek"
+
+#, tao-public
+msgid "Manage items"
+msgstr "Elemek kezelése"
+
+#, tao-public
+msgid "Manage Media"
+msgstr "Média kezelése"
+
+#, tao-public
+msgid "Manage tests"
+msgstr "Tesztek kezelése"
+
+#, tao-public
+msgid "Media"
+msgstr "Média"
+
+msgid "Message"
+msgstr "Üzenet"
+
+msgid "Please give a message to your commit"
+msgstr "Kérlek, adj egy üzenetet a commitodnak"
+
+msgid "Resource restored"
+msgstr "Erőforrás visszaállítva"
+
+msgid "Restore"
+msgstr "Visszaállítás"
+
+msgid "Restored version %s"
+msgstr "Visszaállított verzió %s"
+
+msgid "Something went wrong..."
+msgstr "Valami rosszul sült el..."
+
+#, tao-public
+msgid "Tests"
+msgstr "Tesztek"
+
+msgid "Time"
+msgstr "Idő"
+
+msgid "Unable to restore the selected version"
+msgstr "A kiválasztott verzió visszaállítása sikertelen"
+
+msgid "User"
+msgstr "Felhasználó"
+
