@@ -1,0 +1,92 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2025-12-05 08:53\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: sk\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 3;\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: sk\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-revision] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 643\n"
+"Language-Team: Slovak\n"
+
+msgid "%s has been committed"
+msgstr "%s bolo potvrdené"
+
+msgid "Actions"
+msgstr "Akcie"
+
+msgid "Commit"
+msgstr "Potvrdiť"
+
+#, tao-public
+msgid "History"
+msgstr "História"
+
+msgid "History of %s"
+msgstr "História %s"
+
+msgid "Id"
+msgstr "Identifikačné číslo"
+
+#, tao-public
+msgid "Items"
+msgstr "Položky"
+
+#, tao-public
+msgid "Manage items"
+msgstr "Spravovať položky"
+
+#, tao-public
+msgid "Manage Media"
+msgstr "Spravovať médiá"
+
+#, tao-public
+msgid "Manage tests"
+msgstr "Spravovať testy"
+
+#, tao-public
+msgid "Media"
+msgstr "Médiá"
+
+msgid "Message"
+msgstr "Správa"
+
+msgid "Please give a message to your commit"
+msgstr "Prosím, napíšte správu k Vašej aktualizácii"
+
+msgid "Resource restored"
+msgstr "Zdroj obnovený"
+
+msgid "Restore"
+msgstr "Obnoviť"
+
+msgid "Restored version %s"
+msgstr "Obnovená verzia %s"
+
+msgid "Something went wrong..."
+msgstr "Niečo sa pokazilo..."
+
+#, tao-public
+msgid "Tests"
+msgstr "Testy"
+
+msgid "Time"
+msgstr "Čas"
+
+msgid "Unable to restore the selected version"
+msgstr "Vybranú verziu sa nepodarilo obnoviť"
+
+msgid "User"
+msgstr "Používateľ"
+
