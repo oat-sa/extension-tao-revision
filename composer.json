@@ -21,12 +21,12 @@
   "minimum-stability": "dev",
   "require": {
     "oat-sa/oatbox-extension-installer": "~1.1||dev-master",
-    "oat-sa/generis" : ">=15.22",
-    "oat-sa/tao-core" : ">=50.24.6",
-    "oat-sa/extension-tao-item" : ">=11.8.0",
-    "oat-sa/extension-tao-mediamanager" : ">=12.9.0",
-    "oat-sa/extension-tao-itemqti" : ">=28.8.0",
-    "oat-sa/extension-tao-test" : ">=15.0.0"
+    "oat-sa/generis": "dev-goal/remove-prophesize as 99.99",
+    "oat-sa/tao-core": ">=50.24.6",
+    "oat-sa/extension-tao-item": ">=11.8.0",
+    "oat-sa/extension-tao-mediamanager": ">=12.9.0",
+    "oat-sa/extension-tao-itemqti": ">=28.8.0",
+    "oat-sa/extension-tao-test": ">=15.0.0"
   },
   "autoload": {
     "psr-4": {
