@@ -24,10 +24,11 @@ namespace oat\taoRevision\test\unit\model;
 
 use common_session_Session;
 use common_session_SessionManager;
-use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
 use oat\generis\model\data\RdfInterface;
-use oat\generis\test\GenerisTestCase;
+use oat\generis\test\FileSystemMockTrait;
+use oat\generis\test\OntologyMockTrait;
+use oat\generis\test\ServiceManagerMockTrait;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
 use oat\taoQtiItem\model\qti\Item;
@@ -36,7 +37,7 @@ use oat\taoRevision\model\Revision;
 use oat\taoRevision\model\RepositoryService;
 use oat\taoRevision\model\RevisionNotFoundException;
 use oat\taoRevision\model\TriplesManagerService;
-use Prophecy\Argument;
+use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -47,12 +48,15 @@ use oat\oatbox\filesystem\File;
 use core_kernel_classes_Triple as Triple;
 use core_kernel_classes_ContainerCollection as TriplesCollection;
 
-class RepositoryTest extends GenerisTestCase
+class RepositoryTest extends TestCase
 {
+    use ServiceManagerMockTrait;
+    use OntologyMockTrait;
+    use FileSystemMockTrait;
     use TriplesMockTrait;
 
     /** @var Revision[] */
-    private $revisions = [];
+    private array $revisions = [];
 
     public function setUp(): void
     {
@@ -64,30 +68,34 @@ class RepositoryTest extends GenerisTestCase
         ];
     }
 
-    public function testGetAllRevisions()
+    public function testGetAllRevisions(): void
     {
-        $storage = $this->prophesize(RevisionStorageInterface::class);
-        $storage->getAllRevisions(Argument::type('string'))
-            ->shouldBeCalled()
+        $storage = $this->createMock(RevisionStorageInterface::class);
+        $storage
+            ->expects($this->once())
+            ->method('getAllRevisions')
+            ->with($this->isType('string'))
             ->willReturn($this->revisions);
 
-        $repository = $this->getRepositoryService($storage->reveal());
+        $repository = $this->getRepositoryService($storage);
 
         $revisions = $repository->getAllRevisions('123');
 
         $this->assertEquals($this->revisions, $revisions);
     }
 
-    public function testGetRevision()
+    public function testGetRevision(): void
     {
         $revision = $this->revisions[0];
 
-        $storage = $this->prophesize(RevisionStorageInterface::class);
-        $storage->getRevision(Argument::type('string'), Argument::type('int'))
-            ->shouldBeCalled()
+        $storage = $this->createMock(RevisionStorageInterface::class);
+        $storage
+            ->expects($this->once())
+            ->method('getRevision')
+            ->with($this->isType('string'), $this->isType('int'))
             ->willReturn($revision);
 
-        $repository = $this->getRepositoryService($storage->reveal());
+        $repository = $this->getRepositoryService($storage);
 
         $returnedRevision = $repository->getRevision($revision->getResourceId(), $revision->getVersion());
 
@@ -95,32 +103,35 @@ class RepositoryTest extends GenerisTestCase
         $this->assertEquals($revision, $returnedRevision);
     }
 
-    public function testNotFoundRevision()
+    public function testNotFoundRevision(): void
     {
         $revision = $this->revisions[0];
 
-        $storage = $this->prophesize(RevisionStorageInterface::class);
-        $storage->getRevision(Argument::type('string'), Argument::type('int'))->willThrow(
-            RevisionNotFoundException::class
-        );
+        $storage = $this->createMock(RevisionStorageInterface::class);
+        $storage
+            ->method('getRevision')
+            ->with($this->isType('string'), $this->isType('int'))
+            ->willThrowException(new RevisionNotFoundException('ResourceId', 'Version'));
 
-        $repository = $this->getRepositoryService($storage->reveal());
+        $repository = $this->getRepositoryService($storage);
 
         $this->expectException(RevisionNotFoundException::class);
 
         $repository->getRevision($revision->getResourceId(), $revision->getVersion());
     }
 
-    public function testCommit()
+    public function testCommit(): void
     {
         $revision = $this->revisions[0];
 
-        $storage = $this->prophesize(RevisionStorageInterface::class);
-        $storage->addRevision(Argument::type(Revision::class), Argument::type('array'))
-            ->shouldBeCalled()
+        $storage = $this->createMock(RevisionStorageInterface::class);
+        $storage
+            ->expects($this->once())
+            ->method('addRevision')
+            ->with($this->isInstanceOf(Revision::class), $this->isType('array'))
             ->willReturn($revision);
 
-        $repository = $this->getRepositoryService($storage->reveal());
+        $repository = $this->getRepositoryService($storage);
 
         $user = $this->getMockBuilder(User::class)->disableOriginalConstructor()->getMock();
         $user->expects($this->once())
@@ -143,7 +154,7 @@ class RepositoryTest extends GenerisTestCase
         $triplesManager->method('getPropertyStorageMap')->willReturn([]);
         $triplesManager->method('cloneTriples')->willReturn([]);
 
-        $serviceLocator = $this->getServiceLocatorMock(
+        $serviceLocator = $this->getServiceManagerMock(
             [
                 TriplesManagerService::SERVICE_ID => $triplesManager,
                 FileSystemService::SERVICE_ID => $this->getFileSystemMock(),
@@ -157,16 +168,18 @@ class RepositoryTest extends GenerisTestCase
         $this->assertEquals($revision, $returnedRevision);
     }
 
-    public function testRestore()
+    public function testRestore(): void
     {
         $revision = $this->revisions[0];
 
-        $storage = $this->prophesize(RevisionStorageInterface::class);
-        $storage->getData(Argument::type(Revision::class))
-            ->shouldBeCalled()
+        $storage = $this->createMock(RevisionStorageInterface::class);
+        $storage
+            ->expects($this->once())
+            ->method('getData')
+            ->with($this->isInstanceOf(Revision::class))
             ->willReturn($this->getTriplesMock());
 
-        $repository = $this->getRepositoryService($storage->reveal());
+        $repository = $this->getRepositoryService($storage);
 
         $triplesManager = $this->createMock(TriplesManagerService::class);
         $triplesManager->expects($this->once())
@@ -197,7 +210,7 @@ class RepositoryTest extends GenerisTestCase
         $eventDispatcherMock = $this->createMock(UpdatedItemEventDispatcher::class);
         $eventDispatcherMock->method('dispatch');
 
-        $serviceLocator = $this->getServiceLocatorMock(
+        $serviceLocator = $this->getServiceManagerMock(
             [
                 Ontology::SERVICE_ID => $ontologyMock,
                 TriplesManagerService::SERVICE_ID => $triplesManager,
@@ -212,18 +225,20 @@ class RepositoryTest extends GenerisTestCase
         $this->assertEquals(true, $isRevisionRestored);
     }
 
-    public function testGetNextVersion()
+    public function testGetNextVersion(): void
     {
         $revisions = [
             new Revision('123', 1, 1582066925, 'Author', 'Message'),
         ];
 
-        $storage = $this->prophesize(RevisionStorageInterface::class);
-        $storage->getAllRevisions(Argument::type('string'))
-            ->shouldBeCalled()
+        $storage = $this->createMock(RevisionStorageInterface::class);
+        $storage
+            ->expects($this->once())
+            ->method('getAllRevisions')
+            ->with($this->isType('string'))
             ->willReturn($revisions);
 
-        $repository = $this->getRepositoryService($storage->reveal());
+        $repository = $this->getRepositoryService($storage);
 
         $getNextVersionMethod = new ReflectionMethod(RepositoryService::class, 'getNextVersion');
         $getNextVersionMethod->setAccessible(true);
@@ -232,18 +247,20 @@ class RepositoryTest extends GenerisTestCase
         $this->assertEquals(2, $newVersion);
     }
 
-    public function testSearchRevisionResources()
+    public function testSearchRevisionResources(): void
     {
-        $storage = $this->prophesize(RevisionStorageInterface::class);
-        $storage->getResourcesDataByQuery(Argument::exact('first'), Argument::exact([]))
-            ->shouldBeCalled()
+        $storage = $this->createMock(RevisionStorageInterface::class);
+        $storage
+            ->expects($this->once())
+            ->method('getResourcesDataByQuery')
+            ->with('first', [])
             ->willReturn(['test']);
 
-        $repository = $this->getRepositoryService($storage->reveal());
+        $repository = $this->getRepositoryService($storage);
 
         $ontologyMock = $this->createMock(Ontology::class);
 
-        $serviceLocator = $this->getServiceLocatorMock(
+        $serviceLocator = $this->getServiceManagerMock(
             [
                 Ontology::SERVICE_ID => $ontologyMock
             ]
@@ -257,10 +274,10 @@ class RepositoryTest extends GenerisTestCase
         $this->stringContains($found[0]);
     }
 
-    public function testIsMediaManagerFileWithFileUri()
+    public function testIsMediaManagerFileWithFileUri(): void
     {
-        $storage = $this->prophesize(RevisionStorageInterface::class);
-        $repository = $this->getRepositoryService($storage->reveal());
+        $storage = $this->createMock(RevisionStorageInterface::class);
+        $repository = $this->getRepositoryService($storage);
 
         $triple = new Triple();
         $triple->subject = 'http://www.tao.lu/test.rdf#i123';
@@ -274,10 +291,10 @@ class RepositoryTest extends GenerisTestCase
         $this->assertTrue($result);
     }
 
-    public function testIsMediaManagerFileWithPlainPath()
+    public function testIsMediaManagerFileWithPlainPath(): void
     {
-        $storage = $this->prophesize(RevisionStorageInterface::class);
-        $repository = $this->getRepositoryService($storage->reveal());
+        $storage = $this->createMock(RevisionStorageInterface::class);
+        $repository = $this->getRepositoryService($storage);
 
         $triple = new Triple();
         $triple->subject = 'http://www.tao.lu/test.rdf#i123';
@@ -291,7 +308,7 @@ class RepositoryTest extends GenerisTestCase
         $this->assertFalse($result);
     }
 
-    public function testRestoreDeserializesFileUris()
+    public function testRestoreDeserializesFileUris(): void
     {
         $revision = $this->revisions[0];
 
@@ -309,12 +326,14 @@ class RepositoryTest extends GenerisTestCase
         $triplesCollection->add($tripleWithFileUri);
         $triplesCollection->add($tripleWithPlainPath);
 
-        $storage = $this->prophesize(RevisionStorageInterface::class);
-        $storage->getData(Argument::type(Revision::class))
-            ->shouldBeCalled()
+        $storage = $this->createMock(RevisionStorageInterface::class);
+        $storage
+            ->expects($this->once())
+            ->method('getData')
+            ->with($this->isInstanceOf(Revision::class))
             ->willReturn($triplesCollection);
 
-        $repository = $this->getRepositoryService($storage->reveal());
+        $repository = $this->getRepositoryService($storage);
 
         $fileMock = $this->createMock(File::class);
         $fileMock->method('getPrefix')->willReturn('68dfe0104aafe8.99405914/passage.xml');
@@ -358,7 +377,7 @@ class RepositoryTest extends GenerisTestCase
         $eventDispatcherMock = $this->createMock(UpdatedItemEventDispatcher::class);
         $eventDispatcherMock->method('dispatch');
 
-        $serviceLocator = $this->getServiceLocatorMock(
+        $serviceLocator = $this->getServiceManagerMock(
             [
                 Ontology::SERVICE_ID => $ontologyMock,
                 TriplesManagerService::SERVICE_ID => $triplesManager,
