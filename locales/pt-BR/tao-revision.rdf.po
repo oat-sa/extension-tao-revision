@@ -1,0 +1,92 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 2026.02 LTS\n"
+"PO-Revision-Date: 2026-02-03T14:44:30\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: pt-BR\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: pt-BR\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Revision Role"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Revision Role Class"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Revision History Viewer"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Revision History Viewer Role"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Revision Creator"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Revision Creator Role"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Revision Manager"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Revision Creator Manager"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Revision History Viewer"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Revision History Viewer Role"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Revision Creator"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Revision Creator Role"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Revision Manager"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Revision Manager Role"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Item Revision History Viewer"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Item Revision History Viewer Role"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Item Revision Creator"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Item Revision Creator Role"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Item Revision Manager"
+msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Item Revision Manager Role"
+msgstr ""
+
