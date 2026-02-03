@@ -1,40 +1,47 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 2026.02 LTS\n"
-"PO-Revision-Date: 2026-02-03T14:44:30\n"
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2026-02-03 18:46\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: es-ES\n"
+"Language: es\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: es-ES\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: es-ES\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-revision] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 643\n"
+"Language-Team: Spanish\n"
 
 msgid "%s has been committed"
-msgstr ""
+msgstr "%s ha sido comprometido"
 
 msgid "Actions"
-msgstr ""
+msgstr "Acciones"
 
 msgid "Commit"
-msgstr ""
+msgstr "Compromiso"
 
 #, tao-public
 msgid "History"
-msgstr ""
+msgstr "Historial"
 
 msgid "History of %s"
-msgstr ""
+msgstr "Historial de %s"
 
 msgid "Id"
-msgstr ""
+msgstr "Id"
 
 #, tao-public
 msgid "Items"
-msgstr ""
+msgstr "Elementos"
 
 #, tao-public
 msgid "Manage items"
@@ -42,7 +49,7 @@ msgstr "Gestionar elementos"
 
 #, tao-public
 msgid "Manage Media"
-msgstr ""
+msgstr "Gestionar medios"
 
 #, tao-public
 msgid "Manage tests"
@@ -53,36 +60,36 @@ msgid "Media"
 msgstr "Medios"
 
 msgid "Message"
-msgstr ""
+msgstr "Mensaje"
 
 msgid "Please enter a message"
-msgstr ""
+msgstr "Por favor ingrese un mensaje"
 
 msgid "Please give a message to your commit"
-msgstr ""
+msgstr "Por favor, envía un mensaje a tu compromiso"
 
 msgid "Resource restored"
-msgstr ""
+msgstr "Recurso restaurado"
 
 msgid "Restore"
-msgstr ""
+msgstr "Restaurar"
 
 msgid "Restored version %s"
-msgstr ""
+msgstr "Versión restaurada %s"
 
 msgid "Something went wrong..."
-msgstr ""
+msgstr "Algo salió mal..."
 
 #, tao-public
 msgid "Tests"
-msgstr ""
+msgstr "Tests"
 
 msgid "Time"
-msgstr ""
+msgstr "Hora"
 
 msgid "Unable to restore the selected version"
-msgstr ""
+msgstr "No se puede restaurar la versión seleccionada"
 
 msgid "User"
-msgstr ""
+msgstr "Usuario"
 
