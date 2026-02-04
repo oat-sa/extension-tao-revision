@@ -1,1 +1,1 @@
-[]
+{"Please enter a message":"Fyll inn meldingen","Some items could not be deleted":"Noen elementer kunne ikke slettes","Unable to clone the resource":"Ikke mulig \u00e5 klone ressursen"}

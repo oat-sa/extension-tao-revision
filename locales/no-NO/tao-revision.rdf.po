@@ -1,0 +1,99 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2026-02-03 18:47\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: no\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: no\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-revision] develop/locales/en-US/tao-revision.rdf.po\n"
+"X-Crowdin-File-ID: 1253\n"
+"Language-Team: Norwegian\n"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Revision Role"
+msgstr "Rolle for revisjon"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Revision Role Class"
+msgstr "Rolleklasse for revisjon"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Revision History Viewer"
+msgstr "Visning Historievisning"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Revision History Viewer Role"
+msgstr "Rettigheter i revisjonshistorievisning"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Revision Creator"
+msgstr "Revisjon skaper"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Revision Creator Role"
+msgstr "Rettighets skaperen rolle"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Revision Manager"
+msgstr "Revisjon administrator"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Revision Creator Manager"
+msgstr "Versjon Creator Behandler"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Revision History Viewer"
+msgstr "Historikk aktiva Visning"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Revision History Viewer Role"
+msgstr "Rolle for versjonshistorie"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Revision Creator"
+msgstr "Eiendel skaper"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Revision Creator Role"
+msgstr "Rettighets rollen Ressurs Revisjon"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Revision Manager"
+msgstr "Asset Revision Manager"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Revision Manager Role"
+msgstr "Rolle for versjonskontroll"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Item Revision History Viewer"
+msgstr "Elementet Revision Historievisning (Automatic Translation)"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Item Revision History Viewer Role"
+msgstr "Elementet Revision Historikkvisning Rolle"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Item Revision Creator"
+msgstr "Elementet versjon skaper"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Item Revision Creator Role"
+msgstr "Elementet Revisjon Forfatter Rolle"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Item Revision Manager"
+msgstr "Produkt versjonshåndtering"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Item Revision Manager Role"
+msgstr "Produkt versjonshåndterer rolle"
+
