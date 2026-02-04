@@ -1,0 +1,99 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2026-02-03 18:46\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: de\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: de\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-revision] develop/locales/en-US/tao-revision.rdf.po\n"
+"X-Crowdin-File-ID: 1253\n"
+"Language-Team: German\n"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Revision Role"
+msgstr "Revisionsrolle"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Revision Role Class"
+msgstr "Revisions-Rollenklasse"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Revision History Viewer"
+msgstr "Versionsverlauf-Viewer"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Revision History Viewer Role"
+msgstr "Rolle des Revisionsverlaufs"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Revision Creator"
+msgstr "Revisionsersteller"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Revision Creator Role"
+msgstr "Revisionsersteller Rolle"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Revision Manager"
+msgstr "Revisionsmanager"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Revision Creator Manager"
+msgstr "Revisionsersteller Manager"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Revision History Viewer"
+msgstr "Asset-Revisions-Verlauf-Viewer"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Revision History Viewer Role"
+msgstr "Asset-Revisions-Historie-Viewer Rolle"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Revision Creator"
+msgstr "Asset Revision Ersteller"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Revision Creator Role"
+msgstr "Asset Revision Erstellungsrolle"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Revision Manager"
+msgstr "Asset-Revisionsmanager"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Revision Manager Role"
+msgstr "Asset-Revisions-Rolle"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Item Revision History Viewer"
+msgstr "Eintragsverlauf-Betrachter"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Item Revision History Viewer Role"
+msgstr "Eintrag Verlaufsbetrachter Rolle"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Item Revision Creator"
+msgstr "Artikel Revision Ersteller"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Item Revision Creator Role"
+msgstr "Artikel Revision Erstellungsrolle"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Item Revision Manager"
+msgstr "Artikel Revisionsmanager"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Item Revision Manager Role"
+msgstr "Artikel-Revisions-Rolle"
+

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2025-12-05 08:53\n"
+"PO-Revision-Date: 2026-02-03 18:46\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: pt\n"
@@ -61,6 +61,9 @@ msgstr "Multimídia"
 
 msgid "Message"
 msgstr "Mensagem"
+
+msgid "Please enter a message"
+msgstr "Por favor, insira uma mensagem"
 
 msgid "Please give a message to your commit"
 msgstr "Por favor informe o comentário para essa ação"
