@@ -27,8 +27,8 @@ use common_Object;
 use common_persistence_SqlPersistence;
 use core_kernel_classes_ContainerCollection as TriplesCollection;
 use core_kernel_classes_Triple as Triple;
-use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Result;
 use Doctrine\DBAL\Schema\Schema;
 use oat\generis\model\kernel\persistence\smoothsql\search\driver\TaoSearchDriver;
 use oat\generis\model\OntologyRdfs;
@@ -125,7 +125,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
 
         $variables = $this->getPersistence()
             ->query($queryBuilder->getSQL(), [$resourceId, $version])
-            ->fetchAll();
+            ->fetchAllAssociative();
 
         if (count($variables) !== 1) {
             throw new RevisionNotFoundException($resourceId, $version);
@@ -156,7 +156,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
 
         $variables = $this->getPersistence()
             ->query($queryBuilder->getSQL(), [$resourceId])
-            ->fetchAll();
+            ->fetchAllAssociative();
 
         return $this->buildRevisionCollection($variables);
     }
@@ -198,7 +198,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
             ->query($queryBuilder->getSQL(), [$revision->getResourceId(), $revision->getVersion()]);
 
         $triples = new TriplesCollection(new common_Object());
-        while ($statement = $result->fetch()) {
+        while (($statement = $result->fetchAssociative()) !== false) {
             $triples->add($this->prepareDataObject($statement, $this->getLocalModel()->getModelId()));
         }
 
@@ -252,7 +252,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
 
         $resourcesUri = [];
 
-        while ($statement = $result->fetch()) {
+        while (($statement = $result->fetchAssociative()) !== false) {
             $resourcesUri[] = $statement[self::DATA_RESOURCE];
         }
 
@@ -274,7 +274,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
         $resourcesData = [];
 
         /** @var Revision $statement */
-        while ($statement = $result->fetch()) {
+        while (($statement = $result->fetchAssociative()) !== false) {
             $resourcesData[] = [
                 'id' => $statement[self::DATA_RESOURCE],
                 'label' => $statement[self::DATA_OBJECT],
@@ -292,7 +292,7 @@ class RdsStorage extends ConfigurableService implements RevisionStorageInterface
         string $query,
         array $options,
         string $predicate
-    ): Statement {
+    ): Result {
         $queryBuilder = $this->getQueryBuilder();
 
         foreach ($selectedFields as $selectedField) {
