@@ -5,7 +5,7 @@
         <sections>
             <section id="manage_items" name="Manage items" url="">
 				<actions>
-					<action id="item-revision" name="History" url="/taoRevision/History/index" context="instance" group="content">
+					<action id="item-revision" name="History" url="/taoRevision/History/index" context="instance" group="content" weight="9">
 					    <icon id="icon-repository"/>
 					</action>
 				</actions>
@@ -16,7 +16,7 @@
         <sections>
             <section id="manage_tests" name="Manage tests" url="/taoTests/Tests/index">
                 <actions>
-					<action id="test-revision" name="History" url="/taoRevision/History/index" context="instance" group="content">
+					<action id="test-revision" name="History" url="/taoRevision/History/index" context="instance" group="content" weight="9">
 					    <icon id="icon-repository"/>
 					</action>
 				</actions>
@@ -27,7 +27,7 @@
         <sections>
             <section id="media_manager" name="Manage Media" url="/taoMediaManager/MediaManager/index">
                 <actions>
-					<action id="media-revision" name="History" url="/taoRevision/History/index" context="instance" group="content">
+					<action id="media-revision" name="History" url="/taoRevision/History/index" context="instance" group="content" weight="9">
 					    <icon id="icon-repository"/>
 					</action>
 				</actions>
