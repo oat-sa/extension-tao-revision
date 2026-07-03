@@ -99,7 +99,7 @@ class NewSqlStorage extends RdsStorage
 
         $variables = $this->getPersistence()
             ->query($queryBuilder->getSQL())
-            ->fetchAll();
+            ->fetchAllAssociative();
 
         return $this->buildRevisionCollection($variables);
     }

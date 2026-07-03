@@ -95,15 +95,15 @@ class StorageTest extends TestCase
             ->getPersistenceById(self::PERSISTENCE_KEY);
 
         // no any revision in the storage
-        $count = $persistence->query('select count(*) as count from revision')->fetch()['count'];
-        $countData = $persistence->query('select count(*) as count from revision_data')->fetch()['count'];
+        $count = $persistence->query('select count(*) as count from revision')->fetchAssociative()['count'];
+        $countData = $persistence->query('select count(*) as count from revision_data')->fetchAssociative()['count'];
         $this->assertEquals(0, $count);
         $this->assertEquals(0, $countData);
 
         // adding one revision to the storage
         $addedRevision = $this->storage->addRevision($revision, $triples->toArray());
-        $count = $persistence->query('select count(*) as count from revision')->fetch()['count'];
-        $countData = $persistence->query('select count(*) as count from revision_data')->fetch()['count'];
+        $count = $persistence->query('select count(*) as count from revision')->fetchAssociative()['count'];
+        $countData = $persistence->query('select count(*) as count from revision_data')->fetchAssociative()['count'];
 
         $this->assertEquals(1, $count);
         $this->assertEquals(2, $countData);
