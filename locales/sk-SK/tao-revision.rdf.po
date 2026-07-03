@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2026-02-03 18:47\n"
+"PO-Revision-Date: 2026-07-03 13:45\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: sk\n"
@@ -19,11 +19,11 @@ msgstr ""
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Revision Role"
-msgstr "Revízna rola"
+msgstr "Rola Revízie"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Revision Role Class"
-msgstr "Trieda revíznej role"
+msgstr "Trieda role Revízie"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Revision History Viewer"
@@ -31,7 +31,7 @@ msgstr "Prehliadač histórie revízií"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Revision History Viewer Role"
-msgstr "Rola prehliadača histórie revízií"
+msgstr "Rola Prehliadača histórie revízií"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Revision Creator"
@@ -39,7 +39,7 @@ msgstr "Tvorca revízií"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Revision Creator Role"
-msgstr "Rola tvorcu revízií"
+msgstr "Rola Tvorcu revízií"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Revision Manager"
@@ -47,31 +47,31 @@ msgstr "Správca revízií"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Revision Creator Manager"
-msgstr "Správca tvorcov revízií"
+msgstr "Správca Tvorcov revízií"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Asset Revision History Viewer"
-msgstr "Prehliadač histórie revízií aktív"
+msgstr "Prehliadač histórie revízií zdrojov"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Asset Revision History Viewer Role"
-msgstr "Rola prehliadača histórie revízií aktív"
+msgstr "Rola prehliadača histórie revízií zdrojov"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Asset Revision Creator"
-msgstr "Tvorca revízií aktív"
+msgstr "Tvorca revízií zdrojov"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Asset Revision Creator Role"
-msgstr "Rola tvorcu revízie aktív"
+msgstr "Rola tvorcu revízie zdrojov"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Asset Revision Manager"
-msgstr "Manažér revízií aktív"
+msgstr "Manažér revízií zdrojov"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Asset Revision Manager Role"
-msgstr "Rola manažéra revízií aktív"
+msgstr "Rola manažéra revízií zdrojov"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Item Revision History Viewer"
@@ -79,7 +79,7 @@ msgstr "Prehliadač histórie revízií položiek"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Item Revision History Viewer Role"
-msgstr "Rola prehliadača histórie revízií položiek"
+msgstr "Rola Prehliadača histórie revízií položiek"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Item Revision Creator"
@@ -87,7 +87,7 @@ msgstr "Tvorca revízií položiek"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Item Revision Creator Role"
-msgstr "Rola tvorcu revízie položky"
+msgstr "Rola Tvorcu revízie položky"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Item Revision Manager"
@@ -95,5 +95,5 @@ msgstr "Správca revízií položiek"
 
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Item Revision Manager Role"
-msgstr "Rola manažéra revízií položiek"
+msgstr "Rola Správcu revízií položiek"
 
