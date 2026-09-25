@@ -29,6 +29,7 @@ module.exports = function(grunt) {
                 options : {
                     extension : 'taoRevision',
                     outputDir : 'loader',
+                    babelPreTransform: { enabled: true },
                     bundles : [{
                         name : 'taoRevision',
                         default : true,
